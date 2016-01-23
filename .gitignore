@@ -1,0 +1,9 @@
+*.iml
+
+.idea/
+*.class
+*.jar
+.gradle
+build/
+
+.DS_STORE
