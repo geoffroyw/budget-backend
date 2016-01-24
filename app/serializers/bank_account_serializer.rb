@@ -1,4 +1,4 @@
 class BankAccountSerializer < ActiveModel::Serializer
-  attributes :id
-  attributes :name, :currency_code
+  attributes :id, :name, :currency_code
+  has_many :transactions
 end
