@@ -33,6 +33,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-actuator-docs')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-remote-shell')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
     compile('org.javamoney:moneta:1.0')
     compile('org.javamoney:moneta-bp:1.0')
 	runtime('org.postgresql:postgresql')
