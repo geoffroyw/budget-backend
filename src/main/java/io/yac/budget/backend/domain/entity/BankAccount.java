@@ -15,14 +15,17 @@ public class BankAccount {
 
     private Currency currency;
 
+    private String name;
+
     private List<Transaction> transactions;
 
     public BankAccount() {
     }
 
-    private BankAccount(Long id, Currency currency) {
+    private BankAccount(Long id, Currency currency, String name) {
         this.id = id;
         this.currency = currency;
+        this.name = name;
     }
 
     public static Builder builder() {
@@ -47,11 +50,13 @@ public class BankAccount {
         return currency;
     }
 
+    public void setCurrency(String currencyCode) {
+        this.setCurrency(Currency.getInstance(currencyCode));
+    }
+
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
-
-    public void setCurrency(String currencyCode) {this.setCurrency(Currency.getInstance(currencyCode));}
 
     @OneToMany(mappedBy = "bankAccount")
     public List<Transaction> getTransactions() {
@@ -62,17 +67,30 @@ public class BankAccount {
         this.transactions = transactions;
     }
 
+
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "BankAccount{" +
                 "id=" + id +
                 ", currency=" + currency +
+                ", name='" + name + '\'' +
+                ", transactions=" + transactions +
                 '}';
     }
 
     public static class Builder {
         private Long id;
         private Currency currency;
+        private String name;
 
         public Builder id(Long id) {
             this.id = id;
@@ -84,8 +102,13 @@ public class BankAccount {
             return this;
         }
 
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
         public BankAccount build() {
-            return new BankAccount(id, currency);
+            return new BankAccount(id, currency, name);
         }
     }
 }

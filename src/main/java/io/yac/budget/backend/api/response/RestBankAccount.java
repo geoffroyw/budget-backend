@@ -19,13 +19,15 @@ public class RestBankAccount {
     @JsonProperty(value = "currency-code")
     private String currencyCode;
 
+    private String name;
 
     public RestBankAccount() {
     }
 
-    public RestBankAccount(Long id, String currencyCode) {
+    private RestBankAccount(Long id, String currencyCode, String name) {
         this.id = id;
         this.currencyCode = currencyCode;
+        this.name = name;
     }
 
     public RestBankAccount(BankAccount bankAccount) {
@@ -53,11 +55,20 @@ public class RestBankAccount {
         this.currencyCode = currencyCode;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "RestBankAccount{" +
                 "id=" + id +
                 ", currencyCode='" + currencyCode + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -68,6 +79,7 @@ public class RestBankAccount {
     public static class Builder {
         private Long id;
         private String currencyCode;
+        private String name;
 
         public Builder id(Long id) {
             this.id = id;
@@ -79,8 +91,15 @@ public class RestBankAccount {
             return this;
         }
 
-        public RestBankAccount build() {
-            return new RestBankAccount(id, currencyCode);
+        public Builder name(String name) {
+            this.name = name;
+            return this;
         }
+
+        public RestBankAccount build() {
+            return new RestBankAccount(id, currencyCode, name);
+        }
+
+
     }
 }

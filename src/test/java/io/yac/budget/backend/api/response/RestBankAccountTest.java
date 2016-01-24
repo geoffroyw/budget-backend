@@ -22,6 +22,14 @@ public class RestBankAccountTest {
     }
 
     @Test
+    public void name_maps_to_bank_account_id() {
+        Currency any_currency = Currency.getInstance("USD");
+        BankAccount bankAccount = BankAccount.builder().name("KnownAccountName").currency(any_currency).build();
+
+        assertThat(new RestBankAccount(bankAccount).getName(), is("KnownAccountName"));
+    }
+
+    @Test
     public void currency_code_maps_to_bank_account_currency_currency_code() {
         BankAccount bankAccount = BankAccount.builder().currency(Currency.getInstance("EUR")).build();
 
@@ -41,6 +49,15 @@ public class RestBankAccountTest {
         RestBankAccount restBankAccount = RestBankAccount.builder().currencyCode(any_currency).id(1L).build();
 
         assertThat(restBankAccount.toBankAccount().getId(), is(1L));
+    }
+
+
+    @Test
+    public void name_maps_to_name_from_rest_object() {
+        String any_currency = "EUR";
+        RestBankAccount restBankAccount = RestBankAccount.builder().currencyCode(any_currency).name("KnownName").build();
+
+        assertThat(restBankAccount.toBankAccount().getName(), is("KnownName"));
     }
 
 }
