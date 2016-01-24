@@ -51,6 +51,8 @@ public class BankAccount {
         this.currency = currency;
     }
 
+    public void setCurrency(String currencyCode) {this.setCurrency(Currency.getInstance(currencyCode));}
+
     @OneToMany(mappedBy = "bankAccount")
     public List<Transaction> getTransactions() {
         return transactions;
