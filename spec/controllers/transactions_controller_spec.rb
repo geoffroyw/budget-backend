@@ -24,7 +24,8 @@ RSpec.describe TransactionsController, type: :controller do
   # Transaction. As you add validations to Transaction, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    {:name => 'foo', :transaction_type => 'incoming', :date => Date.today, :amount_cents => 1000, :amount_currency => 'CHF', :bank_account => FactoryGirl.create(:bank_account)}
+    {:name => 'foo', :transaction_type => 'incoming', :date => Date.today, :amount_cents => 1000,
+     :amount_currency => 'CHF', :bank_account => FactoryGirl.create(:bank_account), :payment_mean => FactoryGirl.create(:payment_mean)}
   }
 
   let(:invalid_attributes) {

@@ -11,12 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160124151658) do
+ActiveRecord::Schema.define(version: 20160128203853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "bank_accounts", force: :cascade do |t|
+    t.string   "name"
+    t.string   "currency_code"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "payment_means", force: :cascade do |t|
     t.string   "name"
     t.string   "currency_code"
     t.datetime "created_at",    null: false
@@ -32,6 +39,7 @@ ActiveRecord::Schema.define(version: 20160124151658) do
     t.integer  "amount_cents",     default: 0,     null: false
     t.string   "amount_currency",  default: "USD", null: false
     t.integer  "bank_account_id"
+    t.integer  "payment_mean_id"
   end
 
 end
