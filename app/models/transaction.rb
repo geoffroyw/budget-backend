@@ -2,6 +2,8 @@ class Transaction < ApplicationRecord
 
   belongs_to :bank_account
 
+  enum transaction_type: [:incoming, :outgoing]
+
   validates_presence_of :bank_account
   validates_presence_of :amount_cents
   validates_presence_of :amount_currency
