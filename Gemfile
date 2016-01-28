@@ -23,6 +23,8 @@ gem 'active_model_serializers', '~> 0.10.0.rc3'
 
 gem 'money-rails', '~> 1.6'
 
+#gem 'jsonapi-resources', '~> 0.7.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
