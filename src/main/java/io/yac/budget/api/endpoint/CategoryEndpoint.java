@@ -3,10 +3,10 @@ package io.yac.budget.api.endpoint;
 import io.katharsis.queryParams.QueryParams;
 import io.katharsis.repository.ResourceRepository;
 import io.katharsis.resource.exception.ResourceNotFoundException;
-import io.yac.budget.api.converter.impl.BankAccountConverter;
-import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.domain.BankAccount;
-import io.yac.budget.repository.BankAccountRepository;
+import io.yac.budget.api.converter.impl.CategoryConverter;
+import io.yac.budget.api.resources.CategoryResource;
+import io.yac.budget.domain.Category;
+import io.yac.budget.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,33 +17,33 @@ import java.util.stream.StreamSupport;
  * Created by geoffroy on 07/02/2016.
  */
 @Component
-public class BankAccountEndpoint implements ResourceRepository<BankAccountResource, Long> {
+public class CategoryEndpoint implements ResourceRepository<CategoryResource, Long> {
 
     @Autowired
-    private BankAccountRepository repository;
+    private CategoryRepository repository;
 
     @Autowired
-    private BankAccountConverter converter;
+    private CategoryConverter converter;
 
     @Override
-    public BankAccountResource findOne(Long id, QueryParams queryParams) {
-        BankAccount bankAccount = repository.findOne(id);
-        if (bankAccount == null) {
+    public CategoryResource findOne(Long id, QueryParams queryParams) {
+        Category Category = repository.findOne(id);
+        if (Category == null) {
             throw new ResourceNotFoundException("Bank Account not found");
         }
 
-        return converter.convertToResource(bankAccount);
+        return converter.convertToResource(Category);
     }
 
     @Override
-    public Iterable<BankAccountResource> findAll(QueryParams queryParams) {
+    public Iterable<CategoryResource> findAll(QueryParams queryParams) {
         return StreamSupport.stream(repository.findAll().spliterator(), false).map(a -> converter.convertToResource(a))
                 .collect(Collectors.toList());
 
     }
 
     @Override
-    public Iterable<BankAccountResource> findAll(Iterable<Long> longs, QueryParams queryParams) {
+    public Iterable<CategoryResource> findAll(Iterable<Long> longs, QueryParams queryParams) {
         return StreamSupport.stream(repository.findAll(longs).spliterator(), false)
                 .map(a -> converter.convertToResource(a))
                 .collect(Collectors.toList());
@@ -56,8 +56,8 @@ public class BankAccountEndpoint implements ResourceRepository<BankAccountResour
 
     @SuppressWarnings("unchecked")
     @Override
-    public BankAccountResource save(BankAccountResource resource) {
-        BankAccount entity = converter.convertToEntity(resource);
+    public CategoryResource save(CategoryResource resource) {
+        Category entity = converter.convertToEntity(resource);
         return converter.convertToResource(repository.save(entity));
     }
 }
