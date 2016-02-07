@@ -15,6 +15,19 @@ public class Category extends TimestampableEntity {
 
     private List<Transaction> transactions;
 
+    public Category() {
+    }
+
+    private Category(Long id, String name, List<Transaction> transactions) {
+        this.id = id;
+        this.name = name;
+        this.transactions = transactions;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
     @SequenceGenerator(name = "category_seq", sequenceName = "category_seq", allocationSize = 100)
@@ -42,5 +55,30 @@ public class Category extends TimestampableEntity {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String name;
+        private List<Transaction> transactions;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder transactions(List<Transaction> transactions) {
+            this.transactions = transactions;
+            return this;
+        }
+
+        public Category build() {
+            return new Category(id, name, transactions);
+        }
     }
 }

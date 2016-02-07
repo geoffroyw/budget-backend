@@ -20,7 +20,7 @@ public class Transaction extends TimestampableEntity {
 
     private String description;
 
-    private boolean isConfirmed;
+    private Boolean isConfirmed;
 
     private TransactionType type;
 
@@ -30,6 +30,28 @@ public class Transaction extends TimestampableEntity {
 
     private List<Category> categories;
 
+    public Transaction() {
+    }
+
+    private Transaction(Long id, Integer amountCents, String currency, Date date, String description,
+                        Boolean isConfirmed,
+                        TransactionType type, PaymentMean paymentMean, BankAccount bankAccount,
+                        List<Category> categories) {
+        this.id = id;
+        this.amountCents = amountCents;
+        this.currency = currency;
+        this.date = date;
+        this.description = description;
+        this.isConfirmed = isConfirmed;
+        this.type = type;
+        this.paymentMean = paymentMean;
+        this.bankAccount = bankAccount;
+        this.categories = categories;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_seq")
@@ -80,7 +102,7 @@ public class Transaction extends TimestampableEntity {
     }
 
     @Column(name = "is_confirmed", nullable = false)
-    public boolean isConfirmed() {
+    public Boolean isConfirmed() {
         return isConfirmed;
     }
 
@@ -128,5 +150,73 @@ public class Transaction extends TimestampableEntity {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Integer amountCents;
+        private String currency;
+        private Date date;
+        private String description;
+        private Boolean isConfirmed;
+        private TransactionType type;
+        private PaymentMean paymentMean;
+        private BankAccount bankAccount;
+        private List<Category> categories;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder amountCents(Integer amountCents) {
+            this.amountCents = amountCents;
+            return this;
+        }
+
+        public Builder currency(String currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public Builder date(Date date) {
+            this.date = date;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder isConfirmed(Boolean isConfirmed) {
+            this.isConfirmed = isConfirmed;
+            return this;
+        }
+
+        public Builder type(TransactionType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder paymentMean(PaymentMean paymentMean) {
+            this.paymentMean = paymentMean;
+            return this;
+        }
+
+        public Builder bankAccount(BankAccount bankAccount) {
+            this.bankAccount = bankAccount;
+            return this;
+        }
+
+        public Builder categories(List<Category> categories) {
+            this.categories = categories;
+            return this;
+        }
+
+        public Transaction build() {
+            return new Transaction(id, amountCents, currency, date, description, isConfirmed, type, paymentMean,
+                    bankAccount, categories);
+        }
     }
 }

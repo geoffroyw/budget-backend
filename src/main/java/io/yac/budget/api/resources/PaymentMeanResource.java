@@ -1,26 +1,32 @@
-package io.yac.budget.domain;
+package io.yac.budget.api.resources;
 
-import javax.persistence.*;
+import io.katharsis.resource.annotations.JsonApiId;
+import io.katharsis.resource.annotations.JsonApiResource;
+import io.katharsis.resource.annotations.JsonApiToMany;
+
 import java.util.List;
 
 /**
  * Created by geoffroy on 07/02/2016.
  */
-@Entity
-public class PaymentMean extends TimestampableEntity {
+@JsonApiResource(type = "PaymentMeans")
+public class PaymentMeanResource {
 
+    @JsonApiId
     private Long id;
 
     private String name;
 
     private String currency;
 
-    private List<Transaction> transactions;
+    @JsonApiToMany
+    private List<TransactionResource> transactions;
 
-    public PaymentMean() {
+    public PaymentMeanResource() {
     }
 
-    private PaymentMean(Long id, String name, String currency, List<Transaction> transactions) {
+    private PaymentMeanResource(Long id, String name, String currency,
+                                List<TransactionResource> transactions) {
         this.id = id;
         this.name = name;
         this.currency = currency;
@@ -31,9 +37,6 @@ public class PaymentMean extends TimestampableEntity {
         return new Builder();
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_mean_seq")
-    @SequenceGenerator(name = "payment_mean_seq", sequenceName = "payment_mean_seq", allocationSize = 100)
     public Long getId() {
         return id;
     }
@@ -42,7 +45,6 @@ public class PaymentMean extends TimestampableEntity {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -51,7 +53,6 @@ public class PaymentMean extends TimestampableEntity {
         this.name = name;
     }
 
-    @Column(name = "currency", nullable = false)
     public String getCurrency() {
         return currency;
     }
@@ -60,12 +61,11 @@ public class PaymentMean extends TimestampableEntity {
         this.currency = currency;
     }
 
-    @OneToMany(targetEntity = Transaction.class, mappedBy = "paymentMean")
-    public List<Transaction> getTransactions() {
+    public List<TransactionResource> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
+    public void setTransactions(List<TransactionResource> transactions) {
         this.transactions = transactions;
     }
 
@@ -73,7 +73,7 @@ public class PaymentMean extends TimestampableEntity {
         private Long id;
         private String name;
         private String currency;
-        private List<Transaction> transactions;
+        private List<TransactionResource> transactions;
 
         public Builder id(Long id) {
             this.id = id;
@@ -90,13 +90,13 @@ public class PaymentMean extends TimestampableEntity {
             return this;
         }
 
-        public Builder transactions(List<Transaction> transactions) {
+        public Builder transactions(List<TransactionResource> transactions) {
             this.transactions = transactions;
             return this;
         }
 
-        public PaymentMean build() {
-            return new PaymentMean(id, name, currency, transactions);
+        public PaymentMeanResource build() {
+            return new PaymentMeanResource(id, name, currency, transactions);
         }
     }
 }

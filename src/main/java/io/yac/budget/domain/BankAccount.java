@@ -14,8 +14,23 @@ public class BankAccount extends TimestampableEntity {
 
     private String currency;
 
+    private String name;
+
     private List<Transaction> transactions;
 
+    public BankAccount() {
+    }
+
+    private BankAccount(Long id, String currency, String name, List<Transaction> transactions) {
+        this.id = id;
+        this.currency = currency;
+        this.name = name;
+        this.transactions = transactions;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_account_seq")
@@ -46,5 +61,43 @@ public class BankAccount extends TimestampableEntity {
         this.transactions = transactions;
     }
 
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String currency;
+        private String name;
+        private List<Transaction> transactions;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder currency(String currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder transactions(List<Transaction> transactions) {
+            this.transactions = transactions;
+            return this;
+        }
+
+        public BankAccount build() {
+            return new BankAccount(id, currency, name, transactions);
+        }
+    }
 }
