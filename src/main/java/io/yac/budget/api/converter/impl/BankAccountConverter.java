@@ -3,10 +3,12 @@ package io.yac.budget.api.converter.impl;
 import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.domain.BankAccount;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by geoffroy on 07/02/2016.
  */
+@Service
 public class BankAccountConverter implements ResourceEntityConverter<BankAccountResource, BankAccount> {
 
     @Override
