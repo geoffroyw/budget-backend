@@ -1,21 +1,22 @@
 package io.yac.budget.api.converter.impl;
 
 import io.yac.budget.api.resources.BankAccountResource;
+import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
-import io.yac.budget.domain.BankAccount;
-import io.yac.budget.domain.PaymentMean;
-import io.yac.budget.domain.Transaction;
-import io.yac.budget.domain.TransactionType;
+import io.yac.budget.domain.*;
 import io.yac.budget.repository.BankAccountRepository;
+import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -98,6 +99,18 @@ public class TransactionConverterTest {
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getPaymentMean().getId(), is(1L));
+    }
+
+    @Test
+    public void resource_categories_maps_to_a_list_of_transaction_resources_with_id_from_entity_transaction_ids() {
+        Transaction entity =
+                prototypeValidTransaction().categories(Collections.singletonList(Category.builder().id(1L).build()))
+                        .build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+
+        assertThat(resource.getCategories().get(0).getId(), is(1L));
     }
 
     @Test
@@ -184,7 +197,7 @@ public class TransactionConverterTest {
         BankAccountRepository dummyBankAccountRepository = mock(BankAccountRepository.class);
         when(dummyBankAccountRepository.findOne(1L)).thenReturn(bankAccountFromRepository);
 
-        TransactionConverter converter = new TransactionConverter(dummyBankAccountRepository, null);
+        TransactionConverter converter = new TransactionConverter(dummyBankAccountRepository, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getBankAccount(), is(bankAccountFromRepository));
     }
@@ -194,11 +207,10 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().bankAccount(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null);
+        TransactionConverter converter = new TransactionConverter(null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getBankAccount(), is(nullValue()));
     }
-
 
     @Test
     public void entity_payment_mean_maps_to_payment_mean_entity_with_matching_id() {
@@ -210,7 +222,7 @@ public class TransactionConverterTest {
         PaymentMeanRepository dummyPaymentMeanRepository = mock(PaymentMeanRepository.class);
         when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(paymentMeanFromRepository);
 
-        TransactionConverter converter = new TransactionConverter(null, dummyPaymentMeanRepository);
+        TransactionConverter converter = new TransactionConverter(null, dummyPaymentMeanRepository, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getPaymentMean(), is(paymentMeanFromRepository));
     }
@@ -220,15 +232,44 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().paymentMean(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null);
+        TransactionConverter converter = new TransactionConverter(null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getPaymentMean(), is(nullValue()));
     }
 
+    @Test
+    public void entity_categories_maps_to_list_of_category_entity_with_matching_ids() {
+        TransactionResource resource =
+                TransactionResource.builder()
+                        .categories(Collections.singletonList(CategoryResource.builder().id(1L).build())).build();
+
+        Category categoryFromRepository = Category.builder().id(1L).build();
+
+        CategoryRepository dummyCategoryRepository = mock(CategoryRepository.class);
+        when(dummyCategoryRepository.findAll(anyList()))
+                .thenReturn(Collections.singletonList(categoryFromRepository));
+
+        TransactionConverter converter = new TransactionConverter(null, null, dummyCategoryRepository);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getCategories().get(0), is(categoryFromRepository));
+    }
+
+    @Test
+    public void entity_categories_is_null_if_resource_categories_mean_is_null() {
+        TransactionResource resource =
+                TransactionResource.builder().categories(null).build();
+
+        TransactionConverter converter = new TransactionConverter(null, null, null);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getCategories(), is(nullValue()));
+    }
+
+
     private Transaction.Builder prototypeValidTransaction() {
         final TransactionType anyType = TransactionType.EXPENSE;
         return Transaction.builder().type(anyType).bankAccount(BankAccount.builder().build())
-                .paymentMean(PaymentMean.builder().build());
+                .paymentMean(PaymentMean.builder().build())
+                .categories(Collections.singletonList(Category.builder().build()));
     }
 
 }
