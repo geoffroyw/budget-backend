@@ -27,12 +27,12 @@ public class TransactionEndpoint implements ResourceRepository<TransactionResour
 
     @Override
     public TransactionResource findOne(Long id, QueryParams queryParams) {
-        Transaction Transaction = repository.findOne(id);
-        if (Transaction == null) {
+        Transaction transaction = repository.findOne(id);
+        if (transaction == null) {
             throw new ResourceNotFoundException("Bank Account not found");
         }
 
-        return converter.convertToResource(Transaction);
+        return converter.convertToResource(transaction);
     }
 
     @Override

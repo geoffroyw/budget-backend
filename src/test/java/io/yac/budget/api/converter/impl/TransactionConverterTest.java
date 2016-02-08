@@ -1,14 +1,23 @@
 package io.yac.budget.api.converter.impl;
 
+import io.yac.budget.api.resources.BankAccountResource;
+import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
+import io.yac.budget.domain.BankAccount;
+import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.domain.TransactionType;
+import io.yac.budget.repository.BankAccountRepository;
+import io.yac.budget.repository.PaymentMeanRepository;
 import org.junit.Test;
 
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -31,11 +40,6 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter();
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getAmountCents(), is(12439));
-    }
-
-    private Transaction.Builder prototypeValidTransaction() {
-        final TransactionType anyType = TransactionType.EXPENSE;
-        return Transaction.builder().type(anyType);
     }
 
     @Test
@@ -74,6 +78,26 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter();
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getConfirmed(), is(true));
+    }
+
+    @Test
+    public void resourceBank_account_is_a_bank_account_resource_with_id_mapping_to_entity_bank_account_id() {
+        Transaction entity = prototypeValidTransaction().bankAccount(BankAccount.builder().id(1L).build()).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+
+        assertThat(resource.getBankAccount().getId(), is(1L));
+    }
+
+    @Test
+    public void resourcePaymentMean_is_a_payment_mean_resource_with_id_mapping_to_entity_payment_mean_id() {
+        Transaction entity = prototypeValidTransaction().paymentMean(PaymentMean.builder().id(1L).build()).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+
+        assertThat(resource.getPaymentMean().getId(), is(1L));
     }
 
     @Test
@@ -148,6 +172,63 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter();
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.isConfirmed(), is(true));
+    }
+
+    @Test
+    public void entity_bank_account_maps_to_bank_account_entity_with_matching_id() {
+        TransactionResource resource =
+                TransactionResource.builder().bankAccount(BankAccountResource.builder().id(1L).build()).build();
+
+        BankAccount bankAccountFromRepository = BankAccount.builder().id(1L).build();
+
+        BankAccountRepository dummyBankAccountRepository = mock(BankAccountRepository.class);
+        when(dummyBankAccountRepository.findOne(1L)).thenReturn(bankAccountFromRepository);
+
+        TransactionConverter converter = new TransactionConverter(dummyBankAccountRepository, null);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getBankAccount(), is(bankAccountFromRepository));
+    }
+
+    @Test
+    public void entity_bank_account_is_null_if_resource_bank_account_is_null() {
+        TransactionResource resource =
+                TransactionResource.builder().bankAccount(null).build();
+
+        TransactionConverter converter = new TransactionConverter(null, null);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getBankAccount(), is(nullValue()));
+    }
+
+
+    @Test
+    public void entity_payment_mean_maps_to_payment_mean_entity_with_matching_id() {
+        TransactionResource resource =
+                TransactionResource.builder().paymentMean(PaymentMeanResource.builder().id(1L).build()).build();
+
+        PaymentMean paymentMeanFromRepository = PaymentMean.builder().id(1L).build();
+
+        PaymentMeanRepository dummyPaymentMeanRepository = mock(PaymentMeanRepository.class);
+        when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(paymentMeanFromRepository);
+
+        TransactionConverter converter = new TransactionConverter(null, dummyPaymentMeanRepository);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getPaymentMean(), is(paymentMeanFromRepository));
+    }
+
+    @Test
+    public void entity_payment_mean_is_null_if_resource_payment_mean_is_null() {
+        TransactionResource resource =
+                TransactionResource.builder().paymentMean(null).build();
+
+        TransactionConverter converter = new TransactionConverter(null, null);
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getPaymentMean(), is(nullValue()));
+    }
+
+    private Transaction.Builder prototypeValidTransaction() {
+        final TransactionType anyType = TransactionType.EXPENSE;
+        return Transaction.builder().type(anyType).bankAccount(BankAccount.builder().build())
+                .paymentMean(PaymentMean.builder().build());
     }
 
 }

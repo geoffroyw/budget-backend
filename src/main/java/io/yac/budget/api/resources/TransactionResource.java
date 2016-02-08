@@ -125,6 +125,22 @@ public class TransactionResource {
         this.categories = categories;
     }
 
+    public BankAccountResource getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccountResource bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public PaymentMeanResource getPaymentMean() {
+        return paymentMean;
+    }
+
+    public void setPaymentMean(PaymentMeanResource paymentMean) {
+        this.paymentMean = paymentMean;
+    }
+
     public static class Builder {
         private Long id;
         private Integer amountCents;
