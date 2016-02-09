@@ -1,6 +1,7 @@
 package io.yac.budget.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class Category extends TimestampableEntity {
 
     private String name;
 
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
 
     public Category() {
     }

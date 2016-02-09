@@ -1,6 +1,7 @@
 package io.yac.budget.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class PaymentMean extends TimestampableEntity {
 
     private String currency;
 
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
 
     public PaymentMean() {
     }
@@ -60,7 +61,7 @@ public class PaymentMean extends TimestampableEntity {
         this.currency = currency;
     }
 
-    @OneToMany(targetEntity = Transaction.class, mappedBy = "paymentMean")
+    @OneToMany(targetEntity = Transaction.class, mappedBy = "paymentMean", fetch = FetchType.EAGER)
     public List<Transaction> getTransactions() {
         return transactions;
     }

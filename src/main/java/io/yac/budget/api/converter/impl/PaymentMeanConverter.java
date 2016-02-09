@@ -33,7 +33,8 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
     @Override
     public PaymentMeanResource convertToResource(PaymentMean entity) {
         return PaymentMeanResource.builder().id(entity.getId()).name(entity.getName()).currency(entity.getCurrency())
-                .transactions(entity.getTransactions().stream().map(this::buildTransactionResource)
+                .transactions(entity.getTransactions() == null ? null : entity.getTransactions().stream()
+                        .map(this::buildTransactionResource)
                         .collect(Collectors.toList()))
                 .build();
     }
