@@ -30,7 +30,7 @@ public class Category extends TimestampableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq", sequenceName = "category_seq", allocationSize = 100)
+    @SequenceGenerator(name = "category_seq", sequenceName = "category_seq")
     public Long getId() {
         return id;
     }

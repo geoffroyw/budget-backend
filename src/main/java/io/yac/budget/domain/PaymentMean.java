@@ -33,7 +33,7 @@ public class PaymentMean extends TimestampableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_mean_seq")
-    @SequenceGenerator(name = "payment_mean_seq", sequenceName = "payment_mean_seq", allocationSize = 100)
+    @SequenceGenerator(name = "payment_mean_seq", sequenceName = "payment_mean_seq")
     public Long getId() {
         return id;
     }

@@ -55,7 +55,7 @@ public class Transaction extends TimestampableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_seq")
-    @SequenceGenerator(name = "transaction_seq", sequenceName = "transaction_seq", allocationSize = 100)
+    @SequenceGenerator(name = "transaction_seq", sequenceName = "transaction_seq")
     public Long getId() {
         return id;
     }

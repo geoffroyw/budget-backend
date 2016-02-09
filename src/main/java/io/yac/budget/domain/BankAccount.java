@@ -34,7 +34,7 @@ public class BankAccount extends TimestampableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_account_seq")
-    @SequenceGenerator(name = "bank_account_seq", sequenceName = "bank_account_seq", allocationSize = 100)
+    @SequenceGenerator(name = "bank_account_seq", sequenceName = "bank_account_seq")
     public Long getId() {
         return id;
     }
