@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by geoffroy on 07/02/2016.
  */
-@JsonApiResource(type = "PaymentMeans")
+@JsonApiResource(type = "payment-means")
 public class PaymentMeanResource {
 
     @JsonApiId

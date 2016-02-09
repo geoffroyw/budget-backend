@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by geoffroy on 07/02/2016.
  */
-@JsonApiResource(type = "BankAccounts")
+@JsonApiResource(type = "bank-accounts")
 public class BankAccountResource {
 
     @JsonApiId
