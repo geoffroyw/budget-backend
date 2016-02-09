@@ -34,6 +34,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-jersey')
     compile('org.springframework.boot:spring-boot-starter-remote-shell')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.security.oauth:spring-security-oauth2")
     compile('io.katharsis:katharsis-core:2.2.0')
     compile('io.katharsis:katharsis-spring:2.2.0')
     compile('io.katharsis:katharsis-servlet:2.2.0')
