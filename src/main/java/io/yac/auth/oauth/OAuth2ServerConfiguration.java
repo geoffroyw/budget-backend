@@ -29,7 +29,7 @@ public class OAuth2ServerConfiguration {
 
     private static final String WEB_APPLICATION_ID = "webApplication";
 
-    private static final String SECRET = "1234567890"; //TODO configuration
+    private static final String SECRET = ""; //This should stay empty
 
     @Configuration
     @EnableResourceServer
