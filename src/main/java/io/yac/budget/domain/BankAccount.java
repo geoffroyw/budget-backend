@@ -53,7 +53,7 @@ public class BankAccount extends TimestampableEntity {
         this.currency = currency;
     }
 
-    @OneToMany(targetEntity = Transaction.class, mappedBy = "bankAccount")
+    @OneToMany(targetEntity = Transaction.class, mappedBy = "bankAccount", fetch = FetchType.EAGER)
     public List<Transaction> getTransactions() {
         return transactions;
     }

@@ -33,9 +33,11 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
 
     @Override
     public CategoryResource convertToResource(Category entity) {
-        return CategoryResource.builder().id(entity.getId()).name(entity.getName()).transactions(
-                entity.getTransactions().stream().map(t -> TransactionResource.builder().id(t.getId()).build())
-                        .collect(Collectors.toList())).build();
+        return CategoryResource.builder().id(entity.getId()).name(entity.getName())
+                .transactions(entity.getTransactions() == null ? null :
+                              entity.getTransactions().stream()
+                                      .map(t -> TransactionResource.builder().id(t.getId()).build())
+                                      .collect(Collectors.toList())).build();
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyList;
@@ -48,6 +49,15 @@ public class CategoryConverterTest {
         CategoryConverter converter = new CategoryConverter();
         CategoryResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions().get(0).getId(), is(1L));
+    }
+
+    @Test
+    public void resource_transactions_is_null_if_entity_transactions_is_null() {
+        Category entity = prototypeCategory().transactions(null).build();
+
+        CategoryConverter converter = new CategoryConverter();
+        CategoryResource resource = converter.convertToResource(entity);
+        assertThat(resource.getTransactions(), is(nullValue()));
     }
 
     private Category.Builder prototypeCategory() {

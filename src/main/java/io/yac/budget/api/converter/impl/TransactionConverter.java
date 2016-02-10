@@ -49,7 +49,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency())
                 .paymentMean(PaymentMeanResource.builder().id(entity.getPaymentMean().getId()).build())
                 .type(entity.getType().getExternalName()).description(entity.getDescription())
-                .categories(entity.getCategories().stream()
+                .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
                         .map(category -> CategoryResource.builder().id(category.getId()).build())
                         .collect(Collectors.toList()))
                 .amountCents(entity.getAmountCents()).date(entity.getDate()).isConfirmed(entity.isConfirmed())

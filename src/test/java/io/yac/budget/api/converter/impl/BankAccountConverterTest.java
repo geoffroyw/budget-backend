@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.anyList;
@@ -60,6 +61,15 @@ public class BankAccountConverterTest {
         BankAccountConverter converter = new BankAccountConverter();
         BankAccountResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions().get(0).getId(), is(1L));
+    }
+
+    @Test
+    public void convert_to_resource_handles_null_transactions_on_entity() {
+        BankAccount entity = prototypeBankAccount().transactions(null).build();
+
+        BankAccountConverter converter = new BankAccountConverter();
+        BankAccountResource resource = converter.convertToResource(entity);
+        assertThat(resource.getTransactions(), is(nullValue()));
     }
 
 

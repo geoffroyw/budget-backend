@@ -34,10 +34,10 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
     @Override
     public BankAccountResource convertToResource(BankAccount entity) {
         return BankAccountResource.builder().id(entity.getId()).currency(entity.getCurrency()).name(entity.getName())
-                .transactions(
-                        entity.getTransactions().stream().map(t -> TransactionResource.builder().id(t.getId()).build())
-                                .collect(
-                                        Collectors.toList()))
+                .transactions(entity.getTransactions() == null ? null :
+                              entity.getTransactions().stream()
+                                      .map(t -> TransactionResource.builder().id(t.getId()).build())
+                                      .collect(Collectors.toList()))
                 .build();
     }
 

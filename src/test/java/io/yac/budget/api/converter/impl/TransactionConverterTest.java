@@ -102,7 +102,7 @@ public class TransactionConverterTest {
     }
 
     @Test
-    public void resource_categories_maps_to_a_list_of_transaction_resources_with_id_from_entity_transaction_ids() {
+    public void resource_categories_maps_to_a_list_of_categories_resources_with_id_from_entity_transaction_ids() {
         Transaction entity =
                 prototypeValidTransaction().categories(Collections.singletonList(Category.builder().id(1L).build()))
                         .build();
@@ -111,6 +111,16 @@ public class TransactionConverterTest {
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getCategories().get(0).getId(), is(1L));
+    }
+
+    @Test
+    public void resource_categories_is_null_if_entity_categories_is_null() {
+        Transaction entity = prototypeValidTransaction().categories(null).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+
+        assertThat(resource.getCategories(), is(nullValue()));
     }
 
     @Test
