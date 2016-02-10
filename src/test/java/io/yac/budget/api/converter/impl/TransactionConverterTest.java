@@ -78,7 +78,7 @@ public class TransactionConverterTest {
 
         TransactionConverter converter = new TransactionConverter();
         TransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.getConfirmed(), is(true));
+        assertThat(resource.getIsConfirmed(), is(true));
     }
 
     @Test

@@ -84,7 +84,7 @@ public class Transaction extends TimestampableEntity {
     }
 
     @Column(name = "date", nullable = false)
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.DATE)
     public Date getDate() {
         return date;
     }
@@ -141,7 +141,7 @@ public class Transaction extends TimestampableEntity {
         this.bankAccount = bankAccount;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "transaction_category",
                joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
                inverseJoinColumns = {@JoinColumn(name = "category_id", referencedColumnName = "id")})

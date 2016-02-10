@@ -68,7 +68,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
                         .findAll(resource.getCategories().stream().map(CategoryResource::getId)
                                 .collect(Collectors.toList())))
                 .amountCents(
-                        resource.getAmountCents()).isConfirmed(resource.getConfirmed()).description(
+                        resource.getAmountCents()).isConfirmed(resource.getIsConfirmed()).description(
                         resource.getDescription()).type(TransactionType.fromExternalName(resource.getType())).build();
     }
 }

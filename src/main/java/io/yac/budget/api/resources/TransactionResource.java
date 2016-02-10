@@ -85,11 +85,11 @@ public class TransactionResource {
         this.currency = currency;
     }
 
-    public Boolean getConfirmed() {
+    public Boolean getIsConfirmed() {
         return isConfirmed;
     }
 
-    public void setConfirmed(Boolean confirmed) {
+    public void setIsConfirmed(Boolean confirmed) {
         isConfirmed = confirmed;
     }
 

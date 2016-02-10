@@ -49,7 +49,7 @@ public class Category extends TimestampableEntity {
         this.name = name;
     }
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     public List<Transaction> getTransactions() {
         return transactions;
     }
