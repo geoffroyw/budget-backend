@@ -107,7 +107,7 @@ public class Transaction extends TimestampableEntity {
         return isConfirmed;
     }
 
-    public void setConfirmed(boolean confirmed) {
+    public void setConfirmed(Boolean confirmed) {
         isConfirmed = confirmed;
     }
 

@@ -4,6 +4,7 @@ import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.junit.Test;
 
@@ -65,16 +66,6 @@ public class CategoryConverterTest {
     }
 
     @Test
-    public void entity_id_maps_to_resource_id() {
-        CategoryResource resource = CategoryResource.builder().id(1L).build();
-
-        CategoryConverter converter = new CategoryConverter();
-        Category entity = converter.convertToEntity(resource);
-        assertThat(entity.getId(), is(1L));
-    }
-
-
-    @Test
     public void entity_name_maps_to_resource_name() {
         CategoryResource resource = CategoryResource.builder().name("Known name").build();
 
@@ -94,8 +85,22 @@ public class CategoryConverterTest {
         when(dummyTransactionRepository.findAll(anyList()))
                 .thenReturn(Collections.singletonList(transactionFromRepository));
 
-        CategoryConverter converter = new CategoryConverter(dummyTransactionRepository);
+        CategoryConverter converter = new CategoryConverter(dummyTransactionRepository, null);
         Category entity = converter.convertToEntity(resource);
         assertThat(entity.getTransactions().get(0), is(transactionFromRepository));
+    }
+
+    @Test
+    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+        CategoryResource resource_of_existing_entity =
+                CategoryResource.builder().id(1L).name("Some name").build();
+        Category CategoryFromDb = Category.builder().id(1L).build();
+
+        CategoryRepository dummyCategoryRepository = mock(CategoryRepository.class);
+        when(dummyCategoryRepository.findOne(1L)).thenReturn(CategoryFromDb);
+
+        CategoryConverter converter = new CategoryConverter(null, dummyCategoryRepository);
+        Category entity = converter.convertToEntity(resource_of_existing_entity);
+        assertThat(entity, is(CategoryFromDb));
     }
 }

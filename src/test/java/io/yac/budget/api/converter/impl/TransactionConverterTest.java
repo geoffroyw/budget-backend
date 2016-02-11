@@ -8,6 +8,7 @@ import io.yac.budget.domain.*;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
+import io.yac.budget.repository.TransactionRepository;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -133,15 +134,6 @@ public class TransactionConverterTest {
     }
 
     @Test
-    public void entity_id_maps_to_resource_id() {
-        TransactionResource resource = TransactionResource.builder().id(1L).build();
-
-        TransactionConverter converter = new TransactionConverter();
-        Transaction entity = converter.convertToEntity(resource);
-        assertThat(entity.getId(), is(1L));
-    }
-
-    @Test
     public void entity_amount_cents_maps_to_resource_amount_cents() {
         TransactionResource resource = TransactionResource.builder().amountCents(199483).build();
 
@@ -207,7 +199,7 @@ public class TransactionConverterTest {
         BankAccountRepository dummyBankAccountRepository = mock(BankAccountRepository.class);
         when(dummyBankAccountRepository.findOne(1L)).thenReturn(bankAccountFromRepository);
 
-        TransactionConverter converter = new TransactionConverter(dummyBankAccountRepository, null, null);
+        TransactionConverter converter = new TransactionConverter(dummyBankAccountRepository, null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getBankAccount(), is(bankAccountFromRepository));
     }
@@ -217,7 +209,7 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().bankAccount(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getBankAccount(), is(nullValue()));
     }
@@ -232,7 +224,7 @@ public class TransactionConverterTest {
         PaymentMeanRepository dummyPaymentMeanRepository = mock(PaymentMeanRepository.class);
         when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(paymentMeanFromRepository);
 
-        TransactionConverter converter = new TransactionConverter(null, dummyPaymentMeanRepository, null);
+        TransactionConverter converter = new TransactionConverter(null, dummyPaymentMeanRepository, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getPaymentMean(), is(paymentMeanFromRepository));
     }
@@ -242,7 +234,7 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().paymentMean(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getPaymentMean(), is(nullValue()));
     }
@@ -259,7 +251,7 @@ public class TransactionConverterTest {
         when(dummyCategoryRepository.findAll(anyList()))
                 .thenReturn(Collections.singletonList(categoryFromRepository));
 
-        TransactionConverter converter = new TransactionConverter(null, null, dummyCategoryRepository);
+        TransactionConverter converter = new TransactionConverter(null, null, dummyCategoryRepository, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getCategories().get(0), is(categoryFromRepository));
     }
@@ -269,11 +261,24 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().categories(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null);
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getCategories(), is(nullValue()));
     }
 
+    @Test
+    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+        TransactionResource resource_of_existing_entity =
+                TransactionResource.builder().id(1L).currency("CHF").isConfirmed(false).build();
+        Transaction transactionFromDb = Transaction.builder().id(1L).build();
+
+        TransactionRepository dummyTransactionRepository = mock(TransactionRepository.class);
+        when(dummyTransactionRepository.findOne(1L)).thenReturn(transactionFromDb);
+
+        TransactionConverter converter = new TransactionConverter(null, null, null, dummyTransactionRepository);
+        Transaction entity = converter.convertToEntity(resource_of_existing_entity);
+        assertThat(entity, is(transactionFromDb));
+    }
 
     private Transaction.Builder prototypeValidTransaction() {
         final TransactionType anyType = TransactionType.EXPENSE;

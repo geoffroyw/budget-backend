@@ -12,6 +12,7 @@ import io.yac.budget.domain.TransactionType;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
+import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,15 +34,19 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    TransactionRepository transactionRepository;
+
     public TransactionConverter() {
     }
 
     @VisibleForTesting
     TransactionConverter(BankAccountRepository bankAccountRepository, PaymentMeanRepository paymentMeanRepository,
-                         CategoryRepository categoryRepository) {
+                         CategoryRepository categoryRepository, TransactionRepository transactionRepository) {
         this.bankAccountRepository = bankAccountRepository;
         this.paymentMeanRepository = paymentMeanRepository;
         this.categoryRepository = categoryRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -59,16 +64,26 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
 
     @Override
     public Transaction convertToEntity(TransactionResource resource) {
-        return Transaction.builder().id(resource.getId()).date(resource.getDate()).currency(resource.getCurrency())
-                .bankAccount(resource.getBankAccount() == null ? null : bankAccountRepository
-                        .findOne(resource.getBankAccount().getId()))
-                .paymentMean(resource.getPaymentMean() == null ? null : paymentMeanRepository
-                        .findOne(resource.getPaymentMean().getId()))
-                .categories(resource.getCategories() == null ? null : (List<Category>) categoryRepository
-                        .findAll(resource.getCategories().stream().map(CategoryResource::getId)
-                                .collect(Collectors.toList())))
-                .amountCents(
-                        resource.getAmountCents()).isConfirmed(resource.getIsConfirmed()).description(
-                        resource.getDescription()).type(TransactionType.fromExternalName(resource.getType())).build();
+        Transaction transaction;
+        if (resource.getId() != null) {
+            transaction = transactionRepository.findOne(resource.getId());
+        } else {
+            transaction = new Transaction();
+        }
+
+        transaction.setDate(resource.getDate());
+        transaction.setCurrency(resource.getCurrency());
+        transaction.setCategories(resource.getCategories() == null ? null : (List<Category>) categoryRepository
+                .findAll(resource.getCategories().stream().map(CategoryResource::getId).collect(Collectors.toList())));
+        transaction.setPaymentMean(resource.getPaymentMean() == null ? null : paymentMeanRepository
+                .findOne(resource.getPaymentMean().getId()));
+        transaction.setBankAccount(resource.getBankAccount() == null ? null : bankAccountRepository
+                .findOne(resource.getBankAccount().getId()));
+
+        transaction.setAmountCents(resource.getAmountCents());
+        transaction.setConfirmed(resource.getIsConfirmed());
+        transaction.setDescription(resource.getDescription());
+        transaction.setType(TransactionType.fromExternalName(resource.getType()));
+        return transaction;
     }
 }

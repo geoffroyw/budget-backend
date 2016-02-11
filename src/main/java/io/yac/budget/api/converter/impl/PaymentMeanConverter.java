@@ -6,6 +6,7 @@ import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,16 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    PaymentMeanRepository paymentMeanRepository;
+
     public PaymentMeanConverter() {
     }
 
     @VisibleForTesting
-    PaymentMeanConverter(TransactionRepository transactionRepository) {
+    PaymentMeanConverter(TransactionRepository transactionRepository, PaymentMeanRepository paymentMeanRepository) {
         this.transactionRepository = transactionRepository;
+        this.paymentMeanRepository = paymentMeanRepository;
     }
 
     @Override
@@ -41,11 +46,22 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
 
     @Override
     public PaymentMean convertToEntity(PaymentMeanResource resource) {
-        return PaymentMean.builder().id(resource.getId()).name(resource.getName()).currency(resource.getCurrency())
-                .transactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
+        PaymentMean paymentMean;
+        if (resource.getId() == null) {
+            paymentMean = new PaymentMean();
+        } else {
+            paymentMean = paymentMeanRepository.findOne(resource.getId());
+        }
+
+        paymentMean.setName(resource.getName());
+        paymentMean.setCurrency(resource.getCurrency());
+        paymentMean
+                .setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
                         .findAll(resource.getTransactions().stream().map(TransactionResource::getId).collect(
-                                Collectors.toList())))
-                .build();
+                                Collectors.toList())));
+
+
+        return paymentMean;
     }
 
     private TransactionResource buildTransactionResource(Transaction transaction) {

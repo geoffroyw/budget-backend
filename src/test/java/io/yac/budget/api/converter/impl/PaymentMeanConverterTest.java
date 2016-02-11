@@ -4,6 +4,7 @@ import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.junit.Test;
 
@@ -67,15 +68,6 @@ public class PaymentMeanConverterTest {
     }
 
     @Test
-    public void entity_id_maps_to_resource_id() {
-        PaymentMeanResource resource = PaymentMeanResource.builder().id(1L).build();
-
-        PaymentMeanConverter converter = new PaymentMeanConverter();
-        PaymentMean entity = converter.convertToEntity(resource);
-        assertThat(entity.getId(), is(1L));
-    }
-
-    @Test
     public void entity_name_maps_to_resource_name() {
         PaymentMeanResource resource = PaymentMeanResource.builder().name("Known name").build();
 
@@ -104,9 +96,23 @@ public class PaymentMeanConverterTest {
         when(dummyTransactionRepository.findAll(anyList()))
                 .thenReturn(Collections.singletonList(transactionFromRepository));
 
-        PaymentMeanConverter converter = new PaymentMeanConverter(dummyTransactionRepository);
+        PaymentMeanConverter converter = new PaymentMeanConverter(dummyTransactionRepository, null);
         PaymentMean entity = converter.convertToEntity(resource);
         assertThat(entity.getTransactions().get(0), is(transactionFromRepository));
+    }
+
+    @Test
+    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+        PaymentMeanResource resource_of_existing_entity =
+                PaymentMeanResource.builder().id(1L).currency("CHF").build();
+        PaymentMean PaymentMeanFromDb = PaymentMean.builder().id(1L).build();
+
+        PaymentMeanRepository dummyPaymentMeanRepository = mock(PaymentMeanRepository.class);
+        when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(PaymentMeanFromDb);
+
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, dummyPaymentMeanRepository);
+        PaymentMean entity = converter.convertToEntity(resource_of_existing_entity);
+        assertThat(entity, is(PaymentMeanFromDb));
     }
 
 

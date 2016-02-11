@@ -6,6 +6,7 @@ import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,16 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     public CategoryConverter() {
     }
 
     @VisibleForTesting
-    CategoryConverter(TransactionRepository transactionRepository) {
-
+    CategoryConverter(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -42,9 +46,19 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
 
     @Override
     public Category convertToEntity(CategoryResource resource) {
-        return Category.builder().name(resource.getName()).id(resource.getId()).transactions(
-                resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
-                        .findAll(resource.getTransactions().stream().map(
-                                TransactionResource::getId).collect(Collectors.toSet()))).build();
+        Category category;
+        if (resource.getId() == null) {
+            category = new Category();
+        } else {
+            category = categoryRepository.findOne(resource.getId());
+        }
+
+
+        category.setName(resource.getName());
+        category.setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
+                .findAll(resource.getTransactions().stream().map(
+                        TransactionResource::getId).collect(Collectors.toSet())));
+
+        return category;
     }
 }

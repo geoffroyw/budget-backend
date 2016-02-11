@@ -6,6 +6,7 @@ import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.BankAccount;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,17 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    BankAccountRepository bankAccountRepository;
+
     public BankAccountConverter() {
     }
 
     @VisibleForTesting
-    BankAccountConverter(TransactionRepository transactionRepository) {
+    BankAccountConverter(TransactionRepository transactionRepository, BankAccountRepository bankAccountRepository) {
 
         this.transactionRepository = transactionRepository;
+        this.bankAccountRepository = bankAccountRepository;
     }
 
     @Override
@@ -43,10 +48,22 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
 
     @Override
     public BankAccount convertToEntity(BankAccountResource resource) {
-        return BankAccount.builder().id(resource.getId()).currency(resource.getCurrency()).name(resource.getName())
-                .transactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
+        BankAccount bankAccount;
+        if (resource.getId() == null) {
+            bankAccount = new BankAccount();
+        } else {
+            bankAccount = bankAccountRepository.findOne(resource.getId());
+        }
+
+        bankAccount.setCurrency(resource.getCurrency());
+        bankAccount.setName(resource.getName());
+        bankAccount
+                .setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
                         .findAll(resource.getTransactions().stream().map(TransactionResource::getId).collect(
-                                Collectors.toList())))
-                .build();
+                                Collectors.toList())));
+
+
+        return bankAccount;
+
     }
 }
