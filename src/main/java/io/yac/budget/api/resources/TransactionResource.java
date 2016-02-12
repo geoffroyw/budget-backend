@@ -27,8 +27,6 @@ public class TransactionResource {
 
     private String description;
 
-    private String type;
-
     @JsonApiToMany
     private List<CategoryResource> categories;
 
@@ -42,7 +40,7 @@ public class TransactionResource {
     }
 
     private TransactionResource(Long id, Integer amountCents, String currency, Boolean isConfirmed, Date date,
-                                String description, String type,
+                                String description,
                                 List<CategoryResource> categories,
                                 BankAccountResource bankAccount, PaymentMeanResource paymentMean) {
         this.id = id;
@@ -51,7 +49,6 @@ public class TransactionResource {
         this.isConfirmed = isConfirmed;
         this.date = date;
         this.description = description;
-        this.type = type;
         this.categories = categories;
         this.bankAccount = bankAccount;
         this.paymentMean = paymentMean;
@@ -107,14 +104,6 @@ public class TransactionResource {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public List<CategoryResource> getCategories() {
@@ -183,11 +172,6 @@ public class TransactionResource {
             return this;
         }
 
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
         public Builder categories(List<CategoryResource> categories) {
             this.categories = categories;
             return this;
@@ -204,7 +188,7 @@ public class TransactionResource {
         }
 
         public TransactionResource build() {
-            return new TransactionResource(id, amountCents, currency, isConfirmed, date, description, type, categories,
+            return new TransactionResource(id, amountCents, currency, isConfirmed, date, description, categories,
                     bankAccount, paymentMean);
         }
     }

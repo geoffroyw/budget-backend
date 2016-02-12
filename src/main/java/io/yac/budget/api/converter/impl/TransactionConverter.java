@@ -8,7 +8,6 @@ import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.Transaction;
-import io.yac.budget.domain.TransactionType;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
@@ -53,7 +52,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     public TransactionResource convertToResource(Transaction entity) {
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency())
                 .paymentMean(PaymentMeanResource.builder().id(entity.getPaymentMean().getId()).build())
-                .type(entity.getType().getExternalName()).description(entity.getDescription())
+                .description(entity.getDescription())
                 .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
                         .map(category -> CategoryResource.builder().id(category.getId()).build())
                         .collect(Collectors.toList()))
@@ -83,7 +82,6 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
         transaction.setAmountCents(resource.getAmountCents());
         transaction.setConfirmed(resource.getIsConfirmed());
         transaction.setDescription(resource.getDescription());
-        transaction.setType(TransactionType.fromExternalName(resource.getType()));
         return transaction;
     }
 }

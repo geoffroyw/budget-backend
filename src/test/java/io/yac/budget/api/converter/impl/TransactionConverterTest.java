@@ -4,7 +4,10 @@ import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
-import io.yac.budget.domain.*;
+import io.yac.budget.domain.BankAccount;
+import io.yac.budget.domain.Category;
+import io.yac.budget.domain.PaymentMean;
+import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
@@ -124,14 +127,6 @@ public class TransactionConverterTest {
         assertThat(resource.getCategories(), is(nullValue()));
     }
 
-    @Test
-    public void resource_type_maps_to_entity_type_external_name() {
-        Transaction entity = prototypeValidTransaction().type(TransactionType.EXPENSE).build();
-
-        TransactionConverter converter = new TransactionConverter();
-        TransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.getType(), is(TransactionType.EXPENSE.getExternalName()));
-    }
 
     @Test
     public void entity_amount_cents_maps_to_resource_amount_cents() {
@@ -158,16 +153,6 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter();
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getDescription(), is("Known description"));
-    }
-
-    @Test
-    public void entity_type_maps_to_resource_transaction_type_derived_from_external_name() {
-        TransactionResource resource =
-                TransactionResource.builder().type(TransactionType.INCOME.getExternalName()).build();
-
-        TransactionConverter converter = new TransactionConverter();
-        Transaction entity = converter.convertToEntity(resource);
-        assertThat(entity.getType(), is(TransactionType.INCOME));
     }
 
     @Test
@@ -281,8 +266,7 @@ public class TransactionConverterTest {
     }
 
     private Transaction.Builder prototypeValidTransaction() {
-        final TransactionType anyType = TransactionType.EXPENSE;
-        return Transaction.builder().type(anyType).bankAccount(BankAccount.builder().build())
+        return Transaction.builder().bankAccount(BankAccount.builder().build())
                 .paymentMean(PaymentMean.builder().build())
                 .categories(Collections.singletonList(Category.builder().build()));
     }

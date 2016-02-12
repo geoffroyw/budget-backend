@@ -23,8 +23,6 @@ public class Transaction extends TimestampableEntity {
 
     private Boolean isConfirmed;
 
-    private TransactionType type;
-
     private PaymentMean paymentMean;
 
     private BankAccount bankAccount;
@@ -35,8 +33,7 @@ public class Transaction extends TimestampableEntity {
     }
 
     private Transaction(Long id, Integer amountCents, String currency, Date date, String description,
-                        Boolean isConfirmed,
-                        TransactionType type, PaymentMean paymentMean, BankAccount bankAccount,
+                        Boolean isConfirmed, PaymentMean paymentMean, BankAccount bankAccount,
                         List<Category> categories) {
         this.id = id;
         this.amountCents = amountCents;
@@ -44,7 +41,6 @@ public class Transaction extends TimestampableEntity {
         this.date = date;
         this.description = description;
         this.isConfirmed = isConfirmed;
-        this.type = type;
         this.paymentMean = paymentMean;
         this.bankAccount = bankAccount;
         this.categories = categories;
@@ -111,16 +107,6 @@ public class Transaction extends TimestampableEntity {
         isConfirmed = confirmed;
     }
 
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    public TransactionType getType() {
-        return type;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_mean_id")
     public PaymentMean getPaymentMean() {
@@ -160,7 +146,6 @@ public class Transaction extends TimestampableEntity {
         private Date date;
         private String description;
         private Boolean isConfirmed;
-        private TransactionType type;
         private PaymentMean paymentMean;
         private BankAccount bankAccount;
         private List<Category> categories;
@@ -195,11 +180,6 @@ public class Transaction extends TimestampableEntity {
             return this;
         }
 
-        public Builder type(TransactionType type) {
-            this.type = type;
-            return this;
-        }
-
         public Builder paymentMean(PaymentMean paymentMean) {
             this.paymentMean = paymentMean;
             return this;
@@ -216,7 +196,7 @@ public class Transaction extends TimestampableEntity {
         }
 
         public Transaction build() {
-            return new Transaction(id, amountCents, currency, date, description, isConfirmed, type, paymentMean,
+            return new Transaction(id, amountCents, currency, date, description, isConfirmed, paymentMean,
                     bankAccount, categories);
         }
     }
