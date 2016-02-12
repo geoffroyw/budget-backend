@@ -1,0 +1,1 @@
+alter TABLE transaction DROP COLUMN type;

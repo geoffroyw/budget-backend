@@ -39,6 +39,7 @@ dependencies {
     compile('io.katharsis:katharsis-core:2.2.0')
     compile('io.katharsis:katharsis-spring:2.2.0')
     compile('io.katharsis:katharsis-servlet:2.2.0')
+    compile('org.flywaydb:flyway-core:3.2.1')
     runtime('org.postgresql:postgresql')
     runtime('org.reflections:reflections:0.9.9')
     testCompile('org.springframework.boot:spring-boot-starter-test')
