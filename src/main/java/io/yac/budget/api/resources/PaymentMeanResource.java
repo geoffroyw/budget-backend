@@ -5,6 +5,7 @@ import io.katharsis.resource.annotations.JsonApiResource;
 import io.katharsis.resource.annotations.JsonApiToMany;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -67,6 +68,34 @@ public class PaymentMeanResource {
 
     public void setTransactions(List<TransactionResource> transactions) {
         this.transactions = transactions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PaymentMeanResource that = (PaymentMeanResource) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(currency, that.currency);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, currency);
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentMeanResource{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", currency='" + currency + '\'' +
+                '}';
     }
 
     public static class Builder {

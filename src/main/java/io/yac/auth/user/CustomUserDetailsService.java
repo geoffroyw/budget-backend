@@ -29,9 +29,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CurrentUser(user);
     }
 
-    private static final class CurrentUser extends User implements UserDetails {
+    public static final class CurrentUser extends User implements UserDetails {
 
-        private CurrentUser(User user) {
+        public CurrentUser(User user) {
             super(user);
         }
 
@@ -65,5 +65,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         public boolean isEnabled() {
             return true;
         }
+
     }
+
 }
+

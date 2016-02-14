@@ -44,6 +44,8 @@ dependencies {
     runtime('org.reflections:reflections:0.9.9')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+    testCompile("com.jayway.jsonpath:json-path")
+    testCompile("com.jayway.jsonpath:json-path-assert")
 }
 
 

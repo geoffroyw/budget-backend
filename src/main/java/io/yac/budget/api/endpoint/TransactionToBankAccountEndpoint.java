@@ -3,6 +3,7 @@ package io.yac.budget.api.endpoint;
 import io.katharsis.queryParams.QueryParams;
 import io.katharsis.repository.RelationshipRepository;
 import io.katharsis.resource.exception.ResourceNotFoundException;
+import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.budget.api.converter.impl.BankAccountConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.TransactionResource;
@@ -28,10 +29,14 @@ public class TransactionToBankAccountEndpoint implements RelationshipRepository<
     @Autowired
     BankAccountConverter bankAccountConverter;
 
+    @Autowired
+    AuthenticationFacade authenticationFacade;
+
     @Override
     public void setRelation(TransactionResource source, Long targetId, String fieldName) {
-        Transaction transaction = transactionRepository.findOne(source.getId());
-        BankAccount target = bankAccountRepository.findOne(targetId);
+        Transaction transaction =
+                transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
+        BankAccount target = bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), targetId);
 
         if (transaction == null) {
             throw new ResourceNotFoundException("Transaction not found " + source.getId());
@@ -63,7 +68,8 @@ public class TransactionToBankAccountEndpoint implements RelationshipRepository<
 
     @Override
     public BankAccountResource findOneTarget(Long sourceId, String fieldName, QueryParams queryParams) {
-        Transaction transaction = transactionRepository.findOne(sourceId);
+        Transaction transaction =
+                transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), sourceId);
         if (transaction == null) {
             throw new ResourceNotFoundException("Transaction not found " + sourceId);
         }

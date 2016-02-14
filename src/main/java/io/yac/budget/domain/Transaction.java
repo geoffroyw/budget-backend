@@ -1,5 +1,7 @@
 package io.yac.budget.domain;
 
+import io.yac.auth.user.model.User;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,12 +31,14 @@ public class Transaction extends TimestampableEntity {
 
     private List<Category> categories = new ArrayList<>();
 
+    private User owner;
+
     public Transaction() {
     }
 
     private Transaction(Long id, Integer amountCents, String currency, Date date, String description,
                         Boolean isConfirmed, PaymentMean paymentMean, BankAccount bankAccount,
-                        List<Category> categories) {
+                        List<Category> categories, User owner) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
@@ -44,6 +48,7 @@ public class Transaction extends TimestampableEntity {
         this.paymentMean = paymentMean;
         this.bankAccount = bankAccount;
         this.categories = categories;
+        this.owner = owner;
     }
 
     public static Builder builder() {
@@ -139,6 +144,16 @@ public class Transaction extends TimestampableEntity {
         this.categories = categories;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     public static class Builder {
         private Long id;
         private Integer amountCents;
@@ -149,6 +164,7 @@ public class Transaction extends TimestampableEntity {
         private PaymentMean paymentMean;
         private BankAccount bankAccount;
         private List<Category> categories;
+        private User owner;
 
         public Builder id(Long id) {
             this.id = id;
@@ -195,9 +211,14 @@ public class Transaction extends TimestampableEntity {
             return this;
         }
 
+        public Builder owner(User owner) {
+            this.owner = owner;
+            return this;
+        }
+
         public Transaction build() {
             return new Transaction(id, amountCents, currency, date, description, isConfirmed, paymentMean,
-                    bankAccount, categories);
+                    bankAccount, categories, owner);
         }
     }
 }

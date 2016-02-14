@@ -3,6 +3,7 @@ package io.yac.budget.api.endpoint;
 import io.katharsis.queryParams.QueryParams;
 import io.katharsis.repository.RelationshipRepository;
 import io.katharsis.resource.exception.ResourceNotFoundException;
+import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.budget.api.converter.impl.CategoryConverter;
 import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.TransactionResource;
@@ -32,6 +33,9 @@ public class TransactionToCategoryEndpoint implements RelationshipRepository<Tra
     @Autowired
     CategoryConverter categoryConverter;
 
+    @Autowired
+    AuthenticationFacade authenticationFacade;
+
     @Override
     public void setRelation(TransactionResource source, Long targetId, String fieldName) {
 
@@ -50,7 +54,7 @@ public class TransactionToCategoryEndpoint implements RelationshipRepository<Tra
     }
 
     private Transaction getTransaction(Long id) {
-        Transaction transaction = transactionRepository.findOne(id);
+        Transaction transaction = transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
         if (transaction == null) {
             throw new ResourceNotFoundException("Transaction not found " + id);
         }

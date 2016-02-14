@@ -7,6 +7,7 @@ import io.katharsis.resource.annotations.JsonApiToOne;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -128,6 +129,39 @@ public class TransactionResource {
 
     public void setPaymentMean(PaymentMeanResource paymentMean) {
         this.paymentMean = paymentMean;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TransactionResource resource = (TransactionResource) o;
+        return Objects.equals(id, resource.id) &&
+                Objects.equals(amountCents, resource.amountCents) &&
+                Objects.equals(currency, resource.currency) &&
+                Objects.equals(isConfirmed, resource.isConfirmed) &&
+                Objects.equals(description, resource.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, amountCents, currency, isConfirmed, description);
+    }
+
+    @Override
+    public String toString() {
+        return "TransactionResource{" +
+                "description='" + description + '\'' +
+                ", id=" + id +
+                ", amountCents=" + amountCents +
+                ", currency='" + currency + '\'' +
+                ", isConfirmed=" + isConfirmed +
+                ", date=" + date +
+                '}';
     }
 
     public static class Builder {

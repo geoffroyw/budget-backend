@@ -1,9 +1,11 @@
 package io.yac.auth.user.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -29,6 +31,16 @@ public class User {
     public User() {
     }
 
+    private User(Long id, String firstName, String lastName, String login, String password,
+                 Set<Role> roles) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.login = login;
+        this.password = password;
+        this.roles = roles;
+    }
+
     public User(User user) {
         super();
         this.id = user.id;
@@ -36,6 +48,10 @@ public class User {
         this.lastName = user.lastName;
         this.login = user.login;
         this.password = user.password;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Id
@@ -97,5 +113,77 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(login, user.login) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, login, password, roles);
+    }
+
+    public static class Builder {
+        private Long id;
+
+        private String firstName;
+
+        private String lastName;
+
+        private String login;
+
+        private String password;
+
+        private Set<Role> roles = new HashSet<>();
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder login(String login) {
+            this.login = login;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = new BCryptPasswordEncoder().encode(password);
+            return this;
+        }
+
+        public Builder roles(Set<Role> roles) {
+            this.roles = roles;
+            return this;
+        }
+
+
+        public User build() {
+            return new User(id, firstName, lastName, login, password, roles);
+        }
+
     }
 }

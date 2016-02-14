@@ -1,8 +1,10 @@
 package io.yac.budget.api.endpoint;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.katharsis.queryParams.QueryParams;
 import io.katharsis.repository.RelationshipRepository;
 import io.katharsis.resource.exception.ResourceNotFoundException;
+import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.budget.api.converter.impl.TransactionConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.TransactionResource;
@@ -11,7 +13,7 @@ import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Created by geoffroy on 08/02/2016.
  */
-@Component
+@Service
 public class BankAccountToTransactionEndpoint implements RelationshipRepository<BankAccountResource, Long, TransactionResource, Long> {
 
     @Autowired
@@ -30,7 +32,27 @@ public class BankAccountToTransactionEndpoint implements RelationshipRepository<
     TransactionRepository transactionRepository;
 
     @Autowired
+    AuthenticationFacade authenticationFacade;
+
+    @Autowired
     TransactionConverter transactionConverter;
+
+    public BankAccountToTransactionEndpoint() {
+    }
+
+    @VisibleForTesting
+    public BankAccountToTransactionEndpoint(BankAccountRepository bankAccountRepository,
+                                            TransactionRepository transactionRepository,
+                                            TransactionConverter transactionConverter,
+                                            AuthenticationFacade authenticationFacade) {
+
+        this.bankAccountRepository = bankAccountRepository;
+        this.transactionRepository = transactionRepository;
+        this.transactionConverter = transactionConverter;
+        this.authenticationFacade = authenticationFacade;
+    }
+
+    @VisibleForTesting
 
     @Override
     public void setRelation(BankAccountResource source, Long targetId, String fieldName) {
@@ -41,7 +63,8 @@ public class BankAccountToTransactionEndpoint implements RelationshipRepository<
     public void setRelations(BankAccountResource source, Iterable<Long> targetIds, String fieldName) {
         BankAccount bankAccount = getBankAccount(source);
 
-        bankAccount.setTransactions((List<Transaction>) transactionRepository.findAll(targetIds));
+        bankAccount.setTransactions((List<Transaction>) transactionRepository
+                .findAllByOwnerAndIds(authenticationFacade.getCurrentUser(), targetIds));
 
         bankAccountRepository.save(bankAccount);
     }
@@ -51,7 +74,7 @@ public class BankAccountToTransactionEndpoint implements RelationshipRepository<
     }
 
     private BankAccount getBankAccount(Long id) {
-        BankAccount bankAccount = bankAccountRepository.findOne(id);
+        BankAccount bankAccount = bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
         if (bankAccount == null) {
             throw new ResourceNotFoundException("Bank Account not found " + id);
         }
@@ -62,7 +85,8 @@ public class BankAccountToTransactionEndpoint implements RelationshipRepository<
     public void addRelations(BankAccountResource source, Iterable<Long> targetIds, String fieldName) {
         BankAccount bankAccount = getBankAccount(source);
         bankAccount.getTransactions().addAll(
-                (Collection<? extends Transaction>) transactionRepository.findAll(targetIds));
+                (Collection<? extends Transaction>) transactionRepository
+                        .findAllByOwnerAndIds(authenticationFacade.getCurrentUser(), targetIds));
 
         bankAccountRepository.save(bankAccount);
     }
