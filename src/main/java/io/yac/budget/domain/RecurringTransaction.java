@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "recurring_transaction")
-public class RecurringTransaction implements Schedulable {
+public class RecurringTransaction extends TimestampableEntity implements Schedulable {
 
 
     private Long id;
@@ -37,6 +37,10 @@ public class RecurringTransaction implements Schedulable {
     private User owner;
 
     private TemporalExpressionType temporalExpressionType;
+
+    private boolean isActive;
+
+    private Date lastRunOn;
 
     public RecurringTransaction() {
     }
@@ -161,6 +165,25 @@ public class RecurringTransaction implements Schedulable {
     public void setTemporalExpressionType(
             TemporalExpressionType temporalExpressionType) {
         this.temporalExpressionType = temporalExpressionType;
+    }
+
+    @Column(name = "is_active", nullable = false)
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    @Column(name = "last_run_on", nullable = true)
+    @Temporal(TemporalType.DATE)
+    public Date getLastRunOn() {
+        return lastRunOn;
+    }
+
+    public void setLastRunOn(Date lastRunOn) {
+        this.lastRunOn = lastRunOn;
     }
 
     @Override
