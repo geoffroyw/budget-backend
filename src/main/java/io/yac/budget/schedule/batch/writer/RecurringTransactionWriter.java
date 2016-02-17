@@ -6,6 +6,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by geoffroy on 17/02/2016.
@@ -17,6 +18,7 @@ public class RecurringTransactionWriter implements ItemWriter<Transaction> {
 
     @Override
     public void write(List<? extends Transaction> items) throws Exception {
-        repository.save(items);
+        repository.save(items.stream().filter((item) -> item != null)
+                .collect(Collectors.toList()));
     }
 }

@@ -1,6 +1,8 @@
 package io.yac.budget.repository;
 
 import io.yac.budget.domain.RecurringTransaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 
@@ -9,5 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface RecurringTransactionRepository extends PagingAndSortingRepository<RecurringTransaction, Long> {
+
+    Page<RecurringTransaction> findByActive(boolean isActive, Pageable pageable);
 
 }

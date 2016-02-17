@@ -37,7 +37,8 @@ public class RecurringTransactionBatchConfiguration {
     public ItemReader<RecurringTransaction> reader() {
         RepositoryItemReader<RecurringTransaction> reader = new RepositoryItemReader<>();
         reader.setRepository(recurringTransactionRepository);
-        reader.setMethodName("findAll");
+        reader.setMethodName("findByActive");
+        reader.setArguments(Collections.singletonList(true));
         reader.setSort(Collections.singletonMap("id", Sort.Direction.ASC));
         reader.setPageSize(100);
         return reader;

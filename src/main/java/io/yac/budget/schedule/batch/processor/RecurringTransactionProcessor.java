@@ -1,5 +1,6 @@
 package io.yac.budget.schedule.batch.processor;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.yac.budget.domain.RecurringTransaction;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.RecurringTransactionRepository;
@@ -20,16 +21,29 @@ public class RecurringTransactionProcessor implements ItemProcessor<RecurringTra
     @Autowired
     RecurringTransactionRepository recurringTransactionRepository;
 
+    public RecurringTransactionProcessor() {
+    }
+
+    @VisibleForTesting
+    RecurringTransactionProcessor(RecurringTransactionRepository recurringTransactionRepository) {
+        this.recurringTransactionRepository = recurringTransactionRepository;
+    }
 
     @Override
     public Transaction process(RecurringTransaction item) throws Exception {
+        if (item.isOccuringOn(new Date())) {
+            LOG.info("Transaction " + item + "is occuring today");
+            item.setLastRunOn(new Date());
+            recurringTransactionRepository.save(item);
 
-        item.setLastRunOn(new Date());
-        recurringTransactionRepository.save(item);
+            return Transaction.builder().description(item.getDescription()).owner(item.getOwner())
+                    .currency(item.getCurrency()).isConfirmed(false).paymentMean(item.getPaymentMean()).date(new Date())
+                    .bankAccount(item.getBankAccount()).amountCents(item.getAmountCents()).build();
 
-        return Transaction.builder().description(item.getDescription()).owner(item.getOwner())
-                .currency(item.getCurrency()).isConfirmed(false).paymentMean(item.getPaymentMean()).date(new Date())
-                .bankAccount(item.getBankAccount()).amountCents(item.getAmountCents()).build();
+        }
+        LOG.info("Transaction " + item + " is not occuring today");
+        return null;
+
 
     }
 }
