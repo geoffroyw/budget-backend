@@ -13,7 +13,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -115,16 +114,5 @@ public class RecurringTransactionProcessorTest {
         assertThat(
                 recurringTransactionLastRunOnInstant.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE),
                 is(now.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE)));
-    }
-
-    @Test
-    public void recurringTransaction_returns_null_if_transaction_is_not_occuring_today() throws Exception {
-        RecurringTransaction recurringTransaction = RecurringTransaction.builder().build();
-
-        recurringTransactionProcessor.process(recurringTransaction);
-
-        assertThat(
-                recurringTransactionProcessor.process(recurringTransaction),
-                is(nullValue()));
     }
 }
