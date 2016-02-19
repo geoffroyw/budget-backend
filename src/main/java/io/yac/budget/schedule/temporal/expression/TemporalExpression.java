@@ -12,7 +12,27 @@ public interface TemporalExpression {
     TemporalExpressionType getTemporalExpressionType();
 
     enum TemporalExpressionType {
-        WEEKLY, DAILY, MONTHLY, YEARLY
+        WEEKLY("WEEKLY"), DAILY("DAILY"), MONTHLY("MONTHLY"), YEARLY("YEARLY");
+
+        private String externalName;
+
+        TemporalExpressionType(String externalName) {
+            this.externalName = externalName;
+        }
+
+        public static TemporalExpressionType fromExternalName(String val) {
+            for (TemporalExpressionType temporalExpressionType : TemporalExpressionType.values()) {
+                if (temporalExpressionType.getExternalName().equalsIgnoreCase(val)) {
+                    return temporalExpressionType;
+                }
+            }
+            return null;
+        }
+
+        public String getExternalName() {
+            return externalName;
+        }
+
     }
 
 

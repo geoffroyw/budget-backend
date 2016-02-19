@@ -1,0 +1,1 @@
+ALTER TABLE recurring_transaction DROP date;

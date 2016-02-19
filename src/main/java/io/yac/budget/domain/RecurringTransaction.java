@@ -24,8 +24,6 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     private String currency;
 
-    private Date date;
-
     private String description;
 
     private PaymentMean paymentMean;
@@ -46,20 +44,21 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     }
 
 
-    public RecurringTransaction(Long id, Integer amountCents, String currency, Date date, String description,
-                                PaymentMean paymentMean, BankAccount bankAccount,
-                                List<Category> categories, User owner,
-                                TemporalExpressionType temporalExpressionType) {
+    private RecurringTransaction(Long id, Integer amountCents, String currency, String description,
+                                 PaymentMean paymentMean, BankAccount bankAccount,
+                                 List<Category> categories, User owner,
+                                 TemporalExpressionType temporalExpressionType, Date lastRunOn, boolean isActive) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
-        this.date = date;
         this.description = description;
         this.paymentMean = paymentMean;
         this.bankAccount = bankAccount;
         this.categories = categories;
         this.owner = owner;
         this.temporalExpressionType = temporalExpressionType;
+        this.lastRunOn = lastRunOn;
+        this.isActive = isActive;
     }
 
     public static Builder builder() {
@@ -93,16 +92,6 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    @Column(name = "date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     @Column(name = "description", nullable = false)
@@ -197,12 +186,13 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
         private Long id;
         private Integer amountCents;
         private String currency;
-        private Date date;
         private String description;
         private PaymentMean paymentMean;
         private BankAccount bankAccount;
         private List<Category> categories;
         private User owner;
+        private Date lastRunOn;
+        private boolean isActive;
 
         public Builder temporalExpressionType(TemporalExpressionType temporalExpressionType) {
             this.temporalExpressionType = temporalExpressionType;
@@ -221,11 +211,6 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
         public Builder currency(String currency) {
             this.currency = currency;
-            return this;
-        }
-
-        public Builder date(Date date) {
-            this.date = date;
             return this;
         }
 
@@ -254,9 +239,20 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
             return this;
         }
 
+
+        public Builder lasRunOn(Date lastRunOn) {
+            this.lastRunOn = lastRunOn;
+            return this;
+        }
+
         public RecurringTransaction build() {
-            return new RecurringTransaction(id, amountCents, currency, date, description, paymentMean, bankAccount,
-                    categories, owner, temporalExpressionType);
+            return new RecurringTransaction(id, amountCents, currency, description, paymentMean, bankAccount,
+                    categories, owner, temporalExpressionType, lastRunOn, isActive);
+        }
+
+        public Builder isActive(boolean isActive) {
+            this.isActive = isActive;
+            return this;
         }
     }
 }
