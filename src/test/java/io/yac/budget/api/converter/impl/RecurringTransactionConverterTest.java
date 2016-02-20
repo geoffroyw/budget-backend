@@ -83,7 +83,7 @@ public class RecurringTransactionConverterTest {
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.getRecurringType(), is("DAILY"));
+        assertThat(resource.getRecurringType(), is("Daily"));
     }
 
     @Test
