@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Created by geoffroy on 08/02/2016.
@@ -25,6 +26,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User %s does not exist !", username));
         }
+
+        user.setLastLoginDate(new Date());
+        userRepository.save(user);
 
         return new CurrentUser(user);
     }

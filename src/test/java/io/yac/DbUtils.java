@@ -32,8 +32,7 @@ public class DbUtils {
 
 
         User user = new User();
-        user.setFirstName("TestFirstName");
-        user.setLastName("TestLastName");
+        user.setEmail("foo@bar.com");
         user.setLogin("test");
         user.setPassword(new BCryptPasswordEncoder().encode("test"));
         user.setRoles(Collections.singleton(userRole));
