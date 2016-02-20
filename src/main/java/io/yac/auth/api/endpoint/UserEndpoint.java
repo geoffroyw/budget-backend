@@ -3,6 +3,7 @@ package io.yac.auth.api.endpoint;
 import io.yac.auth.api.resource.UserResource;
 import io.yac.auth.user.UserRepository;
 import io.yac.auth.user.model.User;
+import io.yac.budget.initializer.AccountInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class UserEndpoint {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AccountInitializer accountInitializer;
+
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public UserResource create(@RequestBody UserResource resource) {
         LOG.info("Creating new user");
@@ -30,6 +34,8 @@ public class UserEndpoint {
         User user = User.builder().password(new String(resource.getPassword())).email(resource.getEmail())
                 .login(resource.getLogin()).build();
         userRepository.save(user);
+
+        accountInitializer.initialize(user);
 
         return new UserResource(user);
     }
