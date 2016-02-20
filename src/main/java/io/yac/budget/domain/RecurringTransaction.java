@@ -86,6 +86,7 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     }
 
     @Column(name = "amount_currency", nullable = false)
+    @Enumerated(EnumType.STRING)
     public SupportedCurrency getCurrency() {
         return currency;
     }
