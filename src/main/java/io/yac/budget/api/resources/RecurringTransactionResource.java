@@ -135,6 +135,8 @@ public class RecurringTransactionResource {
         this.paymentMean = paymentMean;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -169,11 +171,11 @@ public class RecurringTransactionResource {
                 '}';
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(boolean active) {
         isActive = active;
     }
 

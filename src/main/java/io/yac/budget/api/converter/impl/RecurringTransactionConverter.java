@@ -74,7 +74,7 @@ public class RecurringTransactionConverter implements ResourceEntityConverter<Re
         } else {
             recurringTransaction = new RecurringTransaction();
         }
-        recurringTransaction.setActive(resource.isActive());
+        recurringTransaction.setActive(resource.getIsActive());
         recurringTransaction.setDescription(resource.getDescription());
         recurringTransaction.setCurrency(resource.getCurrency());
         recurringTransaction.setAmountCents(resource.getAmountCents());

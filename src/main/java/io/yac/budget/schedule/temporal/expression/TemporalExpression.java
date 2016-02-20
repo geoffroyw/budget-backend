@@ -12,7 +12,7 @@ public interface TemporalExpression {
     TemporalExpressionType getTemporalExpressionType();
 
     enum TemporalExpressionType {
-        WEEKLY("WEEKLY"), DAILY("DAILY"), MONTHLY("MONTHLY"), YEARLY("YEARLY");
+        WEEKLY("Weekly"), DAILY("Daily"), MONTHLY("Monthly"), YEARLY("Yearly");
 
         private String externalName;
 

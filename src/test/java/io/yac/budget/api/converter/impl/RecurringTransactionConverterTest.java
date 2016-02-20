@@ -54,7 +54,7 @@ public class RecurringTransactionConverterTest {
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.isActive(), is(true));
+        assertThat(resource.getIsActive(), is(true));
     }
 
     @Test
@@ -192,7 +192,7 @@ public class RecurringTransactionConverterTest {
 
     @Test
     public void entity_recurring_transaction_type_maps_to_resource_recurring_type() {
-        RecurringTransactionResource resource = RecurringTransactionResource.builder().recurringType("MONTHLY").build();
+        RecurringTransactionResource resource = RecurringTransactionResource.builder().recurringType("Monthly").build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransaction entity = converter.convertToEntity(resource);
