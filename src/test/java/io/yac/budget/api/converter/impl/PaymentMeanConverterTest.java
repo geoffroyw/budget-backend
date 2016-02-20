@@ -3,6 +3,7 @@ package io.yac.budget.api.converter.impl;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.PaymentMean;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
@@ -42,12 +43,13 @@ public class PaymentMeanConverterTest {
     }
 
     @Test
-    public void resource_currency_maps_to_entity_currency() {
-        PaymentMean entity = prototypePaymentMean().currency("known currency").build();
+    public void resource_currency_maps_to_entity_currency_external_name() {
+        SupportedCurrency knownCurrency = SupportedCurrency.EUR;
+        PaymentMean entity = prototypePaymentMean().currency(knownCurrency).build();
 
         PaymentMeanConverter converter = new PaymentMeanConverter();
         PaymentMeanResource resource = converter.convertToResource(entity);
-        assertThat(resource.getCurrency(), is("known currency"));
+        assertThat(resource.getCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
 
     @Test
@@ -64,7 +66,8 @@ public class PaymentMeanConverterTest {
     }
 
     private PaymentMean.Builder prototypePaymentMean() {
-        return PaymentMean.builder().transactions(Collections.singletonList(Transaction.builder().build()));
+        return PaymentMean.builder().currency(SupportedCurrency.EUR)
+                .transactions(Collections.singletonList(Transaction.builder().build()));
     }
 
     @Test
@@ -78,11 +81,12 @@ public class PaymentMeanConverterTest {
 
     @Test
     public void entity_currency_maps_to_resource_currency() {
-        PaymentMeanResource resource = PaymentMeanResource.builder().currency("Known currency").build();
+        PaymentMeanResource resource =
+                PaymentMeanResource.builder().currency(SupportedCurrency.CAD.getExternalName()).build();
 
         PaymentMeanConverter converter = new PaymentMeanConverter();
         PaymentMean entity = converter.convertToEntity(resource);
-        assertThat(entity.getCurrency(), is("Known currency"));
+        assertThat(entity.getCurrency(), is(SupportedCurrency.CAD));
     }
 
     @Test

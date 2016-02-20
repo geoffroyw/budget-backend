@@ -13,6 +13,7 @@ import io.yac.budget.api.factory.UserFactory;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.TransactionRepository;
 import org.junit.Test;
@@ -117,7 +118,9 @@ public class TransactionEndpointTest {
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
 
         TransactionResource resource =
-                TransactionResource.builder().currency("any").amountCents(100).isConfirmed(false).date(new Date())
+                TransactionResource.builder().currency(SupportedCurrency.EUR.getExternalName()).amountCents(100)
+                        .isConfirmed(false)
+                        .date(new Date())
                         .paymentMean(
                                 PaymentMeanResource.builder().id(paymentMeanFactory.savePaymentMean(user).getId())
                                         .build())

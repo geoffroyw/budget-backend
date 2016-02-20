@@ -16,7 +16,7 @@ public class PaymentMean extends TimestampableEntity {
 
     private String name;
 
-    private String currency;
+    private SupportedCurrency currency;
 
     private List<Transaction> transactions = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class PaymentMean extends TimestampableEntity {
     public PaymentMean() {
     }
 
-    private PaymentMean(Long id, String name, String currency, List<Transaction> transactions, User owner) {
+    private PaymentMean(Long id, String name, SupportedCurrency currency, List<Transaction> transactions, User owner) {
         this.id = id;
         this.name = name;
         this.currency = currency;
@@ -58,11 +58,12 @@ public class PaymentMean extends TimestampableEntity {
     }
 
     @Column(name = "currency", nullable = false)
-    public String getCurrency() {
+    @Enumerated(EnumType.STRING)
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
 
@@ -88,7 +89,7 @@ public class PaymentMean extends TimestampableEntity {
     public static class Builder {
         private Long id;
         private String name;
-        private String currency;
+        private SupportedCurrency currency;
         private List<Transaction> transactions;
         private User owner;
 
@@ -102,7 +103,7 @@ public class PaymentMean extends TimestampableEntity {
             return this;
         }
 
-        public Builder currency(String currency) {
+        public Builder currency(SupportedCurrency currency) {
             this.currency = currency;
             return this;
         }

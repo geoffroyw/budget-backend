@@ -15,7 +15,7 @@ public class BankAccount extends TimestampableEntity {
 
     private Long id;
 
-    private String currency;
+    private SupportedCurrency currency;
 
     private String name;
 
@@ -26,7 +26,7 @@ public class BankAccount extends TimestampableEntity {
     public BankAccount() {
     }
 
-    private BankAccount(Long id, String currency, String name, List<Transaction> transactions, User owner) {
+    private BankAccount(Long id, SupportedCurrency currency, String name, List<Transaction> transactions, User owner) {
         this.id = id;
         this.currency = currency;
         this.name = name;
@@ -50,11 +50,12 @@ public class BankAccount extends TimestampableEntity {
     }
 
     @Column(name = "currency", nullable = false)
-    public String getCurrency() {
+    @Enumerated(EnumType.STRING)
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
 
@@ -88,7 +89,7 @@ public class BankAccount extends TimestampableEntity {
 
     public static class Builder {
         private Long id;
-        private String currency;
+        private SupportedCurrency currency;
         private String name;
         private List<Transaction> transactions;
         private User owner;
@@ -98,7 +99,7 @@ public class BankAccount extends TimestampableEntity {
             return this;
         }
 
-        public Builder currency(String currency) {
+        public Builder currency(SupportedCurrency currency) {
             this.currency = currency;
             return this;
         }

@@ -17,7 +17,7 @@ public class Transaction extends TimestampableEntity {
 
     private Integer amountCents;
 
-    private String currency;
+    private SupportedCurrency currency;
 
     private Date date;
 
@@ -36,7 +36,7 @@ public class Transaction extends TimestampableEntity {
     public Transaction() {
     }
 
-    private Transaction(Long id, Integer amountCents, String currency, Date date, String description,
+    private Transaction(Long id, Integer amountCents, SupportedCurrency currency, Date date, String description,
                         Boolean isConfirmed, PaymentMean paymentMean, BankAccount bankAccount,
                         List<Category> categories, User owner) {
         this.id = id;
@@ -76,11 +76,12 @@ public class Transaction extends TimestampableEntity {
     }
 
     @Column(name = "amount_currency", nullable = false)
-    public String getCurrency() {
+    @Enumerated(EnumType.STRING)
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
 
@@ -157,7 +158,7 @@ public class Transaction extends TimestampableEntity {
     public static class Builder {
         private Long id;
         private Integer amountCents;
-        private String currency;
+        private SupportedCurrency currency;
         private Date date;
         private String description;
         private Boolean isConfirmed;
@@ -176,7 +177,7 @@ public class Transaction extends TimestampableEntity {
             return this;
         }
 
-        public Builder currency(String currency) {
+        public Builder currency(SupportedCurrency currency) {
             this.currency = currency;
             return this;
         }

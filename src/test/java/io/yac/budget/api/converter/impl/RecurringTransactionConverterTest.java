@@ -4,10 +4,7 @@ import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
-import io.yac.budget.domain.BankAccount;
-import io.yac.budget.domain.Category;
-import io.yac.budget.domain.PaymentMean;
-import io.yac.budget.domain.RecurringTransaction;
+import io.yac.budget.domain.*;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
@@ -58,12 +55,13 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_currency_maps_to_entity_currency() {
-        RecurringTransaction entity = prototypeValidRecurringTransaction().currency("known currency").build();
+    public void resource_currency_maps_to_entity_currency_external_name() {
+        SupportedCurrency knownCurrency = SupportedCurrency.EUR;
+        RecurringTransaction entity = prototypeValidRecurringTransaction().currency(knownCurrency).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.getCurrency(), is("known currency"));
+        assertThat(resource.getCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
 
 
@@ -154,11 +152,11 @@ public class RecurringTransactionConverterTest {
     @Test
     public void entity_currency_maps_to_resource_currency() {
         RecurringTransactionResource resource =
-                RecurringTransactionResource.builder().currency("Known currency").build();
+                RecurringTransactionResource.builder().currency(SupportedCurrency.EUR.getExternalName()).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransaction entity = converter.convertToEntity(resource);
-        assertThat(entity.getCurrency(), is("Known currency"));
+        assertThat(entity.getCurrency(), is(SupportedCurrency.EUR));
     }
 
     @Test
@@ -298,7 +296,7 @@ public class RecurringTransactionConverterTest {
 
     private RecurringTransaction.Builder prototypeValidRecurringTransaction() {
         return RecurringTransaction.builder().bankAccount(BankAccount.builder().build()).temporalExpressionType(
-                TemporalExpression.TemporalExpressionType.DAILY)
+                TemporalExpression.TemporalExpressionType.DAILY).currency(SupportedCurrency.EUR)
                 .paymentMean(PaymentMean.builder().build())
                 .categories(Collections.singletonList(Category.builder().build()));
     }

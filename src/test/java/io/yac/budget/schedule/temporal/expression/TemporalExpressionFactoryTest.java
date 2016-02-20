@@ -36,5 +36,5 @@ public class TemporalExpressionFactoryTest {
         assertThat(TemporalExpressionFactory.getInstance(TemporalExpressionType.YEARLY),
                 is(instanceOf(FirstDayOfYearTemporalExpression.class)));
     }
-    
+
 }

@@ -14,6 +14,7 @@ import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
 import io.yac.budget.domain.RecurringTransaction;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.repository.RecurringTransactionRepository;
 import io.yac.budget.schedule.temporal.expression.TemporalExpression;
 import org.junit.Test;
@@ -119,7 +120,8 @@ public class RecurringTransactionEndpointTest {
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
 
         RecurringTransactionResource resource =
-                RecurringTransactionResource.builder().currency("any").amountCents(100).recurringType(
+                RecurringTransactionResource.builder().currency(SupportedCurrency.BGN.getExternalName())
+                        .amountCents(100).recurringType(
                         TemporalExpression.TemporalExpressionType.DAILY.getExternalName())
                         .paymentMean(
                                 PaymentMeanResource.builder().id(paymentMeanFactory.savePaymentMean(user).getId())

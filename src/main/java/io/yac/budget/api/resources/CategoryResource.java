@@ -24,10 +24,14 @@ public class CategoryResource {
     }
 
     private CategoryResource(Long id, String name,
-                            List<TransactionResource> transactions) {
+                             List<TransactionResource> transactions) {
         this.id = id;
         this.name = name;
         this.transactions = transactions;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public Long getId() {
@@ -52,10 +56,6 @@ public class CategoryResource {
 
     public void setTransactions(List<TransactionResource> transactions) {
         this.transactions = transactions;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public static class Builder {

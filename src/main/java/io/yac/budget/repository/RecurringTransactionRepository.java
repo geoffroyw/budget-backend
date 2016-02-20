@@ -2,7 +2,6 @@ package io.yac.budget.repository;
 
 import io.yac.auth.user.model.User;
 import io.yac.budget.domain.RecurringTransaction;
-import io.yac.budget.domain.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

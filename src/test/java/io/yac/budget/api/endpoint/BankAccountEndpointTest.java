@@ -6,10 +6,11 @@ import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService.CurrentUser;
 import io.yac.auth.user.model.User;
 import io.yac.budget.api.converter.impl.BankAccountConverter;
-import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.factory.BankAccountFactory;
 import io.yac.budget.api.factory.UserFactory;
+import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.domain.BankAccount;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.repository.BankAccountRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,7 +107,8 @@ public class BankAccountEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user));
 
-        BankAccountResource resource = BankAccountResource.builder().currency("any").name("any").build();
+        BankAccountResource resource =
+                BankAccountResource.builder().currency(SupportedCurrency.AUD.getExternalName()).name("any").build();
 
         BankAccountEndpoint bankAccountEndpoint =
                 new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,

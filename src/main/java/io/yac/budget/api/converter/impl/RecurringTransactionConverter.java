@@ -8,6 +8,7 @@ import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.RecurringTransaction;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
@@ -54,7 +55,8 @@ public class RecurringTransactionConverter implements ResourceEntityConverter<Re
     @Override
     public RecurringTransactionResource convertToResource(RecurringTransaction entity) {
         return RecurringTransactionResource.builder().amountCents(entity.getAmountCents())
-                .currency(entity.getCurrency()).description(entity.getDescription()).lastRunOn(entity.getLastRunOn())
+                .currency(entity.getCurrency().getExternalName()).description(entity.getDescription())
+                .lastRunOn(entity.getLastRunOn())
                 .recurringType(entity.getTemporalExpressionType().getExternalName()).categories(
                         entity.getCategories() == null ? null : entity.getCategories().stream()
                                 .map((c) -> CategoryResource.builder().id(c.getId()).build())
@@ -76,7 +78,7 @@ public class RecurringTransactionConverter implements ResourceEntityConverter<Re
         }
         recurringTransaction.setActive(resource.getIsActive());
         recurringTransaction.setDescription(resource.getDescription());
-        recurringTransaction.setCurrency(resource.getCurrency());
+        recurringTransaction.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
         recurringTransaction.setAmountCents(resource.getAmountCents());
         recurringTransaction
                 .setTemporalExpressionType(TemporalExpressionType.fromExternalName(resource.getRecurringType()));

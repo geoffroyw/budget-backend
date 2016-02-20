@@ -1,6 +1,7 @@
 package io.yac.budget.api.factory;
 
 import io.yac.auth.user.model.User;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class TransactionFactory {
 
     public Transaction saveTransaction(User owner) {
         return transactionRepository
-                .save(Transaction.builder().currency("any").date(new Date()).amountCents(100).isConfirmed(false)
+                .save(Transaction.builder().currency(SupportedCurrency.EUR).date(new Date()).amountCents(100)
+                        .isConfirmed(false)
                         .description("any")
                         .bankAccount(bankAccountFactory.saveBankAccount(owner))
                         .paymentMean(paymentMeanFactory.savePaymentMean(owner))

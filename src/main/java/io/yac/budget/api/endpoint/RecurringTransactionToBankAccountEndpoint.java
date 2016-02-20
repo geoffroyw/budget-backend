@@ -35,7 +35,8 @@ public class RecurringTransactionToBankAccountEndpoint implements RelationshipRe
     @Override
     public void setRelation(RecurringTransactionResource source, Long targetId, String fieldName) {
         RecurringTransaction RecurringTransaction =
-                RecurringTransactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
+                RecurringTransactionRepository
+                        .findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
         BankAccount target = bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), targetId);
 
         if (RecurringTransaction == null) {

@@ -35,7 +35,8 @@ public class RecurringTransactionToPaymentMeanEndpoint implements RelationshipRe
     public void setRelation(RecurringTransactionResource source, Long targetId, String fieldName) {
 
         RecurringTransaction RecurringTransaction =
-                RecurringTransactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
+                RecurringTransactionRepository
+                        .findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
         PaymentMean paymentMean =
                 paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), targetId);
 

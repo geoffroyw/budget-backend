@@ -5,6 +5,7 @@ import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.BankAccount;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.TransactionRepository;
@@ -38,7 +39,8 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
 
     @Override
     public BankAccountResource convertToResource(BankAccount entity) {
-        return BankAccountResource.builder().id(entity.getId()).currency(entity.getCurrency()).name(entity.getName())
+        return BankAccountResource.builder().id(entity.getId()).currency(entity.getCurrency().getExternalName())
+                .name(entity.getName())
                 .transactions(entity.getTransactions() == null ? null :
                               entity.getTransactions().stream()
                                       .map(t -> TransactionResource.builder().id(t.getId()).build())
@@ -55,7 +57,7 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
             bankAccount = bankAccountRepository.findOne(resource.getId());
         }
 
-        bankAccount.setCurrency(resource.getCurrency());
+        bankAccount.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
         bankAccount.setName(resource.getName());
         bankAccount
                 .setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository

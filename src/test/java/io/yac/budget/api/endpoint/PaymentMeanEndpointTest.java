@@ -6,9 +6,10 @@ import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.auth.user.model.User;
 import io.yac.budget.api.converter.impl.PaymentMeanConverter;
-import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.factory.UserFactory;
+import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.domain.PaymentMean;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.repository.PaymentMeanRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ public class PaymentMeanEndpointTest {
     public void findOne_returns_the_resource_with_the_given_id() throws Exception {
         User user = userFactory.getOrCreateUser("login1");
         PaymentMean paymentMean =
-                PaymentMean.builder().currency("any").name("any").owner(user).build();
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user).build();
         paymentMeanRepository.save(paymentMean);
 
 
@@ -82,7 +83,8 @@ public class PaymentMeanEndpointTest {
         User user1 = userFactory.getOrCreateUser("login1");
         User user2 = userFactory.getOrCreateUser("login2");
 
-        PaymentMean paymentMean_of_user1 = PaymentMean.builder().currency("any").name("any").owner(user1).build();
+        PaymentMean paymentMean_of_user1 =
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user1).build();
         paymentMeanRepository.save(paymentMean_of_user1);
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
@@ -103,7 +105,8 @@ public class PaymentMeanEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
 
-        PaymentMeanResource resource = PaymentMeanResource.builder().currency("any").name("any").build();
+        PaymentMeanResource resource =
+                PaymentMeanResource.builder().currency(SupportedCurrency.AUD.getExternalName()).name("any").build();
 
         PaymentMeanEndpoint PaymentMeanEndpoint =
                 new PaymentMeanEndpoint(paymentMeanRepository, dummy_authentication_facade,
@@ -120,7 +123,7 @@ public class PaymentMeanEndpointTest {
     public void delete_deletes_the_resource_with_the_given_id() throws Exception {
         User user = userFactory.getOrCreateUser("login1");
         PaymentMean paymentMean =
-                PaymentMean.builder().currency("any").name("any").owner(user).build();
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user).build();
         paymentMeanRepository.save(paymentMean);
 
 
@@ -158,7 +161,8 @@ public class PaymentMeanEndpointTest {
         User user1 = userFactory.getOrCreateUser("login1");
         User user2 = userFactory.getOrCreateUser("login2");
 
-        PaymentMean paymentMean_of_user_1 = PaymentMean.builder().currency("any").name("any").owner(user1).build();
+        PaymentMean paymentMean_of_user_1 =
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user1).build();
         paymentMeanRepository.save(paymentMean_of_user_1);
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
@@ -180,9 +184,10 @@ public class PaymentMeanEndpointTest {
         User user1 = userFactory.getOrCreateUser("login1");
         User currentUser = userFactory.getOrCreateUser("login2");
 
-        PaymentMean paymentMean_of_user_1 = PaymentMean.builder().currency("any").name("any").owner(user1).build();
+        PaymentMean paymentMean_of_user_1 =
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user1).build();
         PaymentMean paymentMean_of_current_user =
-                PaymentMean.builder().currency("any").name("any").owner(currentUser).build();
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(currentUser).build();
         paymentMeanRepository.save(paymentMean_of_user_1);
         paymentMeanRepository.save(paymentMean_of_current_user);
 
@@ -206,9 +211,10 @@ public class PaymentMeanEndpointTest {
         User user1 = userFactory.getOrCreateUser("login1");
         User currentUser = userFactory.getOrCreateUser("login2");
 
-        PaymentMean paymentMean_of_user_1 = PaymentMean.builder().currency("any").name("any").owner(user1).build();
+        PaymentMean paymentMean_of_user_1 =
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(user1).build();
         PaymentMean paymentMean_of_current_user =
-                PaymentMean.builder().currency("any").name("any").owner(currentUser).build();
+                PaymentMean.builder().currency(SupportedCurrency.EUR).name("any").owner(currentUser).build();
         paymentMeanRepository.save(paymentMean_of_user_1);
         paymentMeanRepository.save(paymentMean_of_current_user);
 
@@ -222,7 +228,8 @@ public class PaymentMeanEndpointTest {
 
         assertThat(
                 PaymentMeanEndpoint
-                        .findAll(Arrays.asList(paymentMean_of_user_1.getId(), paymentMean_of_current_user.getId()), null),
+                        .findAll(Arrays.asList(paymentMean_of_user_1.getId(), paymentMean_of_current_user.getId()),
+                                null),
                 is(allOf(
                         hasItem(paymentMeanConverter.convertToResource(paymentMean_of_current_user)),
                         not(hasItem(paymentMeanConverter.convertToResource(paymentMean_of_user_1))))));

@@ -4,10 +4,7 @@ import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
-import io.yac.budget.domain.BankAccount;
-import io.yac.budget.domain.Category;
-import io.yac.budget.domain.PaymentMean;
-import io.yac.budget.domain.Transaction;
+import io.yac.budget.domain.*;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
@@ -48,12 +45,13 @@ public class TransactionConverterTest {
     }
 
     @Test
-    public void resource_currency_maps_to_entity_currency() {
-        Transaction entity = prototypeValidTransaction().currency("known currency").build();
+    public void resource_currency_maps_to_entity_currency_external_name() {
+        SupportedCurrency knownCurrency = SupportedCurrency.EUR;
+        Transaction entity = prototypeValidTransaction().currency(knownCurrency).build();
 
         TransactionConverter converter = new TransactionConverter();
         TransactionResource resource = converter.convertToResource(entity);
-        assertThat(resource.getCurrency(), is("known currency"));
+        assertThat(resource.getCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
 
 
@@ -139,11 +137,12 @@ public class TransactionConverterTest {
 
     @Test
     public void entity_currency_maps_to_resource_currency() {
-        TransactionResource resource = TransactionResource.builder().currency("Known currency").build();
+        TransactionResource resource =
+                TransactionResource.builder().currency(SupportedCurrency.EUR.getExternalName()).build();
 
         TransactionConverter converter = new TransactionConverter();
         Transaction entity = converter.convertToEntity(resource);
-        assertThat(entity.getCurrency(), is("Known currency"));
+        assertThat(entity.getCurrency(), is(SupportedCurrency.EUR));
     }
 
     @Test
@@ -266,7 +265,7 @@ public class TransactionConverterTest {
     }
 
     private Transaction.Builder prototypeValidTransaction() {
-        return Transaction.builder().bankAccount(BankAccount.builder().build())
+        return Transaction.builder().bankAccount(BankAccount.builder().build()).currency(SupportedCurrency.USD)
                 .paymentMean(PaymentMean.builder().build())
                 .categories(Collections.singletonList(Category.builder().build()));
     }

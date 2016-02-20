@@ -22,7 +22,7 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     private Integer amountCents;
 
-    private String currency;
+    private SupportedCurrency currency;
 
     private String description;
 
@@ -44,7 +44,7 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     }
 
 
-    private RecurringTransaction(Long id, Integer amountCents, String currency, String description,
+    private RecurringTransaction(Long id, Integer amountCents, SupportedCurrency currency, String description,
                                  PaymentMean paymentMean, BankAccount bankAccount,
                                  List<Category> categories, User owner,
                                  TemporalExpressionType temporalExpressionType, Date lastRunOn, boolean isActive) {
@@ -86,11 +86,11 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     }
 
     @Column(name = "amount_currency", nullable = false)
-    public String getCurrency() {
+    public SupportedCurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(SupportedCurrency currency) {
         this.currency = currency;
     }
 
@@ -185,7 +185,7 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
         private TemporalExpressionType temporalExpressionType;
         private Long id;
         private Integer amountCents;
-        private String currency;
+        private SupportedCurrency currency;
         private String description;
         private PaymentMean paymentMean;
         private BankAccount bankAccount;
@@ -209,7 +209,7 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
             return this;
         }
 
-        public Builder currency(String currency) {
+        public Builder currency(SupportedCurrency currency) {
             this.currency = currency;
             return this;
         }

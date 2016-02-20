@@ -18,12 +18,14 @@ public class FirstDayOfYearTemporalExpressionTest {
     public void getTemporalExpressionType_is_YEARLY() {
         FirstDayOfYearTemporalExpression temporalExpression = new FirstDayOfYearTemporalExpression();
 
-        assertThat(temporalExpression.getTemporalExpressionType(), is(TemporalExpression.TemporalExpressionType.YEARLY));
+        assertThat(temporalExpression.getTemporalExpressionType(),
+                is(TemporalExpression.TemporalExpressionType.YEARLY));
     }
 
     @Test
     public void includes_is_true_if_first_day_of_year() {
-        Date firstDayOfYear = Date.from(LocalDate.of(2015, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date firstDayOfYear =
+                Date.from(LocalDate.of(2015, 1, 1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         FirstDayOfYearTemporalExpression temporalExpression = new FirstDayOfYearTemporalExpression();
 
@@ -32,7 +34,8 @@ public class FirstDayOfYearTemporalExpressionTest {
 
     @Test
     public void includes_is_false_if_day_is_not_first_day_of_year() {
-        Date notFirstDayOfYear = Date.from(LocalDate.of(2015, 2, 18).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date notFirstDayOfYear =
+                Date.from(LocalDate.of(2015, 2, 18).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         FirstDayOfYearTemporalExpression temporalExpression = new FirstDayOfYearTemporalExpression();
 

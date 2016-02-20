@@ -3,6 +3,7 @@ package io.yac.budget.api.converter.impl;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.BankAccount;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.TransactionRepository;
@@ -32,12 +33,13 @@ public class BankAccountConverterTest {
     }
 
     @Test
-    public void resource_currency_maps_to_entity_currency() {
-        BankAccount entity = prototypeBankAccount().currency("known currency").build();
+    public void resource_currency_maps_to_entity_currency_external_name() {
+        SupportedCurrency knownCurrency = SupportedCurrency.AUD;
+        BankAccount entity = prototypeBankAccount().currency(knownCurrency).build();
 
         BankAccountConverter converter = new BankAccountConverter();
         BankAccountResource resource = converter.convertToResource(entity);
-        assertThat(resource.getCurrency(), is("known currency"));
+        assertThat(resource.getCurrency(), is(SupportedCurrency.AUD.getExternalName()));
     }
 
     @Test
@@ -50,7 +52,8 @@ public class BankAccountConverterTest {
     }
 
     private BankAccount.Builder prototypeBankAccount() {
-        return BankAccount.builder().transactions(Collections.singletonList(Transaction.builder().build()));
+        return BankAccount.builder().currency(SupportedCurrency.EUR)
+                .transactions(Collections.singletonList(Transaction.builder().build()));
     }
 
     @Test
@@ -75,11 +78,12 @@ public class BankAccountConverterTest {
 
     @Test
     public void entity_currency_maps_to_resource_currency() {
-        BankAccountResource resource = BankAccountResource.builder().currency("Known currency").build();
+        BankAccountResource resource =
+                BankAccountResource.builder().currency(SupportedCurrency.ZAR.getExternalName()).build();
 
         BankAccountConverter converter = new BankAccountConverter();
         BankAccount entity = converter.convertToEntity(resource);
-        assertThat(entity.getCurrency(), is("Known currency"));
+        assertThat(entity.getCurrency(), is(SupportedCurrency.ZAR));
     }
 
     @Test

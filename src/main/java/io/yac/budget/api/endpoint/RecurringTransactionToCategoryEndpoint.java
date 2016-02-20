@@ -54,7 +54,8 @@ public class RecurringTransactionToCategoryEndpoint implements RelationshipRepos
     }
 
     private RecurringTransaction getRecurringTransaction(Long id) {
-        RecurringTransaction RecurringTransaction = RecurringTransactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
+        RecurringTransaction RecurringTransaction =
+                RecurringTransactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
         if (RecurringTransaction == null) {
             throw new ResourceNotFoundException("RecurringTransaction not found " + id);
         }

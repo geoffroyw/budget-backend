@@ -4,6 +4,7 @@ import io.yac.auth.user.model.User;
 import io.yac.budget.domain.BankAccount;
 import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.RecurringTransaction;
+import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.repository.RecurringTransactionRepository;
 import io.yac.budget.schedule.temporal.expression.TemporalExpression.TemporalExpressionType;
 import org.junit.Test;
@@ -58,9 +59,10 @@ public class RecurringTransactionProcessorTest {
     @Test
     public void currency_maps_to_recurring_transaction_currency() throws Exception {
         RecurringTransaction recurringTransaction =
-                prototypeRecurringTransactionOccuringEveryDay().currency("EUR").build();
+                prototypeRecurringTransactionOccuringEveryDay().currency(SupportedCurrency.EUR).build();
 
-        assertThat(recurringTransactionProcessor.process(recurringTransaction).getCurrency(), is("EUR"));
+        assertThat(recurringTransactionProcessor.process(recurringTransaction).getCurrency(),
+                is(SupportedCurrency.EUR));
     }
 
     @Test

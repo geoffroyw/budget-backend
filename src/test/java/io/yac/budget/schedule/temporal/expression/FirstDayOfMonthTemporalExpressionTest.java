@@ -33,7 +33,8 @@ public class FirstDayOfMonthTemporalExpressionTest {
 
     @Test
     public void includes_is_false_if_day_is_not_first_day_of_month() {
-        Date notFirstDayOfMonth = Date.from(LocalDate.of(2015, 2, 18).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date notFirstDayOfMonth =
+                Date.from(LocalDate.of(2015, 2, 18).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         FirstDayOfMonthTemporalExpression temporalExpression = new FirstDayOfMonthTemporalExpression();
 
