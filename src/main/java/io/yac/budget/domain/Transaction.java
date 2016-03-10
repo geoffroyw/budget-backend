@@ -19,6 +19,10 @@ public class Transaction extends TimestampableEntity {
 
     private SupportedCurrency currency;
 
+    private Integer settlementAmountCents;
+
+    private SupportedCurrency settlementCurrency;
+
     private Date date;
 
     private String description;
@@ -36,7 +40,8 @@ public class Transaction extends TimestampableEntity {
     public Transaction() {
     }
 
-    private Transaction(Long id, Integer amountCents, SupportedCurrency currency, Date date, String description,
+    private Transaction(Long id, Integer amountCents, SupportedCurrency currency, Integer settlementAmountCents,
+                        SupportedCurrency settlementCurrency, Date date, String description,
                         Boolean isConfirmed, PaymentMean paymentMean, BankAccount bankAccount,
                         List<Category> categories, User owner) {
         this.id = id;
@@ -49,6 +54,8 @@ public class Transaction extends TimestampableEntity {
         this.bankAccount = bankAccount;
         this.categories = categories;
         this.owner = owner;
+        this.settlementCurrency = settlementCurrency;
+        this.settlementAmountCents = settlementAmountCents;
     }
 
     public static Builder builder() {
@@ -155,6 +162,25 @@ public class Transaction extends TimestampableEntity {
         this.owner = owner;
     }
 
+    @Column(name = "settlement_amount_cents", nullable = true)
+    public Integer getSettlementAmountCents() {
+        return settlementAmountCents;
+    }
+
+    public void setSettlementAmountCents(Integer settlementAmountCents) {
+        this.settlementAmountCents = settlementAmountCents;
+    }
+
+    @Column(name = "settlement_amount_currency", nullable = true)
+    @Enumerated(EnumType.STRING)
+    public SupportedCurrency getSettlementCurrency() {
+        return settlementCurrency;
+    }
+
+    public void setSettlementCurrency(SupportedCurrency settlementCurrency) {
+        this.settlementCurrency = settlementCurrency;
+    }
+
     public static class Builder {
         private Long id;
         private Integer amountCents;
@@ -166,6 +192,8 @@ public class Transaction extends TimestampableEntity {
         private BankAccount bankAccount;
         private List<Category> categories;
         private User owner;
+        private Integer settlementAmountCents;
+        private SupportedCurrency settlementCurrency;
 
         public Builder id(Long id) {
             this.id = id;
@@ -217,8 +245,18 @@ public class Transaction extends TimestampableEntity {
             return this;
         }
 
+        public Builder settlementAmountCents(Integer amountCents) {
+            this.settlementAmountCents = amountCents;
+            return this;
+        }
+
+        public Builder settlementCurrency(SupportedCurrency currency) {
+            this.settlementCurrency = currency;
+            return this;
+        }
+
         public Transaction build() {
-            return new Transaction(id, amountCents, currency, date, description, isConfirmed, paymentMean,
+            return new Transaction(id, amountCents, currency, settlementAmountCents, settlementCurrency, date, description, isConfirmed, paymentMean,
                     bankAccount, categories, owner);
         }
     }

@@ -22,6 +22,12 @@ public class TransactionResource {
 
     private String currency;
 
+    private Integer settlementAmountCents;
+
+    private String settlementCurrency;
+
+    private boolean isSettlementAmountIndicative;
+
     private Boolean isConfirmed;
 
     private Date date;
@@ -40,7 +46,9 @@ public class TransactionResource {
     public TransactionResource() {
     }
 
-    private TransactionResource(Long id, Integer amountCents, String currency, Boolean isConfirmed, Date date,
+    private TransactionResource(Long id, Integer amountCents, String currency, Integer settlementAmountCents,
+                                String settlementCurrency, boolean isSettlementAmountIndicative, Boolean isConfirmed,
+                                Date date,
                                 String description,
                                 List<CategoryResource> categories,
                                 BankAccountResource bankAccount, PaymentMeanResource paymentMean) {
@@ -53,6 +61,9 @@ public class TransactionResource {
         this.categories = categories;
         this.bankAccount = bankAccount;
         this.paymentMean = paymentMean;
+        this.settlementAmountCents = settlementAmountCents;
+        this.settlementCurrency = settlementCurrency;
+        this.isSettlementAmountIndicative = isSettlementAmountIndicative;
     }
 
     public static Builder builder() {
@@ -131,6 +142,30 @@ public class TransactionResource {
         this.paymentMean = paymentMean;
     }
 
+    public Integer getSettlementAmountCents() {
+        return settlementAmountCents;
+    }
+
+    public void setSettlementAmountCents(Integer settlementAmountCents) {
+        this.settlementAmountCents = settlementAmountCents;
+    }
+
+    public String getSettlementCurrency() {
+        return settlementCurrency;
+    }
+
+    public void setSettlementCurrency(String settlementCurrency) {
+        this.settlementCurrency = settlementCurrency;
+    }
+
+    public boolean isSettlementAmountIndicative() {
+        return isSettlementAmountIndicative;
+    }
+
+    public void setSettlementAmountIndicative(boolean settlementAmountIndicative) {
+        isSettlementAmountIndicative = settlementAmountIndicative;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -175,6 +210,9 @@ public class TransactionResource {
         private List<CategoryResource> categories;
         private BankAccountResource bankAccount;
         private PaymentMeanResource paymentMean;
+        private Integer settlementAmountCents;
+        private String settlementCurrency;
+        private boolean isSettlementAmountIndicative;
 
         public Builder id(Long id) {
             this.id = id;
@@ -221,8 +259,25 @@ public class TransactionResource {
             return this;
         }
 
+        public Builder settlementAmountCents(Integer amountCents) {
+            this.settlementAmountCents = amountCents;
+            return this;
+        }
+
+        public Builder settlementCurrency(String currency) {
+            this.settlementCurrency = currency;
+            return this;
+        }
+
+
+        public Builder isSettlementAmountIndicative(boolean isSettlementAmountIndicative) {
+            this.isSettlementAmountIndicative = isSettlementAmountIndicative;
+            return this;
+        }
+
         public TransactionResource build() {
-            return new TransactionResource(id, amountCents, currency, isConfirmed, date, description, categories,
+            return new TransactionResource(id, amountCents, currency, settlementAmountCents, settlementCurrency,
+                    isSettlementAmountIndicative, isConfirmed, date, description, categories,
                     bankAccount, paymentMean);
         }
     }

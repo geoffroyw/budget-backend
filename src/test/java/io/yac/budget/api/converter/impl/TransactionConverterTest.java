@@ -56,6 +56,44 @@ public class TransactionConverterTest {
 
 
     @Test
+    public void resource_settlement_amount_cents_maps_to_entity_settlement_amount_cents_if_not_null() {
+        Transaction entity = prototypeValidTransaction().settlementAmountCents(12439).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+        assertThat(resource.getSettlementAmountCents(), is(12439));
+    }
+
+    @Test
+    public void resource_settlement_currency_maps_to_entity_settlement_currency_external_name_if_not_null() {
+        SupportedCurrency knownCurrency = SupportedCurrency.EUR;
+        Transaction entity = prototypeValidTransaction().settlementCurrency(knownCurrency).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+        assertThat(resource.getSettlementCurrency(), is(SupportedCurrency.EUR.getExternalName()));
+    }
+
+    @Test
+    public void resource_isSettlementAmountIndicative_is_true_if_entity_settlement_amount_is_null() {
+        Transaction entity = prototypeValidTransaction().settlementAmountCents(null).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+        assertThat(resource.isSettlementAmountIndicative(), is(true));
+    }
+
+    @Test
+    public void resource_isSettlementAmountIndicative_is_false_if_entity_settlement_amount_is_not_null() {
+        Transaction entity = prototypeValidTransaction().settlementAmountCents(193280).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        TransactionResource resource = converter.convertToResource(entity);
+        assertThat(resource.isSettlementAmountIndicative(), is(false));
+    }
+
+
+    @Test
     public void resource_description_maps_to_entity_description() {
         Transaction entity = prototypeValidTransaction().description("some description").build();
 
@@ -144,6 +182,26 @@ public class TransactionConverterTest {
         Transaction entity = converter.convertToEntity(resource);
         assertThat(entity.getCurrency(), is(SupportedCurrency.EUR));
     }
+
+    @Test
+    public void entity_settlement_amount_cents_maps_to_resource_settlement_amount_cents() {
+        TransactionResource resource = TransactionResource.builder().settlementAmountCents(199483).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getSettlementAmountCents(), is(199483));
+    }
+
+    @Test
+    public void entity_settlement_currency_maps_to_resource_settlement_currency() {
+        TransactionResource resource =
+                TransactionResource.builder().settlementCurrency(SupportedCurrency.EUR.getExternalName()).build();
+
+        TransactionConverter converter = new TransactionConverter();
+        Transaction entity = converter.convertToEntity(resource);
+        assertThat(entity.getSettlementCurrency(), is(SupportedCurrency.EUR));
+    }
+
 
     @Test
     public void entity_description_maps_to_resource_description() {

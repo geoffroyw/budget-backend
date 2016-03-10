@@ -53,6 +53,11 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     public TransactionResource convertToResource(Transaction entity) {
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency().getExternalName())
                 .paymentMean(PaymentMeanResource.builder().id(entity.getPaymentMean().getId()).build())
+                .settlementCurrency(
+                        entity.getSettlementCurrency() == null ? null
+                                                               : entity.getSettlementCurrency().getExternalName())
+                .settlementAmountCents(entity.getSettlementAmountCents())
+                .isSettlementAmountIndicative(entity.getSettlementAmountCents() == null)
                 .description(entity.getDescription())
                 .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
                         .map(category -> CategoryResource.builder().id(category.getId()).build())
@@ -79,7 +84,8 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
                 .findOne(resource.getPaymentMean().getId()));
         transaction.setBankAccount(resource.getBankAccount() == null ? null : bankAccountRepository
                 .findOne(resource.getBankAccount().getId()));
-
+        transaction.setSettlementAmountCents(resource.getSettlementAmountCents());
+        transaction.setSettlementCurrency(SupportedCurrency.fromExternalName(resource.getSettlementCurrency()));
         transaction.setAmountCents(resource.getAmountCents());
         transaction.setConfirmed(resource.getIsConfirmed());
         transaction.setDescription(resource.getDescription());
