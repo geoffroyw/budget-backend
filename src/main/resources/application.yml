@@ -1,0 +1,28 @@
+spring:
+  jpa:
+    database-platform: org:hibernate:dialect:PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/budget_development
+    username: budget
+    password: budget
+
+katharsis:
+  resourcePackage: io.yac.budget.api
+  domainName: http://localhost:8080
+  pathPrefix: /api
+
+management:
+  port: 8081
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    metadataMap:
+      instanceId: ${vcap:application:instance_id:${spring:application:name}:${spring:application:instance_id:${server:port}}}
+  client:
+    registryFetchIntervalSeconds: 5
+    healthcheck:
+      enabled: true

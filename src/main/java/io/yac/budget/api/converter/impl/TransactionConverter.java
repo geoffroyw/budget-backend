@@ -13,9 +13,11 @@ import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
+import io.yac.services.clients.RateConversionClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,26 +39,53 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    RateConversionClient rateConversionClient;
+
     public TransactionConverter() {
     }
 
     @VisibleForTesting
     TransactionConverter(BankAccountRepository bankAccountRepository, PaymentMeanRepository paymentMeanRepository,
-                         CategoryRepository categoryRepository, TransactionRepository transactionRepository) {
+                         CategoryRepository categoryRepository, TransactionRepository transactionRepository,
+                         RateConversionClient rateConversionClient) {
         this.bankAccountRepository = bankAccountRepository;
         this.paymentMeanRepository = paymentMeanRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
+        this.rateConversionClient = rateConversionClient;
     }
+
 
     @Override
     public TransactionResource convertToResource(Transaction entity) {
+        Integer settlementAmount = entity.getSettlementAmountCents();
+
+        String settlementCurrency = null;
+        if (entity.getSettlementCurrency() == entity.getPaymentMean().getCurrency()) {
+            settlementAmount = entity.getAmountCents();
+            settlementCurrency = entity.getCurrency().getExternalName();
+        } else {
+            settlementCurrency =
+                    entity.getSettlementCurrency() == null ? entity.getPaymentMean().getCurrency().getExternalName()
+                                                           : entity.getSettlementCurrency().getExternalName();
+
+            if (settlementAmount == null) {
+                BigDecimal amountInPaymentMeanCurrency = rateConversionClient
+                        .convert(new BigDecimal(entity.getAmountCents() / 100), entity.getCurrency().getExternalName(),
+                                settlementCurrency).getAmountInToCurrency();
+
+                settlementAmount =
+                        amountInPaymentMeanCurrency.multiply(new BigDecimal("100")).toBigInteger().intValue();
+            }
+        }
+
+
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency().getExternalName())
                 .paymentMean(PaymentMeanResource.builder().id(entity.getPaymentMean().getId()).build())
                 .settlementCurrency(
-                        entity.getSettlementCurrency() == null ? null
-                                                               : entity.getSettlementCurrency().getExternalName())
-                .settlementAmountCents(entity.getSettlementAmountCents())
+                        settlementCurrency)
+                .settlementAmountCents(settlementAmount)
                 .isSettlementAmountIndicative(entity.getSettlementAmountCents() == null)
                 .description(entity.getDescription())
                 .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
