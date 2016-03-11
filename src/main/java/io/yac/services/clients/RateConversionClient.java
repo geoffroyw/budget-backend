@@ -1,8 +1,9 @@
 package io.yac.services.clients;
 
-import feign.Param;
-import feign.RequestLine;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,15 +13,12 @@ import java.util.Date;
  */
 @FeignClient("rates")
 public interface RateConversionClient {
-    /**
-     * @RequestMapping(value = "/convert")
-     * public RateConversionResponse convert(@PathParam(value = "amount") BigDecimal amount,
-     * @PathParam(value = "amountCurrency") String amountCurrency,
-     * @PathParam(value = "toCurrency") String toCurrency)
-     */
-    @RequestLine("GET /convert?amount={amount}&amountCurrency={amountCurrency}&toCurrency={toCurrency}")
-    RateConversion convert(@Param("amount") BigDecimal amount, @Param("amountCurrency") String amountCurrency,
-                           @Param("toCurrency") String toCurrency);
+
+    @RequestMapping(value = "/convert?amount={amount}&amountCurrency={amountCurrency}&toCurrency={toCurrency}",
+                    method = RequestMethod.GET, consumes = "application/json")
+    RateConversion convert(@PathVariable("amount") BigDecimal amount,
+                           @PathVariable("amountCurrency") String amountCurrency,
+                           @PathVariable("toCurrency") String toCurrency);
 
     class RateConversion {
         private Date asOf;

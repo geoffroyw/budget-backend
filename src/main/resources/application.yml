@@ -1,6 +1,6 @@
 spring:
   jpa:
-    database-platform: org:hibernate:dialect:PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
     hibernate:
       ddl-auto: validate
