@@ -10,7 +10,7 @@ import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
 import io.yac.services.clients.RateConversionClient;
-import io.yac.services.clients.RateConversionClient.RateConversion;
+import io.yac.services.clients.RateConversionClient.RateConversionResponse;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ public class TransactionConverterTest {
     static {
         RATE_CONVERSION_CLIENT = mock(RateConversionClient.class);
         when(RATE_CONVERSION_CLIENT.convert(anyObject(), anyString(), anyString()))
-                .thenReturn(new RateConversion(null, null, null, null, new BigDecimal(10)));
+                .thenReturn(new RateConversionResponse(null, null, null, null, new BigDecimal(10)));
     }
 
     @Test
@@ -110,11 +110,24 @@ public class TransactionConverterTest {
 
         RateConversionClient dummy_rateConversionClient = mock(RateConversionClient.class);
         when(dummy_rateConversionClient.convert(anyObject(), anyString(), anyString()))
-                .thenReturn(new RateConversion(null, null, null, new BigDecimal(3827 / 100), new BigDecimal("12.43")));
+                .thenReturn(new RateConversionResponse(null, null, null, new BigDecimal(3827 / 100), new BigDecimal("12.43")));
 
         TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementAmountCents(), is(1243));
+    }
+
+    @Test
+    public void resource_settlement_amount_cents_is_null_if_rate_client_response_is_null() {
+        Transaction entity = prototypeValidTransaction().amountCents(3827).settlementAmountCents(null).build();
+
+        RateConversionClient dummy_rateConversionClient = mock(RateConversionClient.class);
+        when(dummy_rateConversionClient.convert(anyObject(), anyString(), anyString()))
+                .thenReturn(null);
+
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionResource resource = converter.convertToResource(entity);
+        assertThat(resource.getSettlementAmountCents(), is(nullValue()));
     }
 
     @Test

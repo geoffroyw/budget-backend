@@ -14,6 +14,7 @@ import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
 import io.yac.services.clients.RateConversionClient;
+import io.yac.services.clients.RateConversionClient.RateConversionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     public TransactionResource convertToResource(Transaction entity) {
         Integer settlementAmount = entity.getSettlementAmountCents();
 
-        String settlementCurrency = null;
+        String settlementCurrency;
         if (entity.getSettlementCurrency() == entity.getPaymentMean().getCurrency()) {
             settlementAmount = entity.getAmountCents();
             settlementCurrency = entity.getCurrency().getExternalName();
@@ -71,12 +72,16 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
                                                            : entity.getSettlementCurrency().getExternalName();
 
             if (settlementAmount == null) {
-                BigDecimal amountInPaymentMeanCurrency = rateConversionClient
+                RateConversionResponse rateConversionResponseResponse = rateConversionClient
                         .convert(new BigDecimal(entity.getAmountCents() / 100), entity.getCurrency().getExternalName(),
-                                settlementCurrency).getAmountInToCurrency();
+                                settlementCurrency);
+                if (rateConversionResponseResponse != null) {
+                    BigDecimal amountInPaymentMeanCurrency = rateConversionResponseResponse.getAmountInToCurrency();
 
-                settlementAmount =
-                        amountInPaymentMeanCurrency.multiply(new BigDecimal("100")).toBigInteger().intValue();
+                    settlementAmount =
+                            amountInPaymentMeanCurrency.multiply(new BigDecimal("100")).toBigInteger().intValue();
+                }
+
             }
         }
 
