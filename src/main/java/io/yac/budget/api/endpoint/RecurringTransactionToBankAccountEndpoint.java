@@ -8,9 +8,10 @@ import io.yac.budget.api.converter.impl.BankAccountConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
 import io.yac.budget.domain.BankAccount;
-import io.yac.budget.domain.RecurringTransaction;
+import io.yac.budget.recurring.transactions.client.RecurringTransactionRequest;
+import io.yac.budget.recurring.transactions.client.resources.RecurringTransactionResponse;
 import io.yac.budget.repository.BankAccountRepository;
-import io.yac.budget.repository.RecurringTransactionRepository;
+import io.yac.services.clients.recurringtransaction.RecurringTransactionClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class RecurringTransactionToBankAccountEndpoint implements RelationshipRepository<RecurringTransactionResource, Long, BankAccountResource, Long> {
 
     @Autowired
-    RecurringTransactionRepository RecurringTransactionRepository;
+    RecurringTransactionClient recurringTransactionClient;
 
     @Autowired
     BankAccountRepository bankAccountRepository;
@@ -34,22 +35,42 @@ public class RecurringTransactionToBankAccountEndpoint implements RelationshipRe
 
     @Override
     public void setRelation(RecurringTransactionResource source, Long targetId, String fieldName) {
-        RecurringTransaction RecurringTransaction =
-                RecurringTransactionRepository
-                        .findOneByOwnerAndId(authenticationFacade.getCurrentUser(), source.getId());
-        BankAccount target = bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), targetId);
 
-        if (RecurringTransaction == null) {
-            throw new ResourceNotFoundException("RecurringTransaction not found " + source.getId());
+        try {
+            RecurringTransactionResponse recurringTransaction = recurringTransactionClient
+                    .getById(source.getId());
+
+            if (recurringTransaction == null) {
+                throw new ResourceNotFoundException("RecurringTransaction not found " + source.getId());
+            }
+
+            if (!recurringTransaction.getOwnerId().equals(authenticationFacade.getCurrentUser().getId())) {
+                throw new ResourceNotFoundException("RecurringTransaction not found " + source.getId());
+            }
+
+            BankAccount target =
+                    bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), targetId);
+
+
+            if (target == null) {
+                throw new ResourceNotFoundException("Bank Account not found" + targetId);
+            }
+
+            RecurringTransactionRequest request =
+                    RecurringTransactionRequest.builder().bankAccountId(recurringTransaction.getBankAccountId())
+                            .amountCents(recurringTransaction.getAmountCents()).bankAccountId(targetId)
+                            .categoryIds(recurringTransaction.getCategoryIds())
+                            .currency(recurringTransaction.getCurrency())
+                            .description(recurringTransaction.getDescription())
+                            .isActive(recurringTransaction.isActive())
+                            .ownerId(recurringTransaction.getOwnerId())
+                            .paymentMeanId(recurringTransaction.getPaymentMeanId())
+                            .temporalExpressionType(recurringTransaction.getTemporalExpressionType()).build();
+
+            recurringTransactionClient.update(source.getId(), request);
+        } catch (io.yac.budget.recurring.transactions.client.exception.ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         }
-
-        if (target == null) {
-            throw new ResourceNotFoundException("Bank Account not found" + targetId);
-        }
-
-        RecurringTransaction.setBankAccount(target);
-
-        RecurringTransactionRepository.save(RecurringTransaction);
     }
 
     @Override
@@ -69,12 +90,21 @@ public class RecurringTransactionToBankAccountEndpoint implements RelationshipRe
 
     @Override
     public BankAccountResource findOneTarget(Long sourceId, String fieldName, QueryParams queryParams) {
-        RecurringTransaction RecurringTransaction =
-                RecurringTransactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), sourceId);
-        if (RecurringTransaction == null) {
+
+
+        try {
+            RecurringTransactionResponse recurringTransaction = recurringTransactionClient.getById(sourceId);
+            if (recurringTransaction == null ||
+                    !recurringTransaction.getOwnerId().equals(authenticationFacade.getCurrentUser().getId())) {
+                throw new ResourceNotFoundException("RecurringTransaction not found " + sourceId);
+            }
+
+            return bankAccountConverter
+                    .convertToResource(bankAccountRepository.findOne(recurringTransaction.getBankAccountId()));
+
+        } catch (io.yac.budget.recurring.transactions.client.exception.ResourceNotFoundException e) {
             throw new ResourceNotFoundException("RecurringTransaction not found " + sourceId);
         }
-        return bankAccountConverter.convertToResource(RecurringTransaction.getBankAccount());
     }
 
     @Override

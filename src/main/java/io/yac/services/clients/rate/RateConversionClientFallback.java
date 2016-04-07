@@ -1,4 +1,4 @@
-package io.yac.services.clients;
+package io.yac.services.clients.rate;
 
 import org.springframework.stereotype.Component;
 

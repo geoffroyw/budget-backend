@@ -1,95 +1,62 @@
 package io.yac.budget.api.converter.impl;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.api.resources.CategoryResource;
 import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
-import io.yac.budget.domain.Category;
-import io.yac.budget.domain.RecurringTransaction;
-import io.yac.budget.domain.SupportedCurrency;
-import io.yac.budget.repository.BankAccountRepository;
-import io.yac.budget.repository.CategoryRepository;
-import io.yac.budget.repository.PaymentMeanRepository;
-import io.yac.budget.repository.RecurringTransactionRepository;
-import io.yac.budget.schedule.temporal.expression.TemporalExpression.TemporalExpressionType;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.yac.budget.recurring.transactions.client.RecurringTransactionRequest;
+import io.yac.budget.recurring.transactions.client.resources.RecurringTransactionResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by geoffroy on 19/02/2016.
  */
 @Service
-public class RecurringTransactionConverter implements ResourceEntityConverter<RecurringTransactionResource, RecurringTransaction> {
+public class RecurringTransactionConverter {
 
-    @Autowired
-    RecurringTransactionRepository recurringTransactionRepository;
 
-    @Autowired
-    BankAccountRepository bankAccountRepository;
-
-    @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
-
-    @VisibleForTesting
-    RecurringTransactionConverter(BankAccountRepository bankAccountRepository,
-                                  PaymentMeanRepository paymentMeanRepository,
-                                  CategoryRepository categoryRepository,
-                                  RecurringTransactionRepository recurringTransactionRepository) {
-        this.bankAccountRepository = bankAccountRepository;
-        this.paymentMeanRepository = paymentMeanRepository;
-        this.categoryRepository = categoryRepository;
-        this.recurringTransactionRepository = recurringTransactionRepository;
-    }
-
-    public RecurringTransactionConverter() {
-    }
-
-    @Override
-    public RecurringTransactionResource convertToResource(RecurringTransaction entity) {
-        return RecurringTransactionResource.builder().amountCents(entity.getAmountCents())
-                .currency(entity.getCurrency().getExternalName()).description(entity.getDescription())
-                .lastRunOn(entity.getLastRunOn())
-                .recurringType(entity.getTemporalExpressionType().getExternalName()).categories(
-                        entity.getCategories() == null ? null : entity.getCategories().stream()
-                                .map((c) -> CategoryResource.builder().id(c.getId()).build())
+    public RecurringTransactionResource convertToResource(RecurringTransactionResponse response) {
+        return RecurringTransactionResource.builder().amountCents(response.getAmountCents())
+                .currency(response.getCurrency()).description(response.getDescription())
+                .lastRunOn(response.getLastRunOn())
+                .recurringType(response.getTemporalExpressionType()).categories(
+                        response.getCategoryIds() == null ? null : response.getCategoryIds().stream()
+                                .map((c) -> CategoryResource.builder().id(c).build())
                                 .collect(Collectors.toList()))
-                .bankAccount(entity.getBankAccount() == null ? null : BankAccountResource.builder()
-                        .id(entity.getBankAccount().getId()).build())
-                .paymentMean(entity.getPaymentMean() == null ? null : PaymentMeanResource.builder()
-                        .id(entity.getPaymentMean().getId()).build())
-                .id(entity.getId()).isActive(entity.isActive()).build();
+                .bankAccount(response.getBankAccountId() == null ? null : BankAccountResource.builder()
+                        .id(response.getBankAccountId()).build())
+                .paymentMean(response.getPaymentMeanId() == null ? null : PaymentMeanResource.builder()
+                        .id(response.getPaymentMeanId()).build())
+                .id(response.getId()).isActive(response.isActive()).build();
     }
 
-    @Override
-    public RecurringTransaction convertToEntity(RecurringTransactionResource resource) {
-        RecurringTransaction recurringTransaction;
-        if (resource.getId() != null) {
-            recurringTransaction = recurringTransactionRepository.findOne(resource.getId());
-        } else {
-            recurringTransaction = new RecurringTransaction();
-        }
-        recurringTransaction.setActive(resource.getIsActive());
-        recurringTransaction.setDescription(resource.getDescription());
-        recurringTransaction.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
-        recurringTransaction.setAmountCents(resource.getAmountCents());
-        recurringTransaction
-                .setTemporalExpressionType(TemporalExpressionType.fromExternalName(resource.getRecurringType()));
-        recurringTransaction.setCategories(resource.getCategories() == null ? null : (List<Category>) categoryRepository
-                .findAll(resource.getCategories().stream().map(CategoryResource::getId).collect(Collectors.toList())));
-        recurringTransaction.setPaymentMean(resource.getPaymentMean() == null ? null : paymentMeanRepository
-                .findOne(resource.getPaymentMean().getId()));
-        recurringTransaction.setBankAccount(resource.getBankAccount() == null ? null : bankAccountRepository
-                .findOne(resource.getBankAccount().getId()));
+
+    public RecurringTransactionRequest buildRequest(RecurringTransactionResource resource, Long ownerId) {
+        return RecurringTransactionRequest.builder().isActive(resource.getIsActive()).description(
+                resource.getDescription()).currency(resource.getCurrency()).amountCents(resource.getAmountCents())
+                .temporalExpressionType(resource.getRecurringType())
+                .categoryIds(resource.getCategories() == null ? null : resource.getCategories().stream()
+                        .map(CategoryResource::getId).collect(Collectors.toList()))
+                .paymentMeanId(resource.getPaymentMean() == null ? null : resource.getPaymentMean().getId())
+                .bankAccountId(resource.getBankAccount() == null ? null : resource.getBankAccount().getId())
+                .ownerId(ownerId)
+                .build();
 
 
-        return recurringTransaction;
     }
+
+    public RecurringTransactionRequest buildRequest(RecurringTransactionResponse response) {
+        return RecurringTransactionRequest.builder().isActive(response.isActive()).description(
+                response.getDescription()).currency(response.getCurrency()).amountCents(response.getAmountCents())
+                .temporalExpressionType(response.getTemporalExpressionType())
+                .categoryIds(response.getCategoryIds()).paymentMeanId(response.getPaymentMeanId())
+                .bankAccountId(response.getBankAccountId())
+                .ownerId(response.getOwnerId())
+                .build();
+
+
+    }
+
 }

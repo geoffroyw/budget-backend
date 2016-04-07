@@ -9,8 +9,8 @@ import io.yac.budget.repository.BankAccountRepository;
 import io.yac.budget.repository.CategoryRepository;
 import io.yac.budget.repository.PaymentMeanRepository;
 import io.yac.budget.repository.TransactionRepository;
-import io.yac.services.clients.RateConversionClient;
-import io.yac.services.clients.RateConversionClient.RateConversionResponse;
+import io.yac.services.clients.rate.RateConversionClient;
+import io.yac.services.clients.rate.RateConversionClient.RateConversionResponse;
 import org.junit.Test;
 
 import java.math.BigDecimal;

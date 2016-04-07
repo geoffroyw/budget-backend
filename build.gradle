@@ -34,13 +34,13 @@ repositories {
     mavenCentral()
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
+    maven { url "http://artifactory.yac.io/repository/yac-release"}
 
 }
 
 
 
 dependencies {
-    runtime "org.codehaus.jettison:jettison:1.2"
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-actuator-docs')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -50,9 +50,9 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.security.oauth:spring-security-oauth2")
-    compile("org.springframework.boot:spring-boot-starter-batch")
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
     compile('org.springframework.cloud:spring-cloud-starter-feign')
+    compile('io.yac.budget:recurring-transaction-client:0.0.1-RELEASE')  { changing = true }
     compile('io.katharsis:katharsis-core:2.2.0')
     compile('io.katharsis:katharsis-spring:2.2.0')
     compile('io.katharsis:katharsis-servlet:2.2.0')

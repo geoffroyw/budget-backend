@@ -1,4 +1,4 @@
-package io.yac.services.clients;
+package io.yac.services.clients.rate;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
