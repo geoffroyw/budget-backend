@@ -1,9 +1,7 @@
 package io.yac.budget.api.resources;
 
-import io.katharsis.resource.annotations.JsonApiId;
-import io.katharsis.resource.annotations.JsonApiResource;
-import io.katharsis.resource.annotations.JsonApiToMany;
-import io.katharsis.resource.annotations.JsonApiToOne;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.yac.budget.api.serializer.JsonDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -12,30 +10,30 @@ import java.util.Objects;
 /**
  * Created by geoffroy on 19/02/2016.
  */
-@JsonApiResource(type = "recurring-transactions")
 public class RecurringTransactionResource {
 
-    @JsonApiId
+
     private Long id;
 
     private Integer amountCents;
 
     private String currency;
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date lastRunOn;
 
     private String description;
 
     private String recurringType;
 
-    @JsonApiToMany
-    private List<CategoryResource> categories;
 
-    @JsonApiToOne
-    private BankAccountResource bankAccount;
+    private List<Long> categories;
 
-    @JsonApiToOne
-    private PaymentMeanResource paymentMean;
+
+    private Long bankAccount;
+
+
+    private Long paymentMean;
 
     private boolean isActive;
 
@@ -44,9 +42,9 @@ public class RecurringTransactionResource {
 
     public RecurringTransactionResource(Long id, Integer amountCents, String currency, Date lastRunOn,
                                         String description, String recurringType,
-                                        List<CategoryResource> categories,
-                                        BankAccountResource bankAccount,
-                                        PaymentMeanResource paymentMean, boolean isActive) {
+                                        List<Long> categories,
+                                        Long bankAccount,
+                                        Long paymentMean, boolean isActive) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
@@ -111,27 +109,27 @@ public class RecurringTransactionResource {
         this.recurringType = recurringType;
     }
 
-    public List<CategoryResource> getCategories() {
+    public List<Long> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<CategoryResource> categories) {
+    public void setCategories(List<Long> categories) {
         this.categories = categories;
     }
 
-    public BankAccountResource getBankAccount() {
+    public Long getBankAccount() {
         return bankAccount;
     }
 
-    public void setBankAccount(BankAccountResource bankAccount) {
+    public void setBankAccount(Long bankAccount) {
         this.bankAccount = bankAccount;
     }
 
-    public PaymentMeanResource getPaymentMean() {
+    public Long getPaymentMean() {
         return paymentMean;
     }
 
-    public void setPaymentMean(PaymentMeanResource paymentMean) {
+    public void setPaymentMean(Long paymentMean) {
         this.paymentMean = paymentMean;
     }
 
@@ -185,9 +183,9 @@ public class RecurringTransactionResource {
         private Date lastRunOn;
         private String description;
         private String recurringType;
-        private List<CategoryResource> categories;
-        private BankAccountResource bankAccount;
-        private PaymentMeanResource paymentMean;
+        private List<Long> categories;
+        private Long bankAccount;
+        private Long paymentMean;
         private boolean isActive;
 
         public Builder id(Long id) {
@@ -220,17 +218,17 @@ public class RecurringTransactionResource {
             return this;
         }
 
-        public Builder categories(List<CategoryResource> categories) {
+        public Builder categories(List<Long> categories) {
             this.categories = categories;
             return this;
         }
 
-        public Builder bankAccount(BankAccountResource bankAccount) {
+        public Builder bankAccount(Long bankAccount) {
             this.bankAccount = bankAccount;
             return this;
         }
 
-        public Builder paymentMean(PaymentMeanResource paymentMean) {
+        public Builder paymentMean(Long paymentMean) {
             this.paymentMean = paymentMean;
             return this;
         }

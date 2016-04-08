@@ -1,6 +1,5 @@
 package io.yac.budget.api.endpoint;
 
-import io.katharsis.resource.exception.ResourceNotFoundException;
 import io.yac.Application;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
@@ -10,11 +9,10 @@ import io.yac.budget.api.factory.BankAccountFactory;
 import io.yac.budget.api.factory.PaymentMeanFactory;
 import io.yac.budget.api.factory.TransactionFactory;
 import io.yac.budget.api.factory.UserFactory;
-import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
+import io.yac.budget.recurring.transactions.client.exception.ResourceNotFoundException;
 import io.yac.budget.repository.TransactionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +21,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -37,7 +34,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = Application.class)
-public class TransactionEndpointTest {
+public class TransactionControllerTest {
 
 
     @Autowired
@@ -66,11 +63,11 @@ public class TransactionEndpointTest {
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        assertThat(transactionEndpoint.findOne(transaction.getId(), null).getId(), is(transaction.getId()));
+        assertThat(transactionController.get(transaction.getId()).getId(), is(transaction.getId()));
 
     }
 
@@ -83,11 +80,11 @@ public class TransactionEndpointTest {
         User user = userFactory.getOrCreateUser("login1");
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        transactionEndpoint.findOne(unexistingId, null);
+        transactionController.get(unexistingId);
 
     }
 
@@ -102,11 +99,11 @@ public class TransactionEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user2));
 
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        transactionEndpoint.findOne(transaction_of_user1.getId(), null);
+        transactionController.get(transaction_of_user1.getId());
 
     }
 
@@ -121,18 +118,15 @@ public class TransactionEndpointTest {
                 TransactionResource.builder().currency(SupportedCurrency.EUR.getExternalName()).amountCents(100)
                         .isConfirmed(false)
                         .date(new Date())
-                        .paymentMean(
-                                PaymentMeanResource.builder().id(paymentMeanFactory.savePaymentMean(user).getId())
-                                        .build())
-                        .bankAccount(BankAccountResource.builder().id(bankAccountFactory.saveBankAccount(user).getId())
-                                .build())
+                        .paymentMean(paymentMeanFactory.savePaymentMean(user).getId())
+                        .bankAccount(bankAccountFactory.saveBankAccount(user).getId())
                         .description("any").build();
 
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        Long savedTransactionId = transactionEndpoint.save(resource).getId();
+        Long savedTransactionId = transactionController.create(resource).getId();
         assertThat(transactionRepository.findOne(savedTransactionId).getOwner().getId(), is(user.getId()));
 
 
@@ -148,12 +142,12 @@ public class TransactionEndpointTest {
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
         Long entityId = transaction.getId();
-        transactionEndpoint.delete(entityId);
+        transactionController.delete(entityId);
         assertThat(transactionRepository.findOne(entityId), is(nullValue()));
 
     }
@@ -166,11 +160,11 @@ public class TransactionEndpointTest {
         User user = userFactory.getOrCreateUser("login1");
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        transactionEndpoint.delete(unexistingId);
+        transactionController.delete(unexistingId);
 
     }
 
@@ -185,12 +179,12 @@ public class TransactionEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user2));
 
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
         Long entityId = transaction_of_user_1.getId();
-        transactionEndpoint.delete(entityId);
+        transactionController.delete(entityId);
 
     }
 
@@ -209,42 +203,15 @@ public class TransactionEndpointTest {
         when(dummy_authentication_facade.getCurrentUser())
                 .thenReturn(new CustomUserDetailsService.CurrentUser(currentUser));
 
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
+        TransactionController transactionController =
+                new TransactionController(transactionRepository, dummy_authentication_facade,
                         transactionConverter);
 
-        assertThat(transactionEndpoint.findAll(null),
+        assertThat(transactionController.index(),
                 is(allOf(
                         hasItem(transactionConverter.convertToResource(transaction_of_current_user)),
                         not(hasItem(transactionConverter.convertToResource(transaction_of_user_1))))));
     }
 
-    @Test
-    public void findAll_ids_returns_all_the_bank_transactions_of_the_current_user()
-            throws Exception {
-        User user1 = userFactory.getOrCreateUser("login1");
-        User currentUser = userFactory.getOrCreateUser("login2");
 
-        Transaction transaction_of_user_1 = transactionFactory.saveTransaction(user1);
-        Transaction transaction_of_current_user = transactionFactory.saveTransaction(currentUser);
-
-
-        AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
-        when(dummy_authentication_facade.getCurrentUser())
-                .thenReturn(new CustomUserDetailsService.CurrentUser(currentUser));
-
-        TransactionEndpoint transactionEndpoint =
-                new TransactionEndpoint(transactionRepository, dummy_authentication_facade,
-                        transactionConverter);
-
-        assertThat(
-                transactionEndpoint
-                        .findAll(Arrays.asList(transaction_of_user_1.getId(), transaction_of_current_user.getId()),
-                                null),
-                is(allOf(
-                        hasItem(transactionConverter.convertToResource(transaction_of_current_user)),
-                        not(hasItem(transactionConverter.convertToResource(transaction_of_user_1))))));
-
-
-    }
 }

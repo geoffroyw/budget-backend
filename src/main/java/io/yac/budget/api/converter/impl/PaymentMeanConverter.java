@@ -3,7 +3,6 @@ package io.yac.budget.api.converter.impl;
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.PaymentMeanResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
@@ -41,7 +40,7 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
         return PaymentMeanResource.builder().id(entity.getId()).name(entity.getName())
                 .currency(entity.getCurrency().getExternalName())
                 .transactions(entity.getTransactions() == null ? null : entity.getTransactions().stream()
-                        .map(this::buildTransactionResource)
+                        .map(Transaction::getId)
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -59,14 +58,10 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
         paymentMean.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
         paymentMean
                 .setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
-                        .findAll(resource.getTransactions().stream().map(TransactionResource::getId).collect(
-                                Collectors.toList())));
+                        .findAll(resource.getTransactions()));
 
 
         return paymentMean;
     }
 
-    private TransactionResource buildTransactionResource(Transaction transaction) {
-        return TransactionResource.builder().id(transaction.getId()).build();
-    }
 }

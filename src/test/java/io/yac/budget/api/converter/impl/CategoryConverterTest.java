@@ -1,7 +1,6 @@
 package io.yac.budget.api.converter.impl;
 
 import io.yac.budget.api.resources.CategoryResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.CategoryRepository;
@@ -49,7 +48,7 @@ public class CategoryConverterTest {
 
         CategoryConverter converter = new CategoryConverter();
         CategoryResource resource = converter.convertToResource(entity);
-        assertThat(resource.getTransactions().get(0).getId(), is(1L));
+        assertThat(resource.getTransactions().get(0), is(1L));
     }
 
     @Test
@@ -77,7 +76,7 @@ public class CategoryConverterTest {
     @Test
     public void entity_transactions_maps_to_transaction_entities_with_id_from_resource_transactions() {
         CategoryResource resource = CategoryResource.builder().transactions(
-                Collections.singletonList(TransactionResource.builder().id(1L).build())).build();
+                Collections.singletonList(1L)).build();
 
         Transaction transactionFromRepository = Transaction.builder().id(1L).build();
 

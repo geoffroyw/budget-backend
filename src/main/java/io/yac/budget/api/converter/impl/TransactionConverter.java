@@ -2,9 +2,6 @@ package io.yac.budget.api.converter.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.budget.api.converter.ResourceEntityConverter;
-import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.CategoryResource;
-import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.SupportedCurrency;
@@ -87,18 +84,17 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
 
 
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency().getExternalName())
-                .paymentMean(PaymentMeanResource.builder().id(entity.getPaymentMean().getId()).build())
+                .paymentMean(entity.getPaymentMean().getId())
                 .settlementCurrency(
                         settlementCurrency)
                 .settlementAmountCents(settlementAmount)
                 .isSettlementAmountIndicative(entity.getSettlementAmountCents() == null)
                 .description(entity.getDescription())
                 .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
-                        .map(category -> CategoryResource.builder().id(category.getId()).build())
+                        .map(Category::getId)
                         .collect(Collectors.toList()))
                 .amountCents(entity.getAmountCents()).date(entity.getDate()).isConfirmed(entity.isConfirmed())
-                .bankAccount(
-                        BankAccountResource.builder().id(entity.getBankAccount().getId()).build()).build();
+                .bankAccount(entity.getBankAccount().getId()).build();
     }
 
     @Override
@@ -113,11 +109,11 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
         transaction.setDate(resource.getDate());
         transaction.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
         transaction.setCategories(resource.getCategories() == null ? null : (List<Category>) categoryRepository
-                .findAll(resource.getCategories().stream().map(CategoryResource::getId).collect(Collectors.toList())));
+                .findAll(resource.getCategories()));
         transaction.setPaymentMean(resource.getPaymentMean() == null ? null : paymentMeanRepository
-                .findOne(resource.getPaymentMean().getId()));
+                .findOne(resource.getPaymentMean()));
         transaction.setBankAccount(resource.getBankAccount() == null ? null : bankAccountRepository
-                .findOne(resource.getBankAccount().getId()));
+                .findOne(resource.getBankAccount()));
         transaction.setSettlementAmountCents(resource.getSettlementAmountCents());
         transaction.setSettlementCurrency(SupportedCurrency.fromExternalName(resource.getSettlementCurrency()));
         transaction.setAmountCents(resource.getAmountCents());

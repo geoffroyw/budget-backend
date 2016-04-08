@@ -1,6 +1,5 @@
 package io.yac.budget.api.endpoint;
 
-import io.katharsis.resource.exception.ResourceNotFoundException;
 import io.yac.Application;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService.CurrentUser;
@@ -11,6 +10,7 @@ import io.yac.budget.api.factory.UserFactory;
 import io.yac.budget.api.resources.BankAccountResource;
 import io.yac.budget.domain.BankAccount;
 import io.yac.budget.domain.SupportedCurrency;
+import io.yac.budget.recurring.transactions.client.exception.ResourceNotFoundException;
 import io.yac.budget.repository.BankAccountRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +31,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = Application.class)
-public class BankAccountEndpointTest {
+public class BankAccountControllerTest {
 
     @Autowired
     BankAccountConverter bankAccountConverter;
@@ -57,11 +55,11 @@ public class BankAccountEndpointTest {
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user));
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        assertThat(bankAccountEndpoint.findOne(account.getId(), null).getId(), is(account.getId()));
+        assertThat(bankAccountController.get(account.getId()).getId(), is(account.getId()));
 
     }
 
@@ -73,11 +71,11 @@ public class BankAccountEndpointTest {
         User user = userFactory.getOrCreateUser("login1");
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user));
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        bankAccountEndpoint.findOne(unexistingId, null);
+        bankAccountController.get(unexistingId);
 
     }
 
@@ -92,11 +90,11 @@ public class BankAccountEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user2));
 
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        bankAccountEndpoint.findOne(account_of_user_1.getId(), null);
+        bankAccountController.get(account_of_user_1.getId());
 
     }
 
@@ -110,11 +108,11 @@ public class BankAccountEndpointTest {
         BankAccountResource resource =
                 BankAccountResource.builder().currency(SupportedCurrency.AUD.getExternalName()).name("any").build();
 
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        Long savedBankAccountId = bankAccountEndpoint.save(resource).getId();
+        Long savedBankAccountId = bankAccountController.create(resource).getId();
         assertThat(bankAccountRepository.findOne(savedBankAccountId).getOwner().getId(), is(user.getId()));
 
 
@@ -129,12 +127,12 @@ public class BankAccountEndpointTest {
 
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user));
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
         Long entityId = account.getId();
-        bankAccountEndpoint.delete(entityId);
+        bankAccountController.delete(entityId);
         assertThat(bankAccountRepository.findOne(entityId), is(nullValue()));
 
     }
@@ -147,11 +145,11 @@ public class BankAccountEndpointTest {
         User user = userFactory.getOrCreateUser("login1");
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user));
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        bankAccountEndpoint.delete(unexistingId);
+        bankAccountController.delete(unexistingId);
 
     }
 
@@ -166,12 +164,12 @@ public class BankAccountEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(user2));
 
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
         Long entityId = account_of_user_1.getId();
-        bankAccountEndpoint.delete(entityId);
+        bankAccountController.delete(entityId);
 
     }
 
@@ -188,40 +186,14 @@ public class BankAccountEndpointTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(currentUser));
 
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
+        BankAccountController bankAccountController =
+                new BankAccountController(bankAccountRepository, dummy_authentication_facade,
                         bankAccountConverter);
 
-        assertThat(bankAccountEndpoint.findAll(null),
+        assertThat(bankAccountController.index(),
                 is(allOf(
                         hasItem(bankAccountConverter.convertToResource(account_of_current_user)),
                         not(hasItem(bankAccountConverter.convertToResource(account_of_user_1))))));
     }
 
-    @Test
-    public void findAll_ids_returns_all_the_bank_accounts_of_the_current_user()
-            throws Exception {
-        User user1 = userFactory.getOrCreateUser("login1");
-        User currentUser = userFactory.getOrCreateUser("login2");
-
-        BankAccount account_of_user_1 = bankAccountFactory.saveBankAccount(user1);
-        BankAccount account_of_current_user =
-                bankAccountFactory.saveBankAccount(currentUser);
-
-        AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
-        when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CurrentUser(currentUser));
-
-        BankAccountEndpoint bankAccountEndpoint =
-                new BankAccountEndpoint(bankAccountRepository, dummy_authentication_facade,
-                        bankAccountConverter);
-
-        assertThat(
-                bankAccountEndpoint
-                        .findAll(Arrays.asList(account_of_user_1.getId(), account_of_current_user.getId()), null),
-                is(allOf(
-                        hasItem(bankAccountConverter.convertToResource(account_of_current_user)),
-                        not(hasItem(bankAccountConverter.convertToResource(account_of_user_1))))));
-
-
-    }
 }

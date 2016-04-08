@@ -1,8 +1,5 @@
 package io.yac.budget.api.converter.impl;
 
-import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.CategoryResource;
-import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.RecurringTransactionResource;
 import io.yac.budget.recurring.transactions.client.RecurringTransactionRequest;
 import io.yac.budget.recurring.transactions.client.resources.RecurringTransactionResponse;
@@ -98,7 +95,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getBankAccount().getId(), is(1L));
+        assertThat(resource.getBankAccount(), is(1L));
     }
 
     @Test
@@ -109,7 +106,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getPaymentMean().getId(), is(1L));
+        assertThat(resource.getPaymentMean(), is(1L));
     }
 
     @Test
@@ -120,7 +117,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories().get(0).getId(), is(1L));
+        assertThat(resource.getCategories().get(0), is(1L));
     }
 
     @Test
@@ -184,7 +181,7 @@ public class RecurringTransactionConverterTest {
     @Test
     public void entity_bank_account_maps_to_bank_account_entity_with_matching_id() {
         RecurringTransactionResource resource =
-                RecurringTransactionResource.builder().bankAccount(BankAccountResource.builder().id(1L).build())
+                RecurringTransactionResource.builder().bankAccount(1L)
                         .build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
@@ -195,7 +192,7 @@ public class RecurringTransactionConverterTest {
     @Test
     public void entity_payment_mean_maps_to_payment_mean_entity_with_matching_id() {
         RecurringTransactionResource resource =
-                RecurringTransactionResource.builder().paymentMean(PaymentMeanResource.builder().id(1L).build())
+                RecurringTransactionResource.builder().paymentMean(1L)
                         .build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
@@ -207,7 +204,7 @@ public class RecurringTransactionConverterTest {
     public void entity_categories_maps_to_list_of_category_entity_with_matching_ids() {
         RecurringTransactionResource resource =
                 RecurringTransactionResource.builder()
-                        .categories(Collections.singletonList(CategoryResource.builder().id(1L).build())).build();
+                        .categories(Collections.singletonList(1L)).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionRequest entity = converter.buildRequest(resource, null);

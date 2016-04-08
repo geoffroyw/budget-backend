@@ -1,9 +1,7 @@
 package io.yac.budget.api.resources;
 
-import io.katharsis.resource.annotations.JsonApiId;
-import io.katharsis.resource.annotations.JsonApiResource;
-import io.katharsis.resource.annotations.JsonApiToMany;
-import io.katharsis.resource.annotations.JsonApiToOne;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.yac.budget.api.serializer.JsonDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -12,10 +10,9 @@ import java.util.Objects;
 /**
  * Created by geoffroy on 07/02/2016.
  */
-@JsonApiResource(type = "transactions")
 public class TransactionResource {
 
-    @JsonApiId
+
     private Long id;
 
     private Integer amountCents;
@@ -30,18 +27,19 @@ public class TransactionResource {
 
     private Boolean isConfirmed;
 
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date date;
 
     private String description;
 
-    @JsonApiToMany
-    private List<CategoryResource> categories;
 
-    @JsonApiToOne
-    private BankAccountResource bankAccount;
+    private List<Long> categories;
 
-    @JsonApiToOne
-    private PaymentMeanResource paymentMean;
+
+    private Long bankAccount;
+
+
+    private Long paymentMean;
 
     public TransactionResource() {
     }
@@ -50,8 +48,8 @@ public class TransactionResource {
                                 String settlementCurrency, boolean isSettlementAmountIndicative, Boolean isConfirmed,
                                 Date date,
                                 String description,
-                                List<CategoryResource> categories,
-                                BankAccountResource bankAccount, PaymentMeanResource paymentMean) {
+                                List<Long> categories,
+                                Long bankAccount, Long paymentMean) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
@@ -118,27 +116,27 @@ public class TransactionResource {
         this.description = description;
     }
 
-    public List<CategoryResource> getCategories() {
+    public List<Long> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<CategoryResource> categories) {
+    public void setCategories(List<Long> categories) {
         this.categories = categories;
     }
 
-    public BankAccountResource getBankAccount() {
+    public Long getBankAccount() {
         return bankAccount;
     }
 
-    public void setBankAccount(BankAccountResource bankAccount) {
+    public void setBankAccount(Long bankAccount) {
         this.bankAccount = bankAccount;
     }
 
-    public PaymentMeanResource getPaymentMean() {
+    public Long getPaymentMean() {
         return paymentMean;
     }
 
-    public void setPaymentMean(PaymentMeanResource paymentMean) {
+    public void setPaymentMean(Long paymentMean) {
         this.paymentMean = paymentMean;
     }
 
@@ -207,9 +205,9 @@ public class TransactionResource {
         private Date date;
         private String description;
         private String type;
-        private List<CategoryResource> categories;
-        private BankAccountResource bankAccount;
-        private PaymentMeanResource paymentMean;
+        private List<Long> categories;
+        private Long bankAccount;
+        private Long paymentMean;
         private Integer settlementAmountCents;
         private String settlementCurrency;
         private boolean isSettlementAmountIndicative;
@@ -244,17 +242,17 @@ public class TransactionResource {
             return this;
         }
 
-        public Builder categories(List<CategoryResource> categories) {
+        public Builder categories(List<Long> categories) {
             this.categories = categories;
             return this;
         }
 
-        public Builder bankAccount(BankAccountResource bankAccount) {
+        public Builder bankAccount(Long bankAccount) {
             this.bankAccount = bankAccount;
             return this;
         }
 
-        public Builder paymentMean(PaymentMeanResource paymentMean) {
+        public Builder paymentMean(Long paymentMean) {
             this.paymentMean = paymentMean;
             return this;
         }

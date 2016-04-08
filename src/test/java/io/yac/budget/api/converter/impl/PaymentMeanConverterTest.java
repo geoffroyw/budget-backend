@@ -1,7 +1,6 @@
 package io.yac.budget.api.converter.impl;
 
 import io.yac.budget.api.resources.PaymentMeanResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.PaymentMean;
 import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
@@ -61,8 +60,8 @@ public class PaymentMeanConverterTest {
         PaymentMeanConverter converter = new PaymentMeanConverter();
         PaymentMeanResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions(), hasSize(2));
-        assertThat(resource.getTransactions().get(0).getId(), is(1L));
-        assertThat(resource.getTransactions().get(1).getId(), is(2L));
+        assertThat(resource.getTransactions().get(0), is(1L));
+        assertThat(resource.getTransactions().get(1), is(2L));
     }
 
     private PaymentMean.Builder prototypePaymentMean() {
@@ -92,7 +91,7 @@ public class PaymentMeanConverterTest {
     @Test
     public void entity_transactions_maps_to_transaction_entities_with_id_from_resource_transactions() {
         PaymentMeanResource resource = PaymentMeanResource.builder().transactions(
-                Collections.singletonList(TransactionResource.builder().id(1L).build())).build();
+                Collections.singletonList(1L)).build();
 
         Transaction transactionFromRepository = Transaction.builder().id(1L).build();
 

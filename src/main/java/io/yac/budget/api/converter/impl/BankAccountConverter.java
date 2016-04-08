@@ -3,7 +3,6 @@ package io.yac.budget.api.converter.impl;
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.BankAccount;
 import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
@@ -27,7 +26,7 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
     @Autowired
     BankAccountRepository bankAccountRepository;
 
-    public BankAccountConverter() {
+    BankAccountConverter() {
     }
 
     @VisibleForTesting
@@ -43,7 +42,7 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
                 .name(entity.getName())
                 .transactions(entity.getTransactions() == null ? null :
                               entity.getTransactions().stream()
-                                      .map(t -> TransactionResource.builder().id(t.getId()).build())
+                                      .map(Transaction::getId)
                                       .collect(Collectors.toList()))
                 .build();
     }
@@ -61,8 +60,7 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
         bankAccount.setName(resource.getName());
         bankAccount
                 .setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
-                        .findAll(resource.getTransactions().stream().map(TransactionResource::getId).collect(
-                                Collectors.toList())));
+                        .findAll(resource.getTransactions()));
 
 
         return bankAccount;

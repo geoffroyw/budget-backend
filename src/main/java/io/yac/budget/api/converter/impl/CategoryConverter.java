@@ -3,7 +3,6 @@ package io.yac.budget.api.converter.impl;
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.budget.api.converter.ResourceEntityConverter;
 import io.yac.budget.api.resources.CategoryResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.Category;
 import io.yac.budget.domain.Transaction;
 import io.yac.budget.repository.CategoryRepository;
@@ -40,7 +39,7 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
         return CategoryResource.builder().id(entity.getId()).name(entity.getName())
                 .transactions(entity.getTransactions() == null ? null :
                               entity.getTransactions().stream()
-                                      .map(t -> TransactionResource.builder().id(t.getId()).build())
+                                      .map(Transaction::getId)
                                       .collect(Collectors.toList())).build();
     }
 
@@ -56,8 +55,7 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
 
         category.setName(resource.getName());
         category.setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
-                .findAll(resource.getTransactions().stream().map(
-                        TransactionResource::getId).collect(Collectors.toSet())));
+                .findAll(resource.getTransactions()));
 
         return category;
     }

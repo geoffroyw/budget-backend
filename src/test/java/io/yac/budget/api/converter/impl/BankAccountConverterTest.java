@@ -1,7 +1,6 @@
 package io.yac.budget.api.converter.impl;
 
 import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.BankAccount;
 import io.yac.budget.domain.SupportedCurrency;
 import io.yac.budget.domain.Transaction;
@@ -64,7 +63,7 @@ public class BankAccountConverterTest {
 
         BankAccountConverter converter = new BankAccountConverter();
         BankAccountResource resource = converter.convertToResource(entity);
-        assertThat(resource.getTransactions().get(0).getId(), is(1L));
+        assertThat(resource.getTransactions().get(0), is(1L));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class BankAccountConverterTest {
     @Test
     public void entity_transactions_maps_to_transaction_entities_with_id_from_resource_transactions() {
         BankAccountResource resource = BankAccountResource.builder().transactions(
-                Collections.singletonList(TransactionResource.builder().id(1L).build())).build();
+                Collections.singletonList(1L)).build();
 
         Transaction transactionFromRepository = Transaction.builder().id(1L).build();
 

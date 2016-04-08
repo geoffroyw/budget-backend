@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by geoffroy on 03/04/2016.
@@ -44,5 +45,12 @@ public interface RecurringTransactionClient {
         }
         return response;
 
+    }
+
+    default List<RecurringTransactionResponse> findAllByOwner(CustomUserDetailsService.CurrentUser currentUser) {
+        List<RecurringTransactionResponse> recurringTransactionResponses = findAll();
+        return recurringTransactionResponses.stream()
+                .filter((transaction) -> transaction.getOwnerId().equals(currentUser.getId())).collect(
+                        Collectors.toList());
     }
 }

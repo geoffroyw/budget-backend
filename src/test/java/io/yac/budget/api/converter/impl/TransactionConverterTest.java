@@ -1,8 +1,5 @@
 package io.yac.budget.api.converter.impl;
 
-import io.yac.budget.api.resources.BankAccountResource;
-import io.yac.budget.api.resources.CategoryResource;
-import io.yac.budget.api.resources.PaymentMeanResource;
 import io.yac.budget.api.resources.TransactionResource;
 import io.yac.budget.domain.*;
 import io.yac.budget.repository.BankAccountRepository;
@@ -203,7 +200,7 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter(null, null, null, null, RATE_CONVERSION_CLIENT);
         TransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getBankAccount().getId(), is(1L));
+        assertThat(resource.getBankAccount(), is(1L));
     }
 
     @Test
@@ -214,7 +211,7 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter(null, null, null, null, RATE_CONVERSION_CLIENT);
         TransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getPaymentMean().getId(), is(1L));
+        assertThat(resource.getPaymentMean(), is(1L));
     }
 
     @Test
@@ -226,7 +223,7 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter(null, null, null, null, RATE_CONVERSION_CLIENT);
         TransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories().get(0).getId(), is(1L));
+        assertThat(resource.getCategories().get(0), is(1L));
     }
 
     @Test
@@ -310,7 +307,7 @@ public class TransactionConverterTest {
     @Test
     public void entity_bank_account_maps_to_bank_account_entity_with_matching_id() {
         TransactionResource resource =
-                TransactionResource.builder().bankAccount(BankAccountResource.builder().id(1L).build()).build();
+                TransactionResource.builder().bankAccount(1L).build();
 
         BankAccount bankAccountFromRepository = BankAccount.builder().id(1L).build();
 
@@ -335,7 +332,7 @@ public class TransactionConverterTest {
     @Test
     public void entity_payment_mean_maps_to_payment_mean_entity_with_matching_id() {
         TransactionResource resource =
-                TransactionResource.builder().paymentMean(PaymentMeanResource.builder().id(1L).build()).build();
+                TransactionResource.builder().paymentMean(1L).build();
 
         PaymentMean paymentMeanFromRepository = PaymentMean.builder().id(1L).build();
 
@@ -361,7 +358,7 @@ public class TransactionConverterTest {
     public void entity_categories_maps_to_list_of_category_entity_with_matching_ids() {
         TransactionResource resource =
                 TransactionResource.builder()
-                        .categories(Collections.singletonList(CategoryResource.builder().id(1L).build())).build();
+                        .categories(Collections.singletonList(1L)).build();
 
         Category categoryFromRepository = Category.builder().id(1L).build();
 
