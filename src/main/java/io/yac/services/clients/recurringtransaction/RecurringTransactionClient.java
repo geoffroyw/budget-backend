@@ -29,7 +29,7 @@ public interface RecurringTransactionClient {
     @RequestMapping(value = "/api/", method = RequestMethod.POST, consumes = "application/json")
     RecurringTransactionResponse create(@RequestBody RecurringTransactionRequest request);
 
-    @RequestMapping(value = "/api/{id}", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/api/{id}", method = RequestMethod.PUT, consumes = "application/json")
     RecurringTransactionResponse update(@PathVariable("id") Long id, @RequestBody RecurringTransactionRequest request);
 
 
