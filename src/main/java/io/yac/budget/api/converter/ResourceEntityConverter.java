@@ -7,5 +7,5 @@ public interface ResourceEntityConverter<R, E> {
 
     R convertToResource(E entity);
 
-    E convertToEntity(R resource);
+    E convertToEntity(R resource, Long id);
 }

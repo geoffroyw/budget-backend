@@ -81,7 +81,7 @@ public class BankAccountConverterTest {
                 BankAccountResource.builder().currency(SupportedCurrency.ZAR.getExternalName()).build();
 
         BankAccountConverter converter = new BankAccountConverter();
-        BankAccount entity = converter.convertToEntity(resource);
+        BankAccount entity = converter.convertToEntity(resource, null);
         assertThat(entity.getCurrency(), is(SupportedCurrency.ZAR));
     }
 
@@ -90,7 +90,7 @@ public class BankAccountConverterTest {
         BankAccountResource resource = BankAccountResource.builder().name("Known name").build();
 
         BankAccountConverter converter = new BankAccountConverter();
-        BankAccount entity = converter.convertToEntity(resource);
+        BankAccount entity = converter.convertToEntity(resource, null);
         assertThat(entity.getName(), is("Known name"));
     }
 
@@ -106,22 +106,22 @@ public class BankAccountConverterTest {
                 .thenReturn(Collections.singletonList(transactionFromRepository));
 
         BankAccountConverter converter = new BankAccountConverter(dummyTransactionRepository, null);
-        BankAccount entity = converter.convertToEntity(resource);
+        BankAccount entity = converter.convertToEntity(resource, null);
         assertThat(entity.getTransactions().get(0), is(transactionFromRepository));
     }
 
     @Test
-    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+    public void convertToEntity_updates_the_entity_if_an_id_is_passed_as_parameter() {
         BankAccountResource resource_of_existing_entity =
-                BankAccountResource.builder().id(1L).currency("CHF").build();
-        BankAccount BankAccountFromDb = BankAccount.builder().id(1L).build();
+                BankAccountResource.builder().currency("CHF").build();
+        BankAccount bankAccountFromDb = BankAccount.builder().id(1L).build();
 
         BankAccountRepository dummyBankAccountRepository = mock(BankAccountRepository.class);
-        when(dummyBankAccountRepository.findOne(1L)).thenReturn(BankAccountFromDb);
+        when(dummyBankAccountRepository.findOne(1L)).thenReturn(bankAccountFromDb);
 
         BankAccountConverter converter = new BankAccountConverter(null, dummyBankAccountRepository);
-        BankAccount entity = converter.convertToEntity(resource_of_existing_entity);
-        assertThat(entity, is(BankAccountFromDb));
+        BankAccount entity = converter.convertToEntity(resource_of_existing_entity, 1L);
+        assertThat(entity, is(bankAccountFromDb));
     }
 
 }

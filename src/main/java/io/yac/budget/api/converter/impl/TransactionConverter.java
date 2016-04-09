@@ -98,10 +98,10 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     }
 
     @Override
-    public Transaction convertToEntity(TransactionResource resource) {
+    public Transaction convertToEntity(TransactionResource resource, Long id) {
         Transaction transaction;
-        if (resource.getId() != null) {
-            transaction = transactionRepository.findOne(resource.getId());
+        if (id != null) {
+            transaction = transactionRepository.findOne(id);
         } else {
             transaction = new Transaction();
         }

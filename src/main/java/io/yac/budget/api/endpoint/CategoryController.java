@@ -53,7 +53,7 @@ public class CategoryController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     public @ResponseBody CategoryResource create(@RequestBody CategoryResource toBeCreated) {
-        Category category = categoryConverter.convertToEntity(toBeCreated);
+        Category category = categoryConverter.convertToEntity(toBeCreated, null);
         categoryRepository.save(category);
         return categoryConverter.convertToResource(category);
     }

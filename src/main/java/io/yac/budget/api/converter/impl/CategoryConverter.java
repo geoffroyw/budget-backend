@@ -44,12 +44,12 @@ public class CategoryConverter implements ResourceEntityConverter<CategoryResour
     }
 
     @Override
-    public Category convertToEntity(CategoryResource resource) {
+    public Category convertToEntity(CategoryResource resource, Long id) {
         Category category;
-        if (resource.getId() == null) {
+        if (id == null) {
             category = new Category();
         } else {
-            category = categoryRepository.findOne(resource.getId());
+            category = categoryRepository.findOne(id);
         }
 
 

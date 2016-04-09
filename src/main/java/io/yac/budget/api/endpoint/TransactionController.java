@@ -69,7 +69,7 @@ public class TransactionController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     public @ResponseBody TransactionResource create(@RequestBody TransactionResource toBeCreated) {
-        Transaction transaction = transactionConverter.convertToEntity(toBeCreated);
+        Transaction transaction = transactionConverter.convertToEntity(toBeCreated, null);
         transaction.setOwner(authenticationFacade.getCurrentUser());
         transactionRepository.save(transaction);
         return transactionConverter.convertToResource(transaction);
@@ -83,11 +83,8 @@ public class TransactionController {
             throw new ResourceNotFoundException("No transaction found.");
         }
 
-        if (!toBeUpdated.getId().equals(id)) {
-            throw new ResourceNotFoundException("No transaction found.");
-        }
 
-        Transaction transaction = transactionConverter.convertToEntity(toBeUpdated);
+        Transaction transaction = transactionConverter.convertToEntity(toBeUpdated, id);
         transaction.setOwner(authenticationFacade.getCurrentUser());
         transactionRepository.save(transaction);
         return transactionConverter.convertToResource(transaction);

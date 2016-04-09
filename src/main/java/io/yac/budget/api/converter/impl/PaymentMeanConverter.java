@@ -46,12 +46,12 @@ public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMean
     }
 
     @Override
-    public PaymentMean convertToEntity(PaymentMeanResource resource) {
+    public PaymentMean convertToEntity(PaymentMeanResource resource, Long id) {
         PaymentMean paymentMean;
-        if (resource.getId() == null) {
+        if (id == null) {
             paymentMean = new PaymentMean();
         } else {
-            paymentMean = paymentMeanRepository.findOne(resource.getId());
+            paymentMean = paymentMeanRepository.findOne(id);
         }
 
         paymentMean.setName(resource.getName());

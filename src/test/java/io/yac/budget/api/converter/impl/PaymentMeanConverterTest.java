@@ -74,7 +74,7 @@ public class PaymentMeanConverterTest {
         PaymentMeanResource resource = PaymentMeanResource.builder().name("Known name").build();
 
         PaymentMeanConverter converter = new PaymentMeanConverter();
-        PaymentMean entity = converter.convertToEntity(resource);
+        PaymentMean entity = converter.convertToEntity(resource, null);
         assertThat(entity.getName(), is("Known name"));
     }
 
@@ -84,7 +84,7 @@ public class PaymentMeanConverterTest {
                 PaymentMeanResource.builder().currency(SupportedCurrency.CAD.getExternalName()).build();
 
         PaymentMeanConverter converter = new PaymentMeanConverter();
-        PaymentMean entity = converter.convertToEntity(resource);
+        PaymentMean entity = converter.convertToEntity(resource, null);
         assertThat(entity.getCurrency(), is(SupportedCurrency.CAD));
     }
 
@@ -100,22 +100,22 @@ public class PaymentMeanConverterTest {
                 .thenReturn(Collections.singletonList(transactionFromRepository));
 
         PaymentMeanConverter converter = new PaymentMeanConverter(dummyTransactionRepository, null);
-        PaymentMean entity = converter.convertToEntity(resource);
+        PaymentMean entity = converter.convertToEntity(resource, null);
         assertThat(entity.getTransactions().get(0), is(transactionFromRepository));
     }
 
     @Test
-    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+    public void convertToEntity_updates_the_entity_if_a_non_null_id_is_passed_as_parameter() {
         PaymentMeanResource resource_of_existing_entity =
-                PaymentMeanResource.builder().id(1L).currency("CHF").build();
-        PaymentMean PaymentMeanFromDb = PaymentMean.builder().id(1L).build();
+                PaymentMeanResource.builder().currency("CHF").build();
+        PaymentMean paymentMeanFromDb = PaymentMean.builder().id(1L).build();
 
         PaymentMeanRepository dummyPaymentMeanRepository = mock(PaymentMeanRepository.class);
-        when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(PaymentMeanFromDb);
+        when(dummyPaymentMeanRepository.findOne(1L)).thenReturn(paymentMeanFromDb);
 
         PaymentMeanConverter converter = new PaymentMeanConverter(null, dummyPaymentMeanRepository);
-        PaymentMean entity = converter.convertToEntity(resource_of_existing_entity);
-        assertThat(entity, is(PaymentMeanFromDb));
+        PaymentMean entity = converter.convertToEntity(resource_of_existing_entity, 1L);
+        assertThat(entity, is(paymentMeanFromDb));
     }
 
 

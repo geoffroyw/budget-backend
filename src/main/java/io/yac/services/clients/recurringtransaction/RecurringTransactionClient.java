@@ -26,7 +26,7 @@ public interface RecurringTransactionClient {
     List<RecurringTransactionResponse> findAll();
 
 
-    @RequestMapping(value = "/api", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/api/", method = RequestMethod.POST, consumes = "application/json")
     RecurringTransactionResponse create(@RequestBody RecurringTransactionRequest request);
 
     @RequestMapping(value = "/api/{id}", method = RequestMethod.POST, consumes = "application/json")

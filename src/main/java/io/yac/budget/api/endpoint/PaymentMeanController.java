@@ -69,7 +69,7 @@ public class PaymentMeanController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     public @ResponseBody PaymentMeanResource create(@RequestBody PaymentMeanResource toBeCreated) {
-        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeCreated);
+        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeCreated, null);
         paymentMean.setOwner(authenticationFacade.getCurrentUser());
         paymentMeanRepository.save(paymentMean);
         return paymentMeanConverter.convertToResource(paymentMean);
@@ -83,11 +83,7 @@ public class PaymentMeanController {
             throw new ResourceNotFoundException("No payment mean found.");
         }
 
-        if (!toBeUpdated.getId().equals(id)) {
-            throw new ResourceNotFoundException("No payment mean found.");
-        }
-
-        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeUpdated);
+        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeUpdated, id);
         paymentMean.setOwner(authenticationFacade.getCurrentUser());
         paymentMeanRepository.save(paymentMean);
         return paymentMeanConverter.convertToResource(paymentMean);

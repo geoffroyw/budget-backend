@@ -69,7 +69,7 @@ public class CategoryConverterTest {
         CategoryResource resource = CategoryResource.builder().name("Known name").build();
 
         CategoryConverter converter = new CategoryConverter();
-        Category entity = converter.convertToEntity(resource);
+        Category entity = converter.convertToEntity(resource, null);
         assertThat(entity.getName(), is("Known name"));
     }
 
@@ -85,21 +85,21 @@ public class CategoryConverterTest {
                 .thenReturn(Collections.singletonList(transactionFromRepository));
 
         CategoryConverter converter = new CategoryConverter(dummyTransactionRepository, null);
-        Category entity = converter.convertToEntity(resource);
+        Category entity = converter.convertToEntity(resource, null);
         assertThat(entity.getTransactions().get(0), is(transactionFromRepository));
     }
 
     @Test
-    public void convertToEntity_updates_the_entity_if_the_resource_is_passed_with_an_id() {
+    public void convertToEntity_updates_the_entity_if_an_id_is_passed_as_parameter() {
         CategoryResource resource_of_existing_entity =
-                CategoryResource.builder().id(1L).name("Some name").build();
-        Category CategoryFromDb = Category.builder().id(1L).build();
+                CategoryResource.builder().name("Some name").build();
+        Category categoryFromDb = Category.builder().id(1L).build();
 
         CategoryRepository dummyCategoryRepository = mock(CategoryRepository.class);
-        when(dummyCategoryRepository.findOne(1L)).thenReturn(CategoryFromDb);
+        when(dummyCategoryRepository.findOne(1L)).thenReturn(categoryFromDb);
 
         CategoryConverter converter = new CategoryConverter(null, dummyCategoryRepository);
-        Category entity = converter.convertToEntity(resource_of_existing_entity);
-        assertThat(entity, is(CategoryFromDb));
+        Category entity = converter.convertToEntity(resource_of_existing_entity, 1L);
+        assertThat(entity, is(categoryFromDb));
     }
 }

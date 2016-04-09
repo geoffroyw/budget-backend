@@ -70,7 +70,7 @@ public class BankAccountController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     public @ResponseBody BankAccountResource create(@RequestBody BankAccountResource toBeCreated) {
-        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeCreated);
+        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeCreated, null);
         bankAccount.setOwner(authenticationFacade.getCurrentUser());
         bankAccountRepository.save(bankAccount);
         return bankAccountConverter.convertToResource(bankAccount);
@@ -84,11 +84,7 @@ public class BankAccountController {
             throw new ResourceNotFoundException("No bank account found.");
         }
 
-        if (!toBeUpdated.getId().equals(id)) {
-            throw new ResourceNotFoundException("No bank account found.");
-        }
-
-        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeUpdated);
+        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeUpdated, id);
         bankAccount.setOwner(authenticationFacade.getCurrentUser());
         bankAccountRepository.save(bankAccount);
         return bankAccountConverter.convertToResource(bankAccount);

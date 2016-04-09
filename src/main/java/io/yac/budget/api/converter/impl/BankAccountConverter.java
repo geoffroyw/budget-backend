@@ -48,12 +48,12 @@ public class BankAccountConverter implements ResourceEntityConverter<BankAccount
     }
 
     @Override
-    public BankAccount convertToEntity(BankAccountResource resource) {
+    public BankAccount convertToEntity(BankAccountResource resource, Long id) {
         BankAccount bankAccount;
-        if (resource.getId() == null) {
+        if (id == null) {
             bankAccount = new BankAccount();
         } else {
-            bankAccount = bankAccountRepository.findOne(resource.getId());
+            bankAccount = bankAccountRepository.findOne(id);
         }
 
         bankAccount.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
