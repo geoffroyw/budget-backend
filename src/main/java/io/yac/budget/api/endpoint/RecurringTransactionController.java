@@ -7,6 +7,8 @@ import io.yac.budget.recurring.transactions.client.RecurringTransactionRequest;
 import io.yac.budget.recurring.transactions.client.exception.ResourceNotFoundException;
 import io.yac.budget.recurring.transactions.client.resources.RecurringTransactionResponse;
 import io.yac.services.clients.recurringtransaction.RecurringTransactionClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,8 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/api/recurringTransactions")
 public class RecurringTransactionController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RecurringTransactionController.class);
+
     @Autowired
     RecurringTransactionConverter recurringTransactionConverter;
 
@@ -31,21 +35,18 @@ public class RecurringTransactionController {
     AuthenticationFacade authenticationFacade;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    List<RecurringTransactionResource> index() {
+    public @ResponseBody List<RecurringTransactionResource> index() {
 
         return StreamSupport
                 .stream(recurringTransactionClient.findAllByOwner(authenticationFacade.getCurrentUser()).spliterator(),
                         false)
-                .map(bankAccount -> recurringTransactionConverter.convertToResource(bankAccount)).collect(
+                .map(recurringTransaction -> recurringTransactionConverter.convertToResource(recurringTransaction)).collect(
                         Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public
-    @ResponseBody
-    RecurringTransactionResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody RecurringTransactionResource get(@PathVariable("id") Long id)
+            throws ResourceNotFoundException {
         RecurringTransactionResponse recurringTransactionResponse =
                 recurringTransactionClient.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -59,9 +60,7 @@ public class RecurringTransactionController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public
-    @ResponseBody
-    RecurringTransactionResource create(@RequestBody RecurringTransactionResource toBeCreated) {
+    public @ResponseBody RecurringTransactionResource create(@RequestBody RecurringTransactionResource toBeCreated) {
         RecurringTransactionRequest recurringTransactionRequest =
                 recurringTransactionConverter.buildRequest(toBeCreated, authenticationFacade.getCurrentUser().getId());
 
@@ -72,20 +71,23 @@ public class RecurringTransactionController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public
-    @ResponseBody
-    RecurringTransactionResource updated(@PathVariable("id") Long id,
-                                         @RequestBody RecurringTransactionResource toBeUpdated)
+    public @ResponseBody RecurringTransactionResource update(@PathVariable("id") Long id,
+                                                             @RequestBody RecurringTransactionResource toBeUpdated)
             throws ResourceNotFoundException {
         if (recurringTransactionClient.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
             throw new ResourceNotFoundException("No recurring transaction found.");
         }
 
 
-        RecurringTransactionRequest recurringTransactionRequest =
+        final RecurringTransactionRequest recurringTransactionRequest =
                 recurringTransactionConverter.buildRequest(toBeUpdated, authenticationFacade.getCurrentUser().getId());
-        RecurringTransactionResponse recurringTransactionResponse =
+
+        final RecurringTransactionResponse recurringTransactionResponse =
                 recurringTransactionClient.update(id, recurringTransactionRequest);
+
+        LOG.info(
+                "Recurring transaction service response for id " + id + " with request " + recurringTransactionRequest +
+                        " is " + recurringTransactionResponse);
         return recurringTransactionConverter.convertToResource(recurringTransactionResponse);
     }
 
