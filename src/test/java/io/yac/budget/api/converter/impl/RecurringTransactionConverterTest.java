@@ -19,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 public class RecurringTransactionConverterTest {
 
     @Test
-    public void resource_id_maps_to_entity_id() {
+    public void resource_id_maps_to_service_response_id() {
         RecurringTransactionResponse entity = prototypeValidRecurringTransactionResponse().id(1L).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
@@ -28,7 +28,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_amount_cents_maps_to_entity_amount_cents() {
+    public void resource_amount_cents_maps_to_service_response_amount_cents() {
         RecurringTransactionResponse entity = prototypeValidRecurringTransactionResponse().amountCents(12439).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
@@ -37,7 +37,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_is_active_maps_to_entity_is_active() {
+    public void resource_is_active_maps_to_service_response_is_active() {
         RecurringTransactionResponse entity = prototypeValidRecurringTransactionResponse().isActive(true).build();
 
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
@@ -46,7 +46,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_currency_maps_to_entity_currency_external_name() {
+    public void resource_currency_maps_to_service_response_currency_external_name() {
         RecurringTransactionResponse entity =
                 prototypeValidRecurringTransactionResponse().currency("EUR").build();
 
@@ -57,7 +57,7 @@ public class RecurringTransactionConverterTest {
 
 
     @Test
-    public void resource_description_maps_to_entity_description() {
+    public void resource_description_maps_to_service_response_description() {
         RecurringTransactionResponse entity =
                 prototypeValidRecurringTransactionResponse().description("some description").build();
 
@@ -67,7 +67,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_recurring_type_maps_to_entity_temporal_expression_type() {
+    public void resource_recurring_type_maps_to_service_response_temporal_expression_type() {
         RecurringTransactionResponse entity =
                 prototypeValidRecurringTransactionResponse().temporalExpressionType("Daily").build();
 
@@ -77,7 +77,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_last_run_one_maps_to_entity_last_run_on() {
+    public void resource_last_run_one_maps_to_service_response_last_run_on() {
         Date known_date = new Date();
         RecurringTransactionResponse entity =
                 prototypeValidRecurringTransactionResponse().lastRunOn(known_date).build();
