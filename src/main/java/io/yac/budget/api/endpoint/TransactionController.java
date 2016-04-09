@@ -43,8 +43,8 @@ public class TransactionController {
         this.transactionConverter = transactionConverter;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public List<TransactionResource> index() {
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<TransactionResource> index() {
 
         return StreamSupport
                 .stream(transactionRepository.findAllByOwner(authenticationFacade.getCurrentUser()).spliterator(),
@@ -54,7 +54,7 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public TransactionResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody TransactionResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         Transaction transaction =
                 transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -66,18 +66,18 @@ public class TransactionController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json",
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public TransactionResource create(@RequestBody TransactionResource toBeCreated) {
+    public @ResponseBody TransactionResource create(@RequestBody TransactionResource toBeCreated) {
         Transaction transaction = transactionConverter.convertToEntity(toBeCreated);
         transaction.setOwner(authenticationFacade.getCurrentUser());
         transactionRepository.save(transaction);
         return transactionConverter.convertToResource(transaction);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, produces = "application/json",
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public TransactionResource updated(@PathVariable("id") Long id, @RequestBody TransactionResource toBeUpdated)
+    public @ResponseBody TransactionResource updated(@PathVariable("id") Long id, @RequestBody TransactionResource toBeUpdated)
             throws ResourceNotFoundException {
         if (transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
             throw new ResourceNotFoundException("No transaction found.");

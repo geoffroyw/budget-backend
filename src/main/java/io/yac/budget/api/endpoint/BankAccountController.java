@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
  * Created by geoffroy on 08/04/2016.
  */
 @RestController
-@RequestMapping(value = "/api/bank-accounts")
+@RequestMapping(value = "/api/bankAccounts")
 public class BankAccountController {
 
     @Autowired
@@ -43,8 +43,8 @@ public class BankAccountController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public List<BankAccountResource> index() {
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<BankAccountResource> index() {
 
         return StreamSupport
                 .stream(bankAccountRepository.findByOwner(authenticationFacade.getCurrentUser()).spliterator(), false)
@@ -53,7 +53,7 @@ public class BankAccountController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public BankAccountResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody BankAccountResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         BankAccount bankAccount =
                 bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -67,18 +67,18 @@ public class BankAccountController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json",
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public BankAccountResource create(@RequestBody BankAccountResource toBeCreated) {
+    public @ResponseBody BankAccountResource create(@RequestBody BankAccountResource toBeCreated) {
         BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeCreated);
         bankAccount.setOwner(authenticationFacade.getCurrentUser());
         bankAccountRepository.save(bankAccount);
         return bankAccountConverter.convertToResource(bankAccount);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, produces = "application/json",
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public BankAccountResource updated(@PathVariable("id") Long id, @RequestBody BankAccountResource toBeUpdated)
+    public @ResponseBody BankAccountResource updated(@PathVariable("id") Long id, @RequestBody BankAccountResource toBeUpdated)
             throws ResourceNotFoundException {
         if (bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
             throw new ResourceNotFoundException("No bank account found.");

@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
  * Created by geoffroy on 08/04/2016.
  */
 @RestController
-@RequestMapping(value = "/api/payment-means")
+@RequestMapping(value = "/api/paymentMeans")
 public class PaymentMeanController {
 
     @Autowired
@@ -44,8 +44,8 @@ public class PaymentMeanController {
         this.paymentMeanConverter = paymentMeanConverter;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public List<PaymentMeanResource> index() {
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<PaymentMeanResource> index() {
 
         return StreamSupport
                 .stream(paymentMeanRepository.findByOwner(authenticationFacade.getCurrentUser()).spliterator(), false)
@@ -54,7 +54,7 @@ public class PaymentMeanController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public PaymentMeanResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody PaymentMeanResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         PaymentMean paymentMean =
                 paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -66,18 +66,18 @@ public class PaymentMeanController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json",
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public PaymentMeanResource create(@RequestBody PaymentMeanResource toBeCreated) {
+    public @ResponseBody PaymentMeanResource create(@RequestBody PaymentMeanResource toBeCreated) {
         PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeCreated);
         paymentMean.setOwner(authenticationFacade.getCurrentUser());
         paymentMeanRepository.save(paymentMean);
         return paymentMeanConverter.convertToResource(paymentMean);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, produces = "application/json",
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public PaymentMeanResource updated(@PathVariable("id") Long id, @RequestBody PaymentMeanResource toBeUpdated)
+    public @ResponseBody PaymentMeanResource updated(@PathVariable("id") Long id, @RequestBody PaymentMeanResource toBeUpdated)
             throws ResourceNotFoundException {
         if (paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
             throw new ResourceNotFoundException("No payment mean found.");

@@ -29,8 +29,8 @@ public class CategoryController {
     @Autowired
     AuthenticationFacade authenticationFacade;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public List<CategoryResource> index() {
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody  List<CategoryResource> index() {
 
         return StreamSupport
                 .stream(categoryRepository.findAll().spliterator(), false)
@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public CategoryResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody CategoryResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         Category category = categoryRepository.findOne(id);
 
         if (category == null) {
@@ -50,9 +50,9 @@ public class CategoryController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json",
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public CategoryResource create(@RequestBody CategoryResource toBeCreated) {
+    public @ResponseBody CategoryResource create(@RequestBody CategoryResource toBeCreated) {
         Category category = categoryConverter.convertToEntity(toBeCreated);
         categoryRepository.save(category);
         return categoryConverter.convertToResource(category);

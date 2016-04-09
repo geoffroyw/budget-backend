@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
  * Created by geoffroy on 08/04/2016.
  */
 @RestController
-@RequestMapping(value = "/api/recurring-transactions")
+@RequestMapping(value = "/api/recurringTransactions")
 public class RecurringTransactionController {
 
     @Autowired
@@ -30,8 +30,8 @@ public class RecurringTransactionController {
     @Autowired
     AuthenticationFacade authenticationFacade;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    public List<RecurringTransactionResource> index() {
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<RecurringTransactionResource> index() {
 
         return StreamSupport
                 .stream(recurringTransactionClient.findAllByOwner(authenticationFacade.getCurrentUser()).spliterator(),
@@ -41,7 +41,7 @@ public class RecurringTransactionController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public RecurringTransactionResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    public @ResponseBody RecurringTransactionResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         RecurringTransactionResponse recurringTransactionResponse =
                 recurringTransactionClient.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -53,9 +53,9 @@ public class RecurringTransactionController {
     }
 
 
-    @RequestMapping(value = "/", method = RequestMethod.POST, produces = "application/json",
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public RecurringTransactionResource create(@RequestBody RecurringTransactionResource toBeCreated) {
+    public @ResponseBody RecurringTransactionResource create(@RequestBody RecurringTransactionResource toBeCreated) {
         RecurringTransactionRequest recurringTransactionRequest =
                 recurringTransactionConverter.buildRequest(toBeCreated, authenticationFacade.getCurrentUser().getId());
 
@@ -64,9 +64,9 @@ public class RecurringTransactionController {
         return recurringTransactionConverter.convertToResource(recurringTransactionResponse);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, produces = "application/json",
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public RecurringTransactionResource updated(@PathVariable("id") Long id,
+    public @ResponseBody RecurringTransactionResource updated(@PathVariable("id") Long id,
                                                 @RequestBody RecurringTransactionResource toBeUpdated)
             throws ResourceNotFoundException {
         if (recurringTransactionClient.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
