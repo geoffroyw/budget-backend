@@ -53,6 +53,7 @@ dependencies {
     compile('io.yac.budget:recurring-transaction-client:0.0.1-RELEASE')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
     compile('org.springframework.cloud:spring-cloud-starter-feign')
+    compile('org.springframework.cloud:spring-cloud-starter-hystrix')
     compile('org.flywaydb:flyway-core:3.2.1')
     runtime('org.postgresql:postgresql')
     runtime('org.reflections:reflections:0.9.9')
