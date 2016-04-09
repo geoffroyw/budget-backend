@@ -1,7 +1,6 @@
 package io.yac.budget.api.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.stereotype.Component;
@@ -20,10 +19,11 @@ import java.util.Date;
 public class JsonDateSerializer extends JsonSerializer<Date> {
     @Override
     public void serialize(Date date, JsonGenerator gen, SerializerProvider serializers)
-            throws IOException, JsonProcessingException {
-
-        gen.writeString(LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault())
-                .format(DateTimeFormatter.ISO_DATE_TIME));
+            throws IOException {
+        
+        gen.writeString(
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault()).toLocalDate()
+                        .format(DateTimeFormatter.ISO_DATE_TIME));
 
     }
 }
