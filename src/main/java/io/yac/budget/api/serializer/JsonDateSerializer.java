@@ -20,10 +20,10 @@ public class JsonDateSerializer extends JsonSerializer<Date> {
     @Override
     public void serialize(Date date, JsonGenerator gen, SerializerProvider serializers)
             throws IOException {
-        
+
         gen.writeString(
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneId.systemDefault()).toLocalDate()
-                        .format(DateTimeFormatter.ISO_DATE_TIME));
+                        .format(DateTimeFormatter.ISO_DATE));
 
     }
 }
