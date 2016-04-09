@@ -9,10 +9,7 @@ spring:
     username: budget
     password: budget
 
-katharsis:
-  resourcePackage: io.yac.budget.api
-  domainName: http://localhost:8080
-  pathPrefix: /api
+
 
 management:
   port: 8081
