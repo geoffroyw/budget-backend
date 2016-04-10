@@ -60,7 +60,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
         Integer settlementAmount = entity.getSettlementAmountCents();
 
         String settlementCurrency;
-        if (entity.getSettlementCurrency() == entity.getPaymentMean().getCurrency()) {
+        if (entity.getCurrency() == entity.getPaymentMean().getCurrency()) {
             settlementAmount = entity.getAmountCents();
             settlementCurrency = entity.getCurrency().getExternalName();
         } else {

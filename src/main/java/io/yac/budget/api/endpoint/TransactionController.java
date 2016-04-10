@@ -85,7 +85,6 @@ public class TransactionController {
 
 
         Transaction transaction = transactionConverter.convertToEntity(toBeUpdated, id);
-        transaction.setOwner(authenticationFacade.getCurrentUser());
         transactionRepository.save(transaction);
         return transactionConverter.convertToResource(transaction);
     }
