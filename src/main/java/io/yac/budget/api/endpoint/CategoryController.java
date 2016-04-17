@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by geoffroy on 08/04/2016.
@@ -30,17 +29,16 @@ public class CategoryController {
     AuthenticationFacade authenticationFacade;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody  List<CategoryResource> index() {
+    public @ResponseBody List<CategoryResource> index() {
 
-        return StreamSupport
-                .stream(categoryRepository.findAll().spliterator(), false)
+        return categoryRepository.findByOwner(authenticationFacade.getCurrentUser()).stream()
                 .map(category -> categoryConverter.convertToResource(category)).collect(
                         Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody CategoryResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
-        Category category = categoryRepository.findOne(id);
+        Category category = categoryRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
         if (category == null) {
             throw new ResourceNotFoundException("No category found");
@@ -54,6 +52,7 @@ public class CategoryController {
                     consumes = "application/json")
     public @ResponseBody CategoryResource create(@RequestBody CategoryResource toBeCreated) {
         Category category = categoryConverter.convertToEntity(toBeCreated, null);
+        category.setOwner(authenticationFacade.getCurrentUser());
         categoryRepository.save(category);
         return categoryConverter.convertToResource(category);
     }

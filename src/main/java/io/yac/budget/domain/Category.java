@@ -1,5 +1,7 @@
 package io.yac.budget.domain;
 
+import io.yac.auth.user.model.User;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +18,16 @@ public class Category extends TimestampableEntity {
 
     private List<Transaction> transactions = new ArrayList<>();
 
+    private User owner;
+
     public Category() {
     }
 
-    private Category(Long id, String name, List<Transaction> transactions) {
+    private Category(Long id, String name, List<Transaction> transactions, User owner) {
         this.id = id;
         this.name = name;
         this.transactions = transactions;
+        this.owner = owner;
     }
 
     public static Builder builder() {
@@ -58,10 +63,21 @@ public class Category extends TimestampableEntity {
         this.transactions = transactions;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     public static class Builder {
         private Long id;
         private String name;
         private List<Transaction> transactions;
+        private User owner;
 
         public Builder id(Long id) {
             this.id = id;
@@ -78,8 +94,13 @@ public class Category extends TimestampableEntity {
             return this;
         }
 
+        public Builder owner(User owner) {
+            this.owner = owner;
+            return this;
+        }
+
         public Category build() {
-            return new Category(id, name, transactions);
+            return new Category(id, name, transactions, owner);
         }
     }
 }
