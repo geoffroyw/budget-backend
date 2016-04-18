@@ -5,14 +5,15 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:postgresql://localhost:5432/budget_development
-    username: budget
-    password: budget
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+    #driver-class-name: org.postgresql.Driver
+    driverClassName:  org.postgresql.Driver
 
 
-
-management:
-  port: 8081
+#management:
+#  port: 8081
 
 eureka:
   instance:

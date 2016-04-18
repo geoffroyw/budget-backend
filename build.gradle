@@ -15,6 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+
 jar {
     baseName = 'backend'
     version = '0.0.1-SNAPSHOT'
@@ -34,7 +35,7 @@ repositories {
     mavenCentral()
     maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
-    maven { url "http://artifactory.yac.io/repository/yac-release"}
+    maven { url "http://artifactory.yac.io/repository/yac-release" }
 
 }
 
@@ -61,6 +62,11 @@ dependencies {
     testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
     testCompile("com.jayway.jsonpath:json-path")
     testCompile("com.jayway.jsonpath:json-path-assert")
+}
+
+task stage {
+    dependsOn build
+    test.enabled = false
 }
 
 
