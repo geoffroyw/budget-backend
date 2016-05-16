@@ -1,8 +1,8 @@
-package io.yac.api.endpoint;
+package io.yac.transaction.api.endpoint;
 
 import io.yac.Application;
 import io.yac.transaction.api.converter.TransactionConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.api.factory.BankAccountFactory;
 import io.yac.api.factory.PaymentMeanFactory;
 import io.yac.api.factory.TransactionFactory;
@@ -11,7 +11,7 @@ import io.yac.transaction.api.TransactionResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.transaction.api.endpoint.TransactionController;
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;

@@ -1,7 +1,7 @@
 package io.yac.transaction.api.endpoint;
 
 import io.yac.transaction.api.converter.RecurringTransactionConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.transaction.api.RecurringTransactionResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.transaction.domain.RecurringTransaction;

@@ -1,4 +1,4 @@
-package io.yac.api.converter.impl;
+package io.yac.categories.api.converter;
 
 import io.yac.categories.api.CategoryResource;
 import io.yac.categories.api.converter.CategoryConverter;

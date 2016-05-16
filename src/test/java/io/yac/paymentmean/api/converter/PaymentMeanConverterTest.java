@@ -1,9 +1,9 @@
-package io.yac.api.converter.impl;
+package io.yac.paymentmean.api.converter;
 
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.paymentmean.api.converter.PaymentMeanConverter;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.transaction.domain.Transaction;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.transaction.repository.TransactionRepository;

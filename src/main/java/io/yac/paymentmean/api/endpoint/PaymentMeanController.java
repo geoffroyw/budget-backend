@@ -2,7 +2,7 @@ package io.yac.paymentmean.api.endpoint;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.paymentmean.api.converter.PaymentMeanConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.paymentmean.domain.PaymentMean;

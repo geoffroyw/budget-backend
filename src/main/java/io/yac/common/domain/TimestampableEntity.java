@@ -1,4 +1,4 @@
-package io.yac.core.domain;
+package io.yac.common.domain;
 
 import javax.persistence.*;
 import java.util.Date;

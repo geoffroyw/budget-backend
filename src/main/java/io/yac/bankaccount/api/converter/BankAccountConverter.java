@@ -1,10 +1,10 @@
 package io.yac.bankaccount.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.api.converter.ResourceEntityConverter;
+import io.yac.common.api.converter.ResourceEntityConverter;
 import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.bankaccount.domain.BankAccount;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.transaction.domain.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.transaction.repository.TransactionRepository;

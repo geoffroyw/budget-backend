@@ -1,4 +1,4 @@
-package io.yac.api.config;
+package io.yac.common.api.config;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

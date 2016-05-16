@@ -1,8 +1,8 @@
-package io.yac.api.endpoint;
+package io.yac.paymentmean.api.endpoint;
 
 import io.yac.Application;
 import io.yac.paymentmean.api.converter.PaymentMeanConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.api.factory.UserFactory;
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.auth.facade.AuthenticationFacade;
@@ -10,7 +10,7 @@ import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.auth.user.model.User;
 import io.yac.paymentmean.api.endpoint.PaymentMeanController;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;

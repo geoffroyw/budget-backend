@@ -1,10 +1,10 @@
 package io.yac.paymentmean.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.api.converter.ResourceEntityConverter;
+import io.yac.common.api.converter.ResourceEntityConverter;
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.transaction.domain.Transaction;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.transaction.repository.TransactionRepository;

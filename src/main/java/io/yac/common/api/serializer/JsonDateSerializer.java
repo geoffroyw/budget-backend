@@ -1,4 +1,4 @@
-package io.yac.api.serializer;
+package io.yac.common.api.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

@@ -1,4 +1,4 @@
-package io.yac.api.converter;
+package io.yac.common.api.converter;
 
 /**
  * Created by geoffroy on 07/02/2016.

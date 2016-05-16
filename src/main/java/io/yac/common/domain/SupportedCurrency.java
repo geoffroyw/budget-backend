@@ -1,4 +1,4 @@
-package io.yac.core.domain;
+package io.yac.common.domain;
 
 /**
  * Created by geoffroy on 20/02/2016.

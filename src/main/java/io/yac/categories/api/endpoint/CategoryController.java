@@ -1,7 +1,7 @@
 package io.yac.categories.api.endpoint;
 
 import io.yac.categories.api.converter.CategoryConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.categories.api.CategoryResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.categories.domain.Category;

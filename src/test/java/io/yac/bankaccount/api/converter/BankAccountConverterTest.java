@@ -1,9 +1,9 @@
-package io.yac.api.converter.impl;
+package io.yac.bankaccount.api.converter;
 
 import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.bankaccount.api.converter.BankAccountConverter;
 import io.yac.bankaccount.domain.BankAccount;
-import io.yac.core.domain.SupportedCurrency;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.transaction.domain.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.transaction.repository.TransactionRepository;

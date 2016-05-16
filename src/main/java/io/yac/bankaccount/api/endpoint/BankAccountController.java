@@ -2,7 +2,7 @@ package io.yac.bankaccount.api.endpoint;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.bankaccount.api.converter.BankAccountConverter;
-import io.yac.api.exceptions.ResourceNotFoundException;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.bankaccount.domain.BankAccount;

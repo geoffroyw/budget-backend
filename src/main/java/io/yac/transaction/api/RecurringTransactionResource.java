@@ -1,7 +1,7 @@
 package io.yac.transaction.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.yac.api.serializer.JsonDateSerializer;
+import io.yac.common.api.serializer.JsonDateSerializer;
 
 import java.util.Date;
 import java.util.List;

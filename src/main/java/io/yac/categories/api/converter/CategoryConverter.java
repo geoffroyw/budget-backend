@@ -1,7 +1,7 @@
 package io.yac.categories.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.api.converter.ResourceEntityConverter;
+import io.yac.common.api.converter.ResourceEntityConverter;
 import io.yac.categories.api.CategoryResource;
 import io.yac.categories.domain.Category;
 import io.yac.transaction.domain.Transaction;

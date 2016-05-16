@@ -1,7 +1,7 @@
 package io.yac.categories.domain;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.TimestampableEntity;
+import io.yac.common.domain.TimestampableEntity;
 import io.yac.transaction.domain.Transaction;
 
 import javax.persistence.*;
