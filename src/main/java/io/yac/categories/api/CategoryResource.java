@@ -1,4 +1,4 @@
-package io.yac.api.resources;
+package io.yac.categories.api;
 
 
 import java.util.List;

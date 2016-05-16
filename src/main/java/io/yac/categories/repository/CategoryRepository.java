@@ -1,7 +1,7 @@
-package io.yac.core.repository;
+package io.yac.categories.repository;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.Category;
+import io.yac.categories.domain.Category;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

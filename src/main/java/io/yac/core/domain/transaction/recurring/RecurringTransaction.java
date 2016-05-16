@@ -1,6 +1,7 @@
 package io.yac.core.domain.transaction.recurring;
 
 import io.yac.auth.user.model.User;
+import io.yac.categories.domain.Category;
 import io.yac.core.domain.*;
 import io.yac.scheduler.Schedulable;
 import io.yac.scheduler.expression.TemporalExpression;

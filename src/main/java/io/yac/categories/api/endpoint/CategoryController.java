@@ -1,11 +1,11 @@
-package io.yac.api.endpoint;
+package io.yac.categories.api.endpoint;
 
-import io.yac.api.converter.impl.CategoryConverter;
+import io.yac.categories.api.converter.CategoryConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
-import io.yac.api.resources.CategoryResource;
+import io.yac.categories.api.CategoryResource;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.core.domain.Category;
-import io.yac.core.repository.CategoryRepository;
+import io.yac.categories.domain.Category;
+import io.yac.categories.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

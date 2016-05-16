@@ -1,9 +1,10 @@
 package io.yac.api.converter.impl;
 
-import io.yac.api.resources.CategoryResource;
-import io.yac.core.domain.Category;
+import io.yac.categories.api.CategoryResource;
+import io.yac.categories.api.converter.CategoryConverter;
+import io.yac.categories.domain.Category;
 import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.CategoryRepository;
+import io.yac.categories.repository.CategoryRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
 import org.junit.Test;
 

@@ -1,11 +1,11 @@
-package io.yac.api.converter.impl;
+package io.yac.categories.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.api.converter.ResourceEntityConverter;
-import io.yac.api.resources.CategoryResource;
-import io.yac.core.domain.Category;
+import io.yac.categories.api.CategoryResource;
+import io.yac.categories.domain.Category;
 import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.CategoryRepository;
+import io.yac.categories.repository.CategoryRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
