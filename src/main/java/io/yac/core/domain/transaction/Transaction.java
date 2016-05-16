@@ -1,6 +1,7 @@
 package io.yac.core.domain.transaction;
 
 import io.yac.auth.user.model.User;
+import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
 import io.yac.core.domain.*;
 

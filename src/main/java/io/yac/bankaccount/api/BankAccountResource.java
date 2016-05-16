@@ -1,4 +1,4 @@
-package io.yac.api.resources;
+package io.yac.bankaccount.api;
 
 import java.util.List;
 import java.util.Objects;

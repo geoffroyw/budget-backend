@@ -1,12 +1,12 @@
-package io.yac.api.converter.impl;
+package io.yac.bankaccount.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.api.converter.ResourceEntityConverter;
-import io.yac.api.resources.BankAccountResource;
-import io.yac.core.domain.BankAccount;
+import io.yac.bankaccount.api.BankAccountResource;
+import io.yac.bankaccount.domain.BankAccount;
 import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.BankAccountRepository;
+import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

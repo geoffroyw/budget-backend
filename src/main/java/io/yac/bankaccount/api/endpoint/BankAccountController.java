@@ -1,12 +1,12 @@
-package io.yac.api.endpoint;
+package io.yac.bankaccount.api.endpoint;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.api.converter.impl.BankAccountConverter;
+import io.yac.bankaccount.api.converter.BankAccountConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
-import io.yac.api.resources.BankAccountResource;
+import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.core.domain.BankAccount;
-import io.yac.core.repository.BankAccountRepository;
+import io.yac.bankaccount.domain.BankAccount;
+import io.yac.bankaccount.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

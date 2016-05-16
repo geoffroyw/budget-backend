@@ -1,17 +1,18 @@
 package io.yac.api.endpoint;
 
 import io.yac.Application;
-import io.yac.api.converter.impl.BankAccountConverter;
+import io.yac.bankaccount.api.converter.BankAccountConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
 import io.yac.api.factory.BankAccountFactory;
 import io.yac.api.factory.UserFactory;
-import io.yac.api.resources.BankAccountResource;
+import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService.CurrentUser;
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.BankAccount;
+import io.yac.bankaccount.api.endpoint.BankAccountController;
+import io.yac.bankaccount.domain.BankAccount;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.repository.BankAccountRepository;
+import io.yac.bankaccount.repository.BankAccountRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

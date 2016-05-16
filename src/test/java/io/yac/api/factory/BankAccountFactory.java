@@ -1,9 +1,9 @@
 package io.yac.api.factory;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.BankAccount;
+import io.yac.bankaccount.domain.BankAccount;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.repository.BankAccountRepository;
+import io.yac.bankaccount.repository.BankAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

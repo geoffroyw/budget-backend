@@ -1,7 +1,7 @@
-package io.yac.core.repository;
+package io.yac.bankaccount.repository;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.BankAccount;
+import io.yac.bankaccount.domain.BankAccount;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

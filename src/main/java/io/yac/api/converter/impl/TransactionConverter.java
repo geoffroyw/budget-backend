@@ -6,7 +6,7 @@ import io.yac.api.resources.TransactionResource;
 import io.yac.categories.domain.Category;
 import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.BankAccountRepository;
+import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.core.repository.PaymentMeanRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
