@@ -12,15 +12,11 @@ spring:
     driverClassName:  org.postgresql.Driver
 
 
+management:
+  security:
+    enabled: true
+  context-path: "/admin"
+
+
 #management:
 #  port: 8081
-
-eureka:
-  instance:
-    leaseRenewalIntervalInSeconds: 10
-    metadataMap:
-      instanceId: ${vcap:application:instance_id:${spring:application:name}:${spring:application:instance_id:${server:port}}}
-  client:
-    registryFetchIntervalSeconds: 5
-    healthcheck:
-      enabled: true
