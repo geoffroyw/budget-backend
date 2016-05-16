@@ -1,12 +1,12 @@
-package io.yac.api.converter.impl;
+package io.yac.paymentmean.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.api.converter.ResourceEntityConverter;
-import io.yac.api.resources.PaymentMeanResource;
-import io.yac.core.domain.PaymentMean;
+import io.yac.paymentmean.api.PaymentMeanResource;
+import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

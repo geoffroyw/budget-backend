@@ -4,6 +4,7 @@ import io.yac.auth.user.model.User;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
 import io.yac.core.domain.*;
+import io.yac.paymentmean.domain.PaymentMean;
 
 import javax.persistence.*;
 import java.util.ArrayList;

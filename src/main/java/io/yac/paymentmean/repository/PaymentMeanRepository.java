@@ -1,7 +1,7 @@
-package io.yac.core.repository;
+package io.yac.paymentmean.repository;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.PaymentMean;
+import io.yac.paymentmean.domain.PaymentMean;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

@@ -4,7 +4,7 @@ import io.yac.Application;
 import io.yac.auth.user.model.User;
 import io.yac.api.factory.UserFactory;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

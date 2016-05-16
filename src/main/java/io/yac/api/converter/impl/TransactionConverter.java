@@ -8,7 +8,7 @@ import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.core.repository.transaction.TransactionRepository;
 import io.yac.services.clients.rate.RateConversionClient;
 import io.yac.services.clients.rate.RateConversionClient.RateConversionResponse;

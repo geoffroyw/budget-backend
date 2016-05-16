@@ -1,12 +1,12 @@
-package io.yac.api.endpoint;
+package io.yac.paymentmean.api.endpoint;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.api.converter.impl.PaymentMeanConverter;
+import io.yac.paymentmean.api.converter.PaymentMeanConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
-import io.yac.api.resources.PaymentMeanResource;
+import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.core.domain.PaymentMean;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.domain.PaymentMean;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,9 +1,9 @@
 package io.yac.core.initializer;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.PaymentMean;
+import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

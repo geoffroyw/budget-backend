@@ -1,6 +1,8 @@
-package io.yac.core.domain;
+package io.yac.paymentmean.domain;
 
 import io.yac.auth.user.model.User;
+import io.yac.core.domain.SupportedCurrency;
+import io.yac.core.domain.TimestampableEntity;
 import io.yac.core.domain.transaction.Transaction;
 
 import javax.persistence.*;

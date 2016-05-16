@@ -8,7 +8,7 @@ import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.recurring.RecurringTransaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.core.repository.transaction.RecurringTransactionRepository;
 import io.yac.scheduler.expression.TemporalExpression;
 import org.springframework.beans.factory.annotation.Autowired;

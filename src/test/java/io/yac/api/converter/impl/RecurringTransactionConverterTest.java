@@ -3,12 +3,12 @@ package io.yac.api.converter.impl;
 import io.yac.api.resources.RecurringTransactionResource;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
-import io.yac.core.domain.PaymentMean;
+import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
 import io.yac.core.domain.transaction.recurring.RecurringTransaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
-import io.yac.core.repository.PaymentMeanRepository;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.scheduler.expression.TemporalExpression.TemporalExpressionType;
 import org.junit.Test;
 
