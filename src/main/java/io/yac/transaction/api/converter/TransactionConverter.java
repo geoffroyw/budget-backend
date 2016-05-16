@@ -7,13 +7,15 @@ import io.yac.categories.repository.CategoryRepository;
 import io.yac.common.api.converter.ResourceEntityConverter;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.rates.RateConversionService;
 import io.yac.rates.RateConversionResponse;
+import io.yac.rates.RateConversionService;
 import io.yac.rates.exceptions.NoRateException;
 import io.yac.rates.exceptions.UnknownCurrencyException;
 import io.yac.transaction.api.TransactionResource;
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jdk.nashorn.internal.codegen.Compiler.LOG;
 
 /**
  * Created by geoffroy on 07/02/2016.
  */
 @Service
 public class TransactionConverter implements ResourceEntityConverter<TransactionResource, Transaction> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TransactionConverter.class);
 
     @Autowired
     BankAccountRepository bankAccountRepository;
@@ -82,7 +85,7 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
                                     settlementCurrency);
                 } catch (UnknownCurrencyException | NoRateException e) {
                     rateConversionResponseResponse = null;
-                    LOG.severe("Exception while converting amount", e);
+                    LOG.error("Exception while converting amount", e);
                 }
                 if (rateConversionResponseResponse != null) {
                     BigDecimal amountInPaymentMeanCurrency = rateConversionResponseResponse.getAmountInToCurrency();
