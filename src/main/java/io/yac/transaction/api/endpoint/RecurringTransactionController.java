@@ -1,11 +1,11 @@
-package io.yac.api.endpoint;
+package io.yac.transaction.api.endpoint;
 
-import io.yac.api.converter.impl.RecurringTransactionConverter;
+import io.yac.transaction.api.converter.RecurringTransactionConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
-import io.yac.api.resources.RecurringTransactionResource;
+import io.yac.transaction.api.RecurringTransactionResource;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.core.domain.transaction.recurring.RecurringTransaction;
-import io.yac.core.repository.transaction.RecurringTransactionRepository;
+import io.yac.transaction.domain.RecurringTransaction;
+import io.yac.transaction.repository.RecurringTransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

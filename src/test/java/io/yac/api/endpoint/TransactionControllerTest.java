@@ -1,19 +1,20 @@
 package io.yac.api.endpoint;
 
 import io.yac.Application;
-import io.yac.api.converter.impl.TransactionConverter;
+import io.yac.transaction.api.converter.TransactionConverter;
 import io.yac.api.exceptions.ResourceNotFoundException;
 import io.yac.api.factory.BankAccountFactory;
 import io.yac.api.factory.PaymentMeanFactory;
 import io.yac.api.factory.TransactionFactory;
 import io.yac.api.factory.UserFactory;
-import io.yac.api.resources.TransactionResource;
+import io.yac.transaction.api.TransactionResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.auth.user.model.User;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.api.endpoint.TransactionController;
+import io.yac.transaction.domain.Transaction;
+import io.yac.transaction.repository.TransactionRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

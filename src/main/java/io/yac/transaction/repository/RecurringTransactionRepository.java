@@ -1,7 +1,7 @@
-package io.yac.core.repository.transaction;
+package io.yac.transaction.repository;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.transaction.recurring.RecurringTransaction;
+import io.yac.transaction.domain.RecurringTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

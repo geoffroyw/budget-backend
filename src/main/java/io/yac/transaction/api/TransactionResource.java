@@ -1,4 +1,4 @@
-package io.yac.api.resources;
+package io.yac.transaction.api;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.api.serializer.JsonDateSerializer;

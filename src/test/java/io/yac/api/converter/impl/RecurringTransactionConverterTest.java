@@ -1,11 +1,12 @@
 package io.yac.api.converter.impl;
 
-import io.yac.api.resources.RecurringTransactionResource;
+import io.yac.transaction.api.RecurringTransactionResource;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.recurring.RecurringTransaction;
+import io.yac.transaction.api.converter.RecurringTransactionConverter;
+import io.yac.transaction.domain.RecurringTransaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.paymentmean.repository.PaymentMeanRepository;

@@ -1,15 +1,16 @@
 package io.yac.api.converter.impl;
 
-import io.yac.api.resources.TransactionResource;
+import io.yac.transaction.api.TransactionResource;
 import io.yac.categories.domain.Category;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.core.domain.*;
-import io.yac.core.domain.transaction.Transaction;
+import io.yac.transaction.api.converter.TransactionConverter;
+import io.yac.transaction.domain.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.repository.TransactionRepository;
 import io.yac.services.clients.rate.RateConversionClient;
 import io.yac.services.clients.rate.RateConversionClient.RateConversionResponse;
 import org.junit.Before;

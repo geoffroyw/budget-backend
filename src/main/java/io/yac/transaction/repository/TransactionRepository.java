@@ -1,7 +1,7 @@
-package io.yac.core.repository.transaction;
+package io.yac.transaction.repository;
 
 import io.yac.auth.user.model.User;
-import io.yac.core.domain.transaction.Transaction;
+import io.yac.transaction.domain.Transaction;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

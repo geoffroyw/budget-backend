@@ -1,15 +1,15 @@
-package io.yac.api.converter.impl;
+package io.yac.transaction.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.api.converter.ResourceEntityConverter;
-import io.yac.api.resources.RecurringTransactionResource;
+import io.yac.transaction.api.RecurringTransactionResource;
 import io.yac.categories.domain.Category;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.recurring.RecurringTransaction;
+import io.yac.transaction.domain.RecurringTransaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.core.repository.transaction.RecurringTransactionRepository;
+import io.yac.transaction.repository.RecurringTransactionRepository;
 import io.yac.scheduler.expression.TemporalExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

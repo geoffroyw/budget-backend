@@ -4,9 +4,9 @@ import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.paymentmean.api.converter.PaymentMeanConverter;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.Transaction;
+import io.yac.transaction.domain.Transaction;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.repository.TransactionRepository;
 import org.junit.Test;
 
 import java.util.Arrays;

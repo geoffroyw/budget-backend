@@ -1,13 +1,10 @@
-package io.yac.core.domain.transaction.recurring;
+package io.yac.transaction.domain;
 
 import io.yac.auth.user.model.User;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
 import io.yac.core.domain.*;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.scheduler.Schedulable;
-import io.yac.scheduler.expression.TemporalExpression;
-import io.yac.scheduler.expression.TemporalExpression.TemporalExpressionType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,12 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by geoffroy on 16/05/2016.
+ * Created by geoffroy on 07/02/2016.
  */
 @Entity
-@Table(name = "recurring_transaction")
-public class RecurringTransaction extends TimestampableEntity implements Schedulable {
-
+public class Transaction extends TimestampableEntity {
 
     private Long id;
 
@@ -28,7 +23,15 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     private SupportedCurrency currency;
 
+    private Integer settlementAmountCents;
+
+    private SupportedCurrency settlementCurrency;
+
+    private Date date;
+
     private String description;
+
+    private Boolean isConfirmed;
 
     private PaymentMean paymentMean;
 
@@ -38,31 +41,25 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     private User owner;
 
-    private TemporalExpressionType temporalExpressionType;
-
-    private boolean isActive;
-
-    private Date lastRunOn;
-
-    public RecurringTransaction() {
+    public Transaction() {
     }
 
-
-    private RecurringTransaction(Long id, Integer amountCents, SupportedCurrency currency, String description,
-                                 PaymentMean paymentMean, BankAccount bankAccount,
-                                 List<Category> categories, User owner,
-                                 TemporalExpressionType temporalExpressionType, Date lastRunOn, boolean isActive) {
+    private Transaction(Long id, Integer amountCents, SupportedCurrency currency, Integer settlementAmountCents,
+                        SupportedCurrency settlementCurrency, Date date, String description,
+                        Boolean isConfirmed, PaymentMean paymentMean, BankAccount bankAccount,
+                        List<Category> categories, User owner) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
+        this.date = date;
         this.description = description;
+        this.isConfirmed = isConfirmed;
         this.paymentMean = paymentMean;
         this.bankAccount = bankAccount;
         this.categories = categories;
         this.owner = owner;
-        this.temporalExpressionType = temporalExpressionType;
-        this.lastRunOn = lastRunOn;
-        this.isActive = isActive;
+        this.settlementCurrency = settlementCurrency;
+        this.settlementAmountCents = settlementAmountCents;
     }
 
     public static Builder builder() {
@@ -70,8 +67,8 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recurring_transaction_seq")
-    @SequenceGenerator(name = "recurring_transaction_seq", sequenceName = "recurring_transaction_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_seq")
+    @SequenceGenerator(name = "transaction_seq", sequenceName = "transaction_seq")
     public Long getId() {
         return id;
     }
@@ -99,6 +96,16 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
         this.currency = currency;
     }
 
+    @Column(name = "date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Column(name = "description", nullable = false)
     public String getDescription() {
         return description;
@@ -106,6 +113,15 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "is_confirmed", nullable = false)
+    public Boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(Boolean confirmed) {
+        isConfirmed = confirmed;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -128,10 +144,9 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
         this.bankAccount = bankAccount;
     }
 
-    @ElementCollection
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "recurring_transaction_category",
-               joinColumns = @JoinColumn(name = "recurring_transaction_id"),
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "transaction_category",
+               joinColumns = {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
                inverseJoinColumns = {@JoinColumn(name = "category_id", referencedColumnName = "id")})
     public List<Category> getCategories() {
         return categories;
@@ -140,7 +155,6 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
@@ -152,59 +166,38 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
         this.owner = owner;
     }
 
-    @Column(name = "temporal_expression_type", nullable = false)
+    @Column(name = "settlement_amount_cents", nullable = true)
+    public Integer getSettlementAmountCents() {
+        return settlementAmountCents;
+    }
+
+    public void setSettlementAmountCents(Integer settlementAmountCents) {
+        this.settlementAmountCents = settlementAmountCents;
+    }
+
+    @Column(name = "settlement_amount_currency", nullable = true)
     @Enumerated(EnumType.STRING)
-    public TemporalExpressionType getTemporalExpressionType() {
-        return temporalExpressionType;
+    public SupportedCurrency getSettlementCurrency() {
+        return settlementCurrency;
     }
 
-    public void setTemporalExpressionType(
-            TemporalExpressionType temporalExpressionType) {
-        this.temporalExpressionType = temporalExpressionType;
-    }
-
-    @Column(name = "is_active", nullable = false)
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    @Column(name = "last_run_on", nullable = true)
-    @Temporal(TemporalType.DATE)
-    public Date getLastRunOn() {
-        return lastRunOn;
-    }
-
-    public void setLastRunOn(Date lastRunOn) {
-        this.lastRunOn = lastRunOn;
-    }
-
-    @Override
-    @Transient
-    public boolean isOccuringOn(Date date) {
-        return TemporalExpression.TemporalExpressionFactory.getInstance(temporalExpressionType).includes(date);
+    public void setSettlementCurrency(SupportedCurrency settlementCurrency) {
+        this.settlementCurrency = settlementCurrency;
     }
 
     public static class Builder {
-        private TemporalExpressionType temporalExpressionType;
         private Long id;
         private Integer amountCents;
         private SupportedCurrency currency;
+        private Date date;
         private String description;
+        private Boolean isConfirmed;
         private PaymentMean paymentMean;
         private BankAccount bankAccount;
         private List<Category> categories;
         private User owner;
-        private Date lastRunOn;
-        private boolean isActive;
-
-        public Builder temporalExpressionType(TemporalExpressionType temporalExpressionType) {
-            this.temporalExpressionType = temporalExpressionType;
-            return this;
-        }
+        private Integer settlementAmountCents;
+        private SupportedCurrency settlementCurrency;
 
         public Builder id(Long id) {
             this.id = id;
@@ -221,8 +214,18 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
             return this;
         }
 
+        public Builder date(Date date) {
+            this.date = date;
+            return this;
+        }
+
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder isConfirmed(Boolean isConfirmed) {
+            this.isConfirmed = isConfirmed;
             return this;
         }
 
@@ -246,20 +249,19 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
             return this;
         }
 
-
-        public Builder lastRunOn(Date lastRunOn) {
-            this.lastRunOn = lastRunOn;
+        public Builder settlementAmountCents(Integer amountCents) {
+            this.settlementAmountCents = amountCents;
             return this;
         }
 
-        public RecurringTransaction build() {
-            return new RecurringTransaction(id, amountCents, currency, description, paymentMean, bankAccount,
-                    categories, owner, temporalExpressionType, lastRunOn, isActive);
+        public Builder settlementCurrency(SupportedCurrency currency) {
+            this.settlementCurrency = currency;
+            return this;
         }
 
-        public Builder isActive(boolean isActive) {
-            this.isActive = isActive;
-            return this;
+        public Transaction build() {
+            return new Transaction(id, amountCents, currency, settlementAmountCents, settlementCurrency, date, description, isConfirmed, paymentMean,
+                    bankAccount, categories, owner);
         }
     }
 }

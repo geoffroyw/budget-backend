@@ -1,9 +1,9 @@
 package io.yac.scheduler.batch.processor;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.domain.transaction.recurring.RecurringTransaction;
-import io.yac.core.repository.transaction.RecurringTransactionRepository;
+import io.yac.transaction.domain.Transaction;
+import io.yac.transaction.domain.RecurringTransaction;
+import io.yac.transaction.repository.RecurringTransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;

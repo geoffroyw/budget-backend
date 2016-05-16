@@ -4,9 +4,9 @@ import io.yac.bankaccount.api.BankAccountResource;
 import io.yac.bankaccount.api.converter.BankAccountConverter;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.Transaction;
+import io.yac.transaction.domain.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.repository.TransactionRepository;
 import org.junit.Test;
 
 import java.util.Collections;

@@ -2,8 +2,8 @@ package io.yac.api.factory;
 
 import io.yac.auth.user.model.User;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.Transaction;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.domain.Transaction;
+import io.yac.transaction.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

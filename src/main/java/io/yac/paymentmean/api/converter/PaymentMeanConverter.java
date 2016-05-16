@@ -5,9 +5,9 @@ import io.yac.api.converter.ResourceEntityConverter;
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.core.domain.SupportedCurrency;
-import io.yac.core.domain.transaction.Transaction;
+import io.yac.transaction.domain.Transaction;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.core.repository.transaction.TransactionRepository;
+import io.yac.transaction.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
