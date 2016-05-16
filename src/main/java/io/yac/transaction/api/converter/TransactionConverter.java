@@ -1,23 +1,27 @@
 package io.yac.transaction.api.converter;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.yac.common.api.converter.ResourceEntityConverter;
-import io.yac.transaction.api.TransactionResource;
-import io.yac.categories.domain.Category;
-import io.yac.common.domain.SupportedCurrency;
-import io.yac.transaction.domain.Transaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
+import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
+import io.yac.common.api.converter.ResourceEntityConverter;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
+import io.yac.rates.RateConversionService;
+import io.yac.rates.RateConversionResponse;
+import io.yac.rates.exceptions.NoRateException;
+import io.yac.rates.exceptions.UnknownCurrencyException;
+import io.yac.transaction.api.TransactionResource;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
-import io.yac.services.clients.rate.RateConversionClient;
-import io.yac.services.clients.rate.RateConversionClient.RateConversionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static jdk.nashorn.internal.codegen.Compiler.LOG;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -38,20 +42,21 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
     TransactionRepository transactionRepository;
 
     @Autowired
-    RateConversionClient rateConversionClient;
+    RateConversionService rateConversionService;
 
     public TransactionConverter() {
     }
 
-    @VisibleForTesting
-    TransactionConverter(BankAccountRepository bankAccountRepository, PaymentMeanRepository paymentMeanRepository,
-                         CategoryRepository categoryRepository, TransactionRepository transactionRepository,
-                         RateConversionClient rateConversionClient) {
+    @VisibleForTesting TransactionConverter(BankAccountRepository bankAccountRepository,
+                                            PaymentMeanRepository paymentMeanRepository,
+                                            CategoryRepository categoryRepository,
+                                            TransactionRepository transactionRepository,
+                                            RateConversionService rateConversionService) {
         this.bankAccountRepository = bankAccountRepository;
         this.paymentMeanRepository = paymentMeanRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
-        this.rateConversionClient = rateConversionClient;
+        this.rateConversionService = rateConversionService;
     }
 
 
@@ -69,9 +74,16 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
                                                            : entity.getSettlementCurrency().getExternalName();
 
             if (settlementAmount == null) {
-                RateConversionResponse rateConversionResponseResponse = rateConversionClient
-                        .convert(new BigDecimal(entity.getAmountCents() / 100), entity.getCurrency().getExternalName(),
-                                settlementCurrency);
+                RateConversionResponse rateConversionResponseResponse;
+                try {
+                    rateConversionResponseResponse = rateConversionService
+                            .convert(new BigDecimal(entity.getAmountCents() / 100),
+                                    entity.getCurrency().getExternalName(),
+                                    settlementCurrency);
+                } catch (UnknownCurrencyException | NoRateException e) {
+                    rateConversionResponseResponse = null;
+                    LOG.severe("Exception while converting amount", e);
+                }
                 if (rateConversionResponseResponse != null) {
                     BigDecimal amountInPaymentMeanCurrency = rateConversionResponseResponse.getAmountInToCurrency();
 

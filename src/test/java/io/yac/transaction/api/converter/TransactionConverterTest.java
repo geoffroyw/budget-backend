@@ -7,8 +7,10 @@ import io.yac.categories.repository.CategoryRepository;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.services.clients.rate.RateConversionClient;
-import io.yac.services.clients.rate.RateConversionClient.RateConversionResponse;
+import io.yac.rates.RateConversionService;
+import io.yac.rates.RateConversionResponse;
+import io.yac.rates.exceptions.NoRateException;
+import io.yac.rates.exceptions.UnknownCurrencyException;
 import io.yac.transaction.api.TransactionResource;
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
@@ -31,12 +33,12 @@ import static org.mockito.Mockito.when;
  */
 public class TransactionConverterTest {
 
-    private RateConversionClient dummy_rateConversionClient;
+    private RateConversionService dummy_rateConversionService;
 
     @Before
-    public void setUp() {
-        dummy_rateConversionClient = mock(RateConversionClient.class);
-        when(dummy_rateConversionClient.convert(anyObject(), anyString(), anyString()))
+    public void setUp() throws UnknownCurrencyException, NoRateException {
+        dummy_rateConversionService = mock(RateConversionService.class);
+        when(dummy_rateConversionService.convert(anyObject(), anyString(), anyString()))
                 .thenReturn(new RateConversionResponse(null, null, null, null, new BigDecimal(10)));
     }
 
@@ -45,7 +47,7 @@ public class TransactionConverterTest {
     public void resource_id_maps_to_entity_id() {
         Transaction entity = prototypeValidTransaction().id(1L).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getId(), is(1L));
     }
@@ -54,7 +56,7 @@ public class TransactionConverterTest {
     public void resource_amount_cents_maps_to_entity_amount_cents() {
         Transaction entity = prototypeValidTransaction().amountCents(12439).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getAmountCents(), is(12439));
     }
@@ -64,7 +66,7 @@ public class TransactionConverterTest {
         SupportedCurrency knownCurrency = SupportedCurrency.EUR;
         Transaction entity = prototypeValidTransaction().currency(knownCurrency).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
@@ -75,7 +77,7 @@ public class TransactionConverterTest {
         Transaction entity =
                 prototypeValidTransaction().currency(SupportedCurrency.EUR).settlementAmountCents(12439).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementAmountCents(), is(12439));
     }
@@ -87,7 +89,7 @@ public class TransactionConverterTest {
                 prototypeValidTransaction().currency(SupportedCurrency.IDR).settlementCurrency(knownCurrency).build();
 
         TransactionConverter converter = new TransactionConverter(null, null, null, null,
-                dummy_rateConversionClient);
+                dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
@@ -96,7 +98,7 @@ public class TransactionConverterTest {
     public void resource_isSettlementAmountIndicative_is_true_if_entity_settlement_amount_is_null() {
         Transaction entity = prototypeValidTransaction().settlementAmountCents(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.isSettlementAmountIndicative(), is(true));
     }
@@ -105,36 +107,38 @@ public class TransactionConverterTest {
     public void resource_isSettlementAmountIndicative_is_false_if_entity_settlement_amount_is_not_null() {
         Transaction entity = prototypeValidTransaction().settlementAmountCents(193280).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.isSettlementAmountIndicative(), is(false));
     }
 
     @Test
-    public void resource_settlement_amount_cents_maps_to_rate_client_converted_amount_if_entity_settlement_amount_is_null() {
+    public void resource_settlement_amount_cents_maps_to_rate_client_converted_amount_if_entity_settlement_amount_is_null()
+            throws UnknownCurrencyException, NoRateException {
         Transaction entity = prototypeValidTransaction().currency(SupportedCurrency.EUR).amountCents(3827)
                 .settlementAmountCents(null).build();
 
-        RateConversionClient dummy_rateConversionClient = mock(RateConversionClient.class);
-        when(dummy_rateConversionClient.convert(anyObject(), anyString(), anyString()))
+        RateConversionService dummy_rateConversionService = mock(RateConversionService.class);
+        when(dummy_rateConversionService.convert(anyObject(), anyString(), anyString()))
                 .thenReturn(new RateConversionResponse(null, null, null, new BigDecimal(3827 / 100),
                         new BigDecimal("12.43")));
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementAmountCents(), is(1243));
     }
 
     @Test
-    public void resource_settlement_amount_cents_is_null_if_rate_client_response_is_null() {
+    public void resource_settlement_amount_cents_is_null_if_rate_client_response_is_null()
+            throws UnknownCurrencyException, NoRateException {
         Transaction entity = prototypeValidTransaction().currency(SupportedCurrency.EUR).amountCents(3827)
                 .settlementAmountCents(null).build();
 
-        RateConversionClient dummy_rateConversionClient = mock(RateConversionClient.class);
-        when(dummy_rateConversionClient.convert(anyObject(), anyString(), anyString()))
+        RateConversionService dummy_rateConversionService = mock(RateConversionService.class);
+        when(dummy_rateConversionService.convert(anyObject(), anyString(), anyString()))
                 .thenReturn(null);
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementAmountCents(), is(nullValue()));
     }
@@ -147,7 +151,7 @@ public class TransactionConverterTest {
                         .paymentMean(PaymentMean.builder().currency(knownCurrency).build())
                         .currency(knownCurrency).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementAmountCents(), is(104394));
     }
@@ -160,7 +164,7 @@ public class TransactionConverterTest {
                         .paymentMean(PaymentMean.builder().currency(knownCurrency).build())
                         .settlementCurrency(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementCurrency(), is(knownCurrency.getExternalName()));
     }
@@ -172,7 +176,7 @@ public class TransactionConverterTest {
                 prototypeValidTransaction().paymentMean(PaymentMean.builder().currency(knownCurrency).build())
                         .settlementCurrency(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getSettlementCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
@@ -181,7 +185,7 @@ public class TransactionConverterTest {
     public void resource_description_maps_to_entity_description() {
         Transaction entity = prototypeValidTransaction().description("some description").build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getDescription(), is("some description"));
     }
@@ -191,7 +195,7 @@ public class TransactionConverterTest {
         final Date knownDate = new Date();
         Transaction entity = prototypeValidTransaction().date(knownDate).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getDate(), is(knownDate));
     }
@@ -200,7 +204,7 @@ public class TransactionConverterTest {
     public void resource_is_confirmed_maps_to_entity_is_confirmed() {
         Transaction entity = prototypeValidTransaction().isConfirmed(true).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getIsConfirmed(), is(true));
     }
@@ -209,7 +213,7 @@ public class TransactionConverterTest {
     public void resourceBank_account_is_a_bank_account_resource_with_id_mapping_to_entity_bank_account_id() {
         Transaction entity = prototypeValidTransaction().bankAccount(BankAccount.builder().id(1L).build()).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getBankAccount(), is(1L));
@@ -220,7 +224,7 @@ public class TransactionConverterTest {
         Transaction entity = prototypeValidTransaction()
                 .paymentMean(PaymentMean.builder().id(1L).currency(SupportedCurrency.USD).build()).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getPaymentMean(), is(1L));
@@ -232,7 +236,7 @@ public class TransactionConverterTest {
                 prototypeValidTransaction().categories(Collections.singletonList(Category.builder().id(1L).build()))
                         .build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getCategories().get(0), is(1L));
@@ -242,7 +246,7 @@ public class TransactionConverterTest {
     public void resource_categories_is_null_if_entity_categories_is_null() {
         Transaction entity = prototypeValidTransaction().categories(null).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getCategories(), is(nullValue()));
@@ -253,7 +257,7 @@ public class TransactionConverterTest {
     public void entity_amount_cents_maps_to_resource_amount_cents() {
         TransactionResource resource = TransactionResource.builder().amountCents(199483).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getAmountCents(), is(199483));
     }
@@ -263,7 +267,7 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().currency(SupportedCurrency.EUR.getExternalName()).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getCurrency(), is(SupportedCurrency.EUR));
     }
@@ -272,7 +276,7 @@ public class TransactionConverterTest {
     public void entity_settlement_amount_cents_maps_to_resource_settlement_amount_cents() {
         TransactionResource resource = TransactionResource.builder().settlementAmountCents(199483).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getSettlementAmountCents(), is(199483));
     }
@@ -282,7 +286,7 @@ public class TransactionConverterTest {
         TransactionResource resource =
                 TransactionResource.builder().settlementCurrency(SupportedCurrency.EUR.getExternalName()).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getSettlementCurrency(), is(SupportedCurrency.EUR));
     }
@@ -292,7 +296,7 @@ public class TransactionConverterTest {
     public void entity_description_maps_to_resource_description() {
         TransactionResource resource = TransactionResource.builder().description("Known description").build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getDescription(), is("Known description"));
     }
@@ -302,7 +306,7 @@ public class TransactionConverterTest {
         final Date knownDate = new Date();
         TransactionResource resource = TransactionResource.builder().date(knownDate).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getDate(), is(knownDate));
     }
@@ -311,7 +315,7 @@ public class TransactionConverterTest {
     public void entity_is_confirmed_maps_to_resource_is_confirmed() {
         TransactionResource resource = TransactionResource.builder().isConfirmed(true).build();
 
-        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionClient);
+        TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         Transaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.isConfirmed(), is(true));
     }

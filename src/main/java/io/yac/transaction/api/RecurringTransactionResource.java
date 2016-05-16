@@ -40,11 +40,11 @@ public class RecurringTransactionResource {
     public RecurringTransactionResource() {
     }
 
-    public RecurringTransactionResource(Long id, Integer amountCents, String currency, Date lastRunOn,
-                                        String description, String recurringType,
-                                        List<Long> categories,
-                                        Long bankAccount,
-                                        Long paymentMean, boolean isActive) {
+    private RecurringTransactionResource(Long id, Integer amountCents, String currency, Date lastRunOn,
+                                         String description, String recurringType,
+                                         List<Long> categories,
+                                         Long bankAccount,
+                                         Long paymentMean, boolean isActive) {
         this.id = id;
         this.amountCents = amountCents;
         this.currency = currency;
