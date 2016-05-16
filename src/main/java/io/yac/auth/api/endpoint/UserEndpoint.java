@@ -3,7 +3,7 @@ package io.yac.auth.api.endpoint;
 import io.yac.auth.api.resource.UserResource;
 import io.yac.auth.user.UserRepository;
 import io.yac.auth.user.model.User;
-import io.yac.budget.initializer.AccountInitializer;
+import io.yac.core.initializer.AccountInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

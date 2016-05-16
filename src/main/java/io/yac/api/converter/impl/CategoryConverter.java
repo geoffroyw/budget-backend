@@ -1,0 +1,62 @@
+package io.yac.api.converter.impl;
+
+import com.google.common.annotations.VisibleForTesting;
+import io.yac.api.converter.ResourceEntityConverter;
+import io.yac.api.resources.CategoryResource;
+import io.yac.core.domain.Category;
+import io.yac.core.domain.transaction.Transaction;
+import io.yac.core.repository.CategoryRepository;
+import io.yac.core.repository.transaction.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Created by geoffroy on 07/02/2016.
+ */
+@Service
+public class CategoryConverter implements ResourceEntityConverter<CategoryResource, Category> {
+
+    @Autowired
+    TransactionRepository transactionRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    public CategoryConverter() {
+    }
+
+    @VisibleForTesting
+    CategoryConverter(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
+        this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
+    }
+
+    @Override
+    public CategoryResource convertToResource(Category entity) {
+        return CategoryResource.builder().id(entity.getId()).name(entity.getName())
+                .transactions(entity.getTransactions() == null ? null :
+                              entity.getTransactions().stream()
+                                      .map(Transaction::getId)
+                                      .collect(Collectors.toList())).build();
+    }
+
+    @Override
+    public Category convertToEntity(CategoryResource resource, Long id) {
+        Category category;
+        if (id == null) {
+            category = new Category();
+        } else {
+            category = categoryRepository.findOne(id);
+        }
+
+
+        category.setName(resource.getName());
+        category.setTransactions(resource.getTransactions() == null ? null : (List<Transaction>) transactionRepository
+                .findAll(resource.getTransactions()));
+
+        return category;
+    }
+}
