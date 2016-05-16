@@ -6,9 +6,9 @@ import io.yac.categories.domain.Category;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.domain.TimestampableEntity;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.scheduler.Schedulable;
-import io.yac.scheduler.expression.TemporalExpression;
-import io.yac.scheduler.expression.TemporalExpression.TemporalExpressionType;
+import io.yac.common.scheduler.Schedulable;
+import io.yac.common.scheduler.expression.TemporalExpression;
+import io.yac.common.scheduler.expression.TemporalExpression.TemporalExpressionType;
 
 import javax.persistence.*;
 import java.util.ArrayList;

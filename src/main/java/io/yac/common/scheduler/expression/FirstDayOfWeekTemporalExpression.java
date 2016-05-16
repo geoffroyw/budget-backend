@@ -1,24 +1,22 @@
-package io.yac.scheduler.expression;
+package io.yac.common.scheduler.expression;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.Date;
 
 /**
  * Created by geoffroy on 16/05/2016.
  */
-public class FirstDayOfMonthTemporalExpression implements TemporalExpression {
+public class FirstDayOfWeekTemporalExpression implements TemporalExpression {
     @Override
     public boolean includes(Date date) {
         Instant instant = Instant.ofEpochMilli(date.getTime());
         LocalDate localDate = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
-        return localDate.getDayOfMonth() == 1;
+        return localDate.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 
     @Override
     public TemporalExpressionType getTemporalExpressionType() {
-        return TemporalExpressionType.MONTHLY;
+        return TemporalExpressionType.WEEKLY;
     }
 }
+

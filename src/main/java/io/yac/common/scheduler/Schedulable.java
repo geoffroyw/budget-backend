@@ -1,4 +1,4 @@
-package io.yac.scheduler;
+package io.yac.common.scheduler;
 
 import java.util.Date;
 

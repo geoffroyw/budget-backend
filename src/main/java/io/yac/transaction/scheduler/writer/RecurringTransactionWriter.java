@@ -1,4 +1,4 @@
-package io.yac.scheduler.batch.writer;
+package io.yac.transaction.scheduler.writer;
 
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;

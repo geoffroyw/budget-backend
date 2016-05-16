@@ -1,10 +1,10 @@
-package io.yac.scheduler.batch;
+package io.yac.transaction.scheduler;
 
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.domain.RecurringTransaction;
 import io.yac.transaction.repository.RecurringTransactionRepository;
-import io.yac.scheduler.batch.processor.RecurringTransactionProcessor;
-import io.yac.scheduler.batch.writer.RecurringTransactionWriter;
+import io.yac.transaction.scheduler.processor.RecurringTransactionProcessor;
+import io.yac.transaction.scheduler.writer.RecurringTransactionWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;

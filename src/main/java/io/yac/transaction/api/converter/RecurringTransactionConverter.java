@@ -10,7 +10,7 @@ import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import io.yac.transaction.repository.RecurringTransactionRepository;
-import io.yac.scheduler.expression.TemporalExpression;
+import io.yac.common.scheduler.expression.TemporalExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

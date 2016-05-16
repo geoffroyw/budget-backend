@@ -1,4 +1,4 @@
-package io.yac.scheduler.batch.processor;
+package io.yac.transaction.scheduler.processor;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.yac.transaction.domain.Transaction;
