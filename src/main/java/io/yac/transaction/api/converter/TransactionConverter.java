@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -100,14 +100,13 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
 
         return TransactionResource.builder().id(entity.getId()).currency(entity.getCurrency().getExternalName())
                 .paymentMean(entity.getPaymentMean().getId())
-                .settlementCurrency(
-                        settlementCurrency)
+                .settlementCurrency(settlementCurrency)
                 .settlementAmountCents(settlementAmount)
                 .isSettlementAmountIndicative(entity.getSettlementAmountCents() == null)
                 .description(entity.getDescription())
-                .categories(entity.getCategories() == null ? null : entity.getCategories().stream()
-                        .map(Category::getId)
-                        .collect(Collectors.toList()))
+                .category(entity.getCategories() == null || entity.getCategories().isEmpty() ? null
+                                                                                             : entity.getCategories()
+                                  .get(0).getId())
                 .amountCents(entity.getAmountCents()).date(entity.getDate()).isConfirmed(entity.isConfirmed())
                 .bankAccount(entity.getBankAccount().getId()).build();
     }
@@ -123,8 +122,8 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
 
         transaction.setDate(resource.getDate());
         transaction.setCurrency(SupportedCurrency.fromExternalName(resource.getCurrency()));
-        transaction.setCategories(resource.getCategories() == null ? null : (List<Category>) categoryRepository
-                .findAll(resource.getCategories()));
+        transaction.setCategories(resource.getCategory() == null ? null : (List<Category>) categoryRepository
+                .findAll(Collections.singletonList(resource.getCategory())));
         transaction.setPaymentMean(resource.getPaymentMean() == null ? null : paymentMeanRepository
                 .findOne(resource.getPaymentMean()));
         transaction.setBankAccount(resource.getBankAccount() == null ? null : bankAccountRepository

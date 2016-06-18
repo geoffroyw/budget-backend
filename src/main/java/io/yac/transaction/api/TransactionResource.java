@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.common.api.serializer.JsonDateSerializer;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,7 +32,7 @@ public class TransactionResource {
     private String description;
 
 
-    private List<Long> categories;
+    private Long category;
 
 
     private Long bankAccount;
@@ -48,7 +47,7 @@ public class TransactionResource {
                                 String settlementCurrency, boolean isSettlementAmountIndicative, Boolean isConfirmed,
                                 Date date,
                                 String description,
-                                List<Long> categories,
+                                Long category,
                                 Long bankAccount, Long paymentMean) {
         this.id = id;
         this.amountCents = amountCents;
@@ -56,7 +55,7 @@ public class TransactionResource {
         this.isConfirmed = isConfirmed;
         this.date = date;
         this.description = description;
-        this.categories = categories;
+        this.category = category;
         this.bankAccount = bankAccount;
         this.paymentMean = paymentMean;
         this.settlementAmountCents = settlementAmountCents;
@@ -116,12 +115,12 @@ public class TransactionResource {
         this.description = description;
     }
 
-    public List<Long> getCategories() {
-        return categories;
+    public Long getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Long> categories) {
-        this.categories = categories;
+    public void setCategory(Long category) {
+        this.category = category;
     }
 
     public Long getBankAccount() {
@@ -205,7 +204,7 @@ public class TransactionResource {
         private Date date;
         private String description;
         private String type;
-        private List<Long> categories;
+        private Long categories;
         private Long bankAccount;
         private Long paymentMean;
         private Integer settlementAmountCents;
@@ -242,7 +241,7 @@ public class TransactionResource {
             return this;
         }
 
-        public Builder categories(List<Long> categories) {
+        public Builder category(Long categories) {
             this.categories = categories;
             return this;
         }

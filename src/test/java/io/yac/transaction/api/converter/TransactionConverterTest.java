@@ -7,8 +7,8 @@ import io.yac.categories.repository.CategoryRepository;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
-import io.yac.rates.RateConversionService;
 import io.yac.rates.RateConversionResponse;
+import io.yac.rates.RateConversionService;
 import io.yac.rates.exceptions.NoRateException;
 import io.yac.rates.exceptions.UnknownCurrencyException;
 import io.yac.transaction.api.TransactionResource;
@@ -231,7 +231,7 @@ public class TransactionConverterTest {
     }
 
     @Test
-    public void resource_categories_maps_to_a_list_of_categories_resources_with_id_from_entity_transaction_ids() {
+    public void resource_category_maps_to_the_id_of_the_firs_category() {
         Transaction entity =
                 prototypeValidTransaction().categories(Collections.singletonList(Category.builder().id(1L).build()))
                         .build();
@@ -239,7 +239,7 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories().get(0), is(1L));
+        assertThat(resource.getCategory(), is(1L));
     }
 
     @Test
@@ -249,7 +249,7 @@ public class TransactionConverterTest {
         TransactionConverter converter = new TransactionConverter(null, null, null, null, dummy_rateConversionService);
         TransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories(), is(nullValue()));
+        assertThat(resource.getCategory(), is(nullValue()));
     }
 
 
@@ -371,10 +371,9 @@ public class TransactionConverterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void entity_categories_maps_to_list_of_category_entity_with_matching_ids() {
-        TransactionResource resource =
-                TransactionResource.builder()
-                        .categories(Collections.singletonList(1L)).build();
+        TransactionResource resource = TransactionResource.builder().category(1L).build();
 
         Category categoryFromRepository = Category.builder().id(1L).build();
 
@@ -390,7 +389,7 @@ public class TransactionConverterTest {
     @Test
     public void entity_categories_is_null_if_resource_categories_mean_is_null() {
         TransactionResource resource =
-                TransactionResource.builder().categories(null).build();
+                TransactionResource.builder().category(null).build();
 
         TransactionConverter converter = new TransactionConverter(null, null, null, null, null);
         Transaction entity = converter.convertToEntity(resource, null);

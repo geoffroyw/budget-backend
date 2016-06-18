@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.common.api.serializer.JsonDateSerializer;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,7 +26,7 @@ public class RecurringTransactionResource {
     private String recurringType;
 
 
-    private List<Long> categories;
+    private Long category;
 
 
     private Long bankAccount;
@@ -42,7 +41,7 @@ public class RecurringTransactionResource {
 
     private RecurringTransactionResource(Long id, Integer amountCents, String currency, Date lastRunOn,
                                          String description, String recurringType,
-                                         List<Long> categories,
+                                         Long category,
                                          Long bankAccount,
                                          Long paymentMean, boolean isActive) {
         this.id = id;
@@ -51,7 +50,7 @@ public class RecurringTransactionResource {
         this.lastRunOn = lastRunOn;
         this.description = description;
         this.recurringType = recurringType;
-        this.categories = categories;
+        this.category = category;
         this.bankAccount = bankAccount;
         this.paymentMean = paymentMean;
         this.isActive = isActive;
@@ -109,12 +108,12 @@ public class RecurringTransactionResource {
         this.recurringType = recurringType;
     }
 
-    public List<Long> getCategories() {
-        return categories;
+    public Long getCategory() {
+        return category;
     }
 
-    public void setCategories(List<Long> categories) {
-        this.categories = categories;
+    public void setCategory(Long category) {
+        this.category = category;
     }
 
     public Long getBankAccount() {
@@ -183,7 +182,7 @@ public class RecurringTransactionResource {
         private Date lastRunOn;
         private String description;
         private String recurringType;
-        private List<Long> categories;
+        private Long categories;
         private Long bankAccount;
         private Long paymentMean;
         private boolean isActive;
@@ -218,8 +217,8 @@ public class RecurringTransactionResource {
             return this;
         }
 
-        public Builder categories(List<Long> categories) {
-            this.categories = categories;
+        public Builder category(Long category) {
+            this.categories = category;
             return this;
         }
 

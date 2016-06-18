@@ -1,15 +1,15 @@
 package io.yac.transaction.api.converter;
 
-import io.yac.transaction.api.RecurringTransactionResource;
 import io.yac.bankaccount.domain.BankAccount;
-import io.yac.categories.domain.Category;
-import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.common.domain.SupportedCurrency;
-import io.yac.transaction.domain.RecurringTransaction;
 import io.yac.bankaccount.repository.BankAccountRepository;
+import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
-import io.yac.paymentmean.repository.PaymentMeanRepository;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.scheduler.expression.TemporalExpression.TemporalExpressionType;
+import io.yac.paymentmean.domain.PaymentMean;
+import io.yac.paymentmean.repository.PaymentMeanRepository;
+import io.yac.transaction.api.RecurringTransactionResource;
+import io.yac.transaction.domain.RecurringTransaction;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class RecurringTransactionConverterTest {
     }
 
     @Test
-    public void resource_categories_maps_to_a_list_of_categories_resources_with_id_from_entity_recurringTransaction_ids() {
+    public void resource_categories_maps_to_the_id_of_the_first_category() {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction()
                         .categories(Collections.singletonList(Category.builder().id(1L).build())).build();
@@ -129,7 +129,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories().get(0), is(1L));
+        assertThat(resource.getCategory(), is(1L));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionConverter converter = new RecurringTransactionConverter();
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
-        assertThat(resource.getCategories(), is(nullValue()));
+        assertThat(resource.getCategory(), is(nullValue()));
     }
 
 
@@ -226,9 +226,7 @@ public class RecurringTransactionConverterTest {
 
     @Test
     public void entity_categories_maps_to_list_of_category_entity_with_matching_ids() {
-        RecurringTransactionResource resource =
-                RecurringTransactionResource.builder()
-                        .categories(Collections.singletonList(1L)).build();
+        RecurringTransactionResource resource = RecurringTransactionResource.builder().category(1L).build();
 
         CategoryRepository dummy_categoryRepository = mock(CategoryRepository.class);
         final Category category = Category.builder().id(1L).build();
