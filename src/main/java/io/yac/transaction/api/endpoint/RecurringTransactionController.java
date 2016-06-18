@@ -1,9 +1,9 @@
 package io.yac.transaction.api.endpoint;
 
-import io.yac.transaction.api.converter.RecurringTransactionConverter;
+import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.transaction.api.RecurringTransactionResource;
-import io.yac.auth.facade.AuthenticationFacade;
+import io.yac.transaction.api.converter.RecurringTransactionConverter;
 import io.yac.transaction.domain.RecurringTransaction;
 import io.yac.transaction.repository.RecurringTransactionRepository;
 import org.slf4j.Logger;
@@ -62,10 +62,11 @@ public class RecurringTransactionController {
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     public @ResponseBody RecurringTransactionResource create(@RequestBody RecurringTransactionResource toBeCreated) {
-        RecurringTransaction recurringTransaction =
-                recurringTransactionRepository.save(recurringTransactionConverter.convertToEntity(toBeCreated, null));
+        RecurringTransaction recurringTransaction = recurringTransactionConverter.convertToEntity(toBeCreated, null);
+        recurringTransaction.setOwner(authenticationFacade.getCurrentUser());
 
-        return recurringTransactionConverter.convertToResource(recurringTransaction);
+        return recurringTransactionConverter
+                .convertToResource(recurringTransactionRepository.save(recurringTransaction));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
