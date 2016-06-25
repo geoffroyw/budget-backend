@@ -15,4 +15,6 @@ public interface CategoryRepository extends CrudRepository<Category, Long> {
     List<Category> findByOwner(User owner);
 
     Category findOneByOwnerAndId(User owner, Long id);
+
+    Category findOneByOwnerAndName(User owner, String name);
 }

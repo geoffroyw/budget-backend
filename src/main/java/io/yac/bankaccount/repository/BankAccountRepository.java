@@ -17,4 +17,6 @@ public interface BankAccountRepository extends CrudRepository<BankAccount, Long>
     List<BankAccount> findByOwner(User owner);
 
     BankAccount findOneByOwnerAndId(User owner, Long id);
+
+    BankAccount findOneByOwnerAndName(User owner, String name);
 }

@@ -20,4 +20,6 @@ public interface PaymentMeanRepository extends CrudRepository<PaymentMean, Long>
     List<PaymentMean> findByOwnerAndId(User owner, Iterable<Long> ids);
 
     PaymentMean findOneByOwnerAndId(User owner, Long id);
+
+    PaymentMean findOneByOwnerAndName(User owner, String name);
 }
