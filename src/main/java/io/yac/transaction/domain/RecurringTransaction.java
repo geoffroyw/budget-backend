@@ -5,10 +5,10 @@ import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.domain.TimestampableEntity;
-import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.common.scheduler.Schedulable;
 import io.yac.common.scheduler.expression.TemporalExpression;
 import io.yac.common.scheduler.expression.TemporalExpression.TemporalExpressionType;
+import io.yac.paymentmean.domain.PaymentMean;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -187,6 +187,12 @@ public class RecurringTransaction extends TimestampableEntity implements Schedul
     @Transient
     public boolean isOccuringOn(Date date) {
         return TemporalExpression.TemporalExpressionFactory.getInstance(temporalExpressionType).includes(date);
+    }
+
+    @Override public String toString() {
+        return "RecurringTransaction{" +
+                "id=" + id +
+                '}';
     }
 
     public static class Builder {
