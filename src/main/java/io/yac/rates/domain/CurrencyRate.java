@@ -64,7 +64,7 @@ public class CurrencyRate {
         this.lastUpdatedOn = lastUpdatedOn;
     }
 
-    @OneToMany(targetEntity = ExchangeRate.class, mappedBy = "currencyRate", fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = ExchangeRate.class, mappedBy = "currencyRate", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @OrderBy("date DESC")
     public List<ExchangeRate> getRates() {
         return rates;

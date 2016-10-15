@@ -5,6 +5,8 @@ import io.yac.rates.domain.ExchangeRate;
 import io.yac.rates.provider.ecb.ECBRate;
 import io.yac.rates.provider.ecb.ECBRateServiceFacade;
 import io.yac.rates.repository.CurrencyRateRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -23,6 +25,9 @@ import java.util.List;
 @ManagedResource
 public class FetchRateTask {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FetchRateTask.class);
+
+
     @Autowired
     ECBRateServiceFacade ecbRateService;
 
@@ -34,11 +39,12 @@ public class FetchRateTask {
     @Transactional
     public void fetchRate() {
         List<ECBRate> ecbRates = ecbRateService.fetchRates();
+        LOG.info("Rates from ECB:" + ecbRates);
 
         for (ECBRate ecbRate : ecbRates) {
             CurrencyRate currencyRate = rateRepository.findByCurrency(ecbRate.getCurrency());
             if (currencyRate == null) {
-                currencyRate = new CurrencyRate.Builder().build();
+                currencyRate = new CurrencyRate();
                 currencyRate.setCurrency(ecbRate.getCurrency());
                 currencyRate.setRates(new ArrayList<>());
             }
