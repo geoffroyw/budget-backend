@@ -51,7 +51,6 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.security.oauth:spring-security-oauth2")
-    compile('org.springframework.cloud:spring-cloud-starter-hystrix')
     compile('org.flywaydb:flyway-core:3.2.1')
     compile('org.springframework.boot:spring-boot-starter-batch')
     runtime('org.postgresql:postgresql')
