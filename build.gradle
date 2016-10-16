@@ -53,6 +53,7 @@ dependencies {
     compile("org.springframework.security.oauth:spring-security-oauth2")
     compile('org.flywaydb:flyway-core:3.2.1')
     compile('org.springframework.boot:spring-boot-starter-batch')
+    compile('com.google.guava:guava:19.0')
     runtime('org.postgresql:postgresql')
     runtime('org.reflections:reflections:0.9.9')
     testCompile('org.springframework.boot:spring-boot-starter-test')
