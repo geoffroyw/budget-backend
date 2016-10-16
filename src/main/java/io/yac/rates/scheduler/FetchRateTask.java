@@ -49,7 +49,8 @@ public class FetchRateTask {
                 currencyRate.setRates(new ArrayList<>());
             }
             currencyRate.getRates()
-                    .add(ExchangeRate.builder().amount(ecbRate.getRate()).date(ecbRate.getDate()).build());
+                    .add(ExchangeRate.builder().currencyRate(currencyRate).amount(ecbRate.getRate())
+                            .date(ecbRate.getDate()).build());
             currencyRate.setLastUpdatedOn(new Date());
 
             rateRepository.save(currencyRate);

@@ -17,9 +17,10 @@ public class ExchangeRate {
     public ExchangeRate() {
     }
 
-    private ExchangeRate(BigDecimal amount, Date date) {
+    private ExchangeRate(BigDecimal amount, Date date, CurrencyRate currencyRate) {
         this.amount = amount;
         this.date = date;
+        this.currencyRate = currencyRate;
     }
 
     public static Builder builder() {
@@ -69,6 +70,7 @@ public class ExchangeRate {
     public static class Builder {
         private BigDecimal amount;
         private Date date;
+        private CurrencyRate currencyRate;
 
         public Builder amount(BigDecimal amount) {
             this.amount = amount;
@@ -80,8 +82,13 @@ public class ExchangeRate {
             return this;
         }
 
+        public Builder currencyRate(CurrencyRate currencyRate) {
+            this.currencyRate = currencyRate;
+            return this;
+        }
+
         public ExchangeRate build() {
-            return new ExchangeRate(amount, date);
+            return new ExchangeRate(amount, date, currencyRate);
         }
     }
 }
