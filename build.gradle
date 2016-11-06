@@ -1,20 +1,26 @@
 buildscript {
     ext {
         springBootVersion = '1.4.1.RELEASE'
+        postgresVersion = '9.4.1211.jre7'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.postgresql:postgresql:${postgresVersion}")
     }
+}
+
+plugins {
+    id "org.flywaydb.flyway" version "4.0.3"
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-
+apply plugin: 'org.flywaydb.flyway'
 
 jar {
     baseName = 'backend'
@@ -51,10 +57,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.security.oauth:spring-security-oauth2")
-    compile('org.flywaydb:flyway-core:3.2.1')
+    compile('org.flywaydb:flyway-core:4.0.3')
     compile('org.springframework.boot:spring-boot-starter-batch')
     compile('com.google.guava:guava:19.0')
-    runtime('org.postgresql:postgresql')
+    runtime("org.postgresql:postgresql:${postgresVersion}")
     runtime('org.reflections:reflections:0.9.9')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
@@ -77,4 +83,10 @@ eclipse {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
+}
+
+flyway {
+    url = jdbcDatabaseUrl
+    user = jdbcDatabaseUsername
+    password = jdbcDatabasePassword
 }
