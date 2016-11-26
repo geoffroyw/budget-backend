@@ -1,5 +1,8 @@
 package io.yac.bankaccount.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.auth.user.model.User;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.domain.TimestampableEntity;
@@ -14,14 +17,20 @@ import java.util.List;
  */
 @Entity
 @Table(name = "bank_accounts")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BankAccount extends TimestampableEntity {
 
+    @JsonView(View.Summary.class)
     private Long id;
 
+    @JsonView(View.Summary.class)
     private SupportedCurrency currency;
 
+    @JsonView(View.Summary.class)
     private String name;
 
+    @JsonView(View.Summary.class)
+    @JsonSerialize(using = TransactionCollectionSerializer.class)
     private List<Transaction> transactions = new ArrayList<>();
 
     private User owner;
@@ -126,4 +135,6 @@ public class BankAccount extends TimestampableEntity {
             return new BankAccount(id, currency, name, transactions, owner);
         }
     }
+
+
 }

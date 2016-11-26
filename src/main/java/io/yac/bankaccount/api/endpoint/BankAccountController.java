@@ -1,18 +1,15 @@
 package io.yac.bankaccount.api.endpoint;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.bankaccount.api.converter.BankAccountConverter;
-import io.yac.common.api.exceptions.ResourceNotFoundException;
-import io.yac.bankaccount.api.BankAccountResource;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.bankaccount.domain.BankAccount;
+import io.yac.bankaccount.domain.View;
 import io.yac.bankaccount.repository.BankAccountRepository;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by geoffroy on 08/04/2016.
@@ -21,39 +18,27 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/api/bankAccounts")
 public class BankAccountController {
 
-    @Autowired
-    BankAccountConverter bankAccountConverter;
+    private final BankAccountRepository bankAccountRepository;
+
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    BankAccountRepository bankAccountRepository;
-
-    @Autowired
-    AuthenticationFacade authenticationFacade;
-
-    public BankAccountController() {
-    }
-
-    @VisibleForTesting
-    BankAccountController(BankAccountRepository bankAccountRepository,
-                          AuthenticationFacade authenticationFacade, BankAccountConverter bankAccountConverter) {
-
-        this.bankAccountConverter = bankAccountConverter;
+    public BankAccountController(BankAccountRepository bankAccountRepository,
+                                 AuthenticationFacade authenticationFacade) {
         this.bankAccountRepository = bankAccountRepository;
         this.authenticationFacade = authenticationFacade;
     }
 
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<BankAccountResource> index() {
-
-        return StreamSupport
-                .stream(bankAccountRepository.findByOwner(authenticationFacade.getCurrentUser()).spliterator(), false)
-                .map(bankAccount -> bankAccountConverter.convertToResource(bankAccount)).collect(
-                        Collectors.toList());
+    @JsonView(View.Summary.class)
+    public @ResponseBody List<BankAccount> index() {
+        return bankAccountRepository.findByOwner(authenticationFacade.getCurrentUser());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody BankAccountResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    @JsonView(View.Summary.class)
+    public @ResponseBody BankAccount get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         BankAccount bankAccount =
                 bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -61,33 +46,35 @@ public class BankAccountController {
             throw new ResourceNotFoundException("No bank account found");
         }
 
-        return bankAccountConverter
-                .convertToResource(
-                        bankAccount);
+        return bankAccount;
     }
 
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody BankAccountResource create(@RequestBody BankAccountResource toBeCreated) {
-        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeCreated, null);
+    @JsonView(View.Summary.class)
+    public @ResponseBody BankAccount create(@RequestBody BankAccount bankAccount) {
         bankAccount.setOwner(authenticationFacade.getCurrentUser());
         bankAccountRepository.save(bankAccount);
-        return bankAccountConverter.convertToResource(bankAccount);
+        return bankAccount;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody BankAccountResource updated(@PathVariable("id") Long id, @RequestBody BankAccountResource toBeUpdated)
+    @JsonView(View.Summary.class)
+    public @ResponseBody BankAccount update(@PathVariable("id") Long id,
+                                            @RequestBody BankAccount update)
             throws ResourceNotFoundException {
-        if (bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
+        BankAccount bankAccountToUpdate =
+                bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
+        if (bankAccountToUpdate == null) {
             throw new ResourceNotFoundException("No bank account found.");
         }
 
-        BankAccount bankAccount = bankAccountConverter.convertToEntity(toBeUpdated, id);
-        bankAccount.setOwner(authenticationFacade.getCurrentUser());
-        bankAccountRepository.save(bankAccount);
-        return bankAccountConverter.convertToResource(bankAccount);
+        bankAccountToUpdate.setCurrency(update.getCurrency());
+        bankAccountToUpdate.setName(update.getName());
+        bankAccountRepository.save(bankAccountToUpdate);
+        return bankAccountToUpdate;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

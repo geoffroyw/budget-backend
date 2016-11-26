@@ -1,5 +1,6 @@
 package io.yac.transaction.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.yac.auth.user.model.User;
 import io.yac.bankaccount.domain.BankAccount;
 import io.yac.categories.domain.Category;
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by geoffroy on 07/02/2016.
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction extends TimestampableEntity {
 
     private Long id;
@@ -261,7 +263,8 @@ public class Transaction extends TimestampableEntity {
         }
 
         public Transaction build() {
-            return new Transaction(id, amountCents, currency, settlementAmountCents, settlementCurrency, date, description, isConfirmed, paymentMean,
+            return new Transaction(id, amountCents, currency, settlementAmountCents, settlementCurrency, date,
+                    description, isConfirmed, paymentMean,
                     bankAccount, categories, owner);
         }
     }
