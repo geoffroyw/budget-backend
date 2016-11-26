@@ -32,7 +32,7 @@ public class RecurringTransactionConverterTest {
     public void resource_id_maps_to_service_response_id() {
         RecurringTransaction entity = prototypeValidRecurringTransaction().id(1L).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getId(), is(1L));
     }
@@ -41,7 +41,7 @@ public class RecurringTransactionConverterTest {
     public void resource_amount_cents_maps_to_service_response_amount_cents() {
         RecurringTransaction entity = prototypeValidRecurringTransaction().amountCents(12439).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getAmountCents(), is(12439));
     }
@@ -50,7 +50,7 @@ public class RecurringTransactionConverterTest {
     public void resource_is_active_maps_to_service_response_is_active() {
         RecurringTransaction entity = prototypeValidRecurringTransaction().isActive(true).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getIsActive(), is(true));
     }
@@ -60,7 +60,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction().currency(SupportedCurrency.EUR).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getCurrency(), is("EUR"));
     }
@@ -71,7 +71,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction().description("some description").build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getDescription(), is("some description"));
     }
@@ -82,7 +82,7 @@ public class RecurringTransactionConverterTest {
                 prototypeValidRecurringTransaction().temporalExpressionType(
                         TemporalExpressionType.DAILY).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getRecurringType(), is("Daily"));
     }
@@ -93,7 +93,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction().lastRunOn(known_date).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
         assertThat(resource.getLastRunOn(), is(known_date));
     }
@@ -103,7 +103,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction().bankAccount(BankAccount.builder().id(1L).build()).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getBankAccount(), is(1L));
@@ -114,7 +114,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransaction entity =
                 prototypeValidRecurringTransaction().paymentMean(PaymentMean.builder().id(1L).build()).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getPaymentMean(), is(1L));
@@ -126,7 +126,7 @@ public class RecurringTransactionConverterTest {
                 prototypeValidRecurringTransaction()
                         .categories(Collections.singletonList(Category.builder().id(1L).build())).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getCategory(), is(1L));
@@ -136,7 +136,7 @@ public class RecurringTransactionConverterTest {
     public void resource_categories_is_null_if_entity_categories_is_null() {
         RecurringTransaction entity = prototypeValidRecurringTransaction().categories(null).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransactionResource resource = converter.convertToResource(entity);
 
         assertThat(resource.getCategory(), is(nullValue()));
@@ -147,7 +147,7 @@ public class RecurringTransactionConverterTest {
     public void entity_amount_cents_maps_to_resource_amount_cents() {
         RecurringTransactionResource resource = RecurringTransactionResource.builder().amountCents(199483).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getAmountCents(), is(199483));
     }
@@ -157,7 +157,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionResource resource =
                 RecurringTransactionResource.builder().currency("EUR").build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getCurrency(), is(SupportedCurrency.EUR));
     }
@@ -167,7 +167,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionResource resource =
                 RecurringTransactionResource.builder().description("Known description").build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getDescription(), is("Known description"));
     }
@@ -176,7 +176,7 @@ public class RecurringTransactionConverterTest {
     public void entity_is_active_maps_to_resource_is_active() {
         RecurringTransactionResource resource = RecurringTransactionResource.builder().isActive(true).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.isActive(), is(true));
     }
@@ -186,7 +186,7 @@ public class RecurringTransactionConverterTest {
         RecurringTransactionResource resource = RecurringTransactionResource.builder().recurringType(
                 TemporalExpressionType.MONTHLY.getExternalName()).build();
 
-        RecurringTransactionConverter converter = new RecurringTransactionConverter();
+        RecurringTransactionConverter converter = new RecurringTransactionConverter(null, null, null, null);
         RecurringTransaction entity = converter.convertToEntity(resource, null);
         assertThat(entity.getTemporalExpressionType(), is(TemporalExpressionType.MONTHLY));
     }

@@ -1,11 +1,10 @@
 package io.yac.paymentmean.api.converter;
 
-import io.yac.paymentmean.api.PaymentMeanResource;
-import io.yac.paymentmean.api.converter.PaymentMeanConverter;
-import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.common.domain.SupportedCurrency;
-import io.yac.transaction.domain.Transaction;
+import io.yac.paymentmean.api.PaymentMeanResource;
+import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
 import org.junit.Test;
 
@@ -28,7 +27,7 @@ public class PaymentMeanConverterTest {
     public void resource_id_maps_to_entity_id() {
         PaymentMean entity = prototypePaymentMean().id(1L).build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMeanResource resource = converter.convertToResource(entity);
         assertThat(resource.getId(), is(1L));
     }
@@ -37,7 +36,7 @@ public class PaymentMeanConverterTest {
     public void resource_name_maps_to_entity_name() {
         PaymentMean entity = prototypePaymentMean().name("known name").build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMeanResource resource = converter.convertToResource(entity);
         assertThat(resource.getName(), is("known name"));
     }
@@ -47,7 +46,7 @@ public class PaymentMeanConverterTest {
         SupportedCurrency knownCurrency = SupportedCurrency.EUR;
         PaymentMean entity = prototypePaymentMean().currency(knownCurrency).build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMeanResource resource = converter.convertToResource(entity);
         assertThat(resource.getCurrency(), is(SupportedCurrency.EUR.getExternalName()));
     }
@@ -58,7 +57,7 @@ public class PaymentMeanConverterTest {
                 .transactions(Arrays.asList(Transaction.builder().id(1L).build(), Transaction.builder().id(2L).build()))
                 .build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMeanResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions(), hasSize(2));
         assertThat(resource.getTransactions().get(0), is(1L));
@@ -74,7 +73,7 @@ public class PaymentMeanConverterTest {
     public void entity_name_maps_to_resource_name() {
         PaymentMeanResource resource = PaymentMeanResource.builder().name("Known name").build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMean entity = converter.convertToEntity(resource, null);
         assertThat(entity.getName(), is("Known name"));
     }
@@ -84,7 +83,7 @@ public class PaymentMeanConverterTest {
         PaymentMeanResource resource =
                 PaymentMeanResource.builder().currency(SupportedCurrency.CAD.getExternalName()).build();
 
-        PaymentMeanConverter converter = new PaymentMeanConverter();
+        PaymentMeanConverter converter = new PaymentMeanConverter(null, null);
         PaymentMean entity = converter.convertToEntity(resource, null);
         assertThat(entity.getCurrency(), is(SupportedCurrency.CAD));
     }

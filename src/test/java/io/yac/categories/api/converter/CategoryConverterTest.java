@@ -1,10 +1,9 @@
 package io.yac.categories.api.converter;
 
 import io.yac.categories.api.CategoryResource;
-import io.yac.categories.api.converter.CategoryConverter;
 import io.yac.categories.domain.Category;
-import io.yac.transaction.domain.Transaction;
 import io.yac.categories.repository.CategoryRepository;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class CategoryConverterTest {
     public void resource_id_maps_to_entity_id() {
         Category entity = prototypeCategory().id(1L).build();
 
-        CategoryConverter converter = new CategoryConverter();
+        CategoryConverter converter = new CategoryConverter(null, null);
         CategoryResource resource = converter.convertToResource(entity);
         assertThat(resource.getId(), is(1L));
     }
@@ -35,7 +34,7 @@ public class CategoryConverterTest {
     public void resource_name_maps_to_entity_name() {
         Category entity = prototypeCategory().name("known name").build();
 
-        CategoryConverter converter = new CategoryConverter();
+        CategoryConverter converter = new CategoryConverter(null, null);
         CategoryResource resource = converter.convertToResource(entity);
         assertThat(resource.getName(), is("known name"));
     }
@@ -47,7 +46,7 @@ public class CategoryConverterTest {
                 prototypeCategory().transactions(Collections.singletonList(Transaction.builder().id(1L).build()))
                         .build();
 
-        CategoryConverter converter = new CategoryConverter();
+        CategoryConverter converter = new CategoryConverter(null, null);
         CategoryResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions().get(0), is(1L));
     }
@@ -56,7 +55,7 @@ public class CategoryConverterTest {
     public void resource_transactions_is_null_if_entity_transactions_is_null() {
         Category entity = prototypeCategory().transactions(null).build();
 
-        CategoryConverter converter = new CategoryConverter();
+        CategoryConverter converter = new CategoryConverter(null, null);
         CategoryResource resource = converter.convertToResource(entity);
         assertThat(resource.getTransactions(), is(nullValue()));
     }
@@ -69,7 +68,7 @@ public class CategoryConverterTest {
     public void entity_name_maps_to_resource_name() {
         CategoryResource resource = CategoryResource.builder().name("Known name").build();
 
-        CategoryConverter converter = new CategoryConverter();
+        CategoryConverter converter = new CategoryConverter(null, null);
         Category entity = converter.convertToEntity(resource, null);
         assertThat(entity.getName(), is("Known name"));
     }

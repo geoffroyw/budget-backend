@@ -64,7 +64,7 @@ public class CsvTransactionImport {
 
     @Bean
     public JobExecutionListener listener() {
-        return new JobCompletionNotificationListener(new JdbcTemplate(dataSource));
+        return new JobCompletionNotificationListener();
     }
 
     @Bean

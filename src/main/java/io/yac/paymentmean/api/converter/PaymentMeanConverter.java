@@ -1,12 +1,11 @@
 package io.yac.paymentmean.api.converter;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.yac.common.api.converter.ResourceEntityConverter;
+import io.yac.common.domain.SupportedCurrency;
 import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.paymentmean.domain.PaymentMean;
-import io.yac.common.domain.SupportedCurrency;
-import io.yac.transaction.domain.Transaction;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +19,13 @@ import java.util.stream.Collectors;
 @Service
 public class PaymentMeanConverter implements ResourceEntityConverter<PaymentMeanResource, PaymentMean> {
 
-    @Autowired
-    TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
+
+    private final PaymentMeanRepository paymentMeanRepository;
 
     @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    public PaymentMeanConverter() {
-    }
-
-    @VisibleForTesting
-    PaymentMeanConverter(TransactionRepository transactionRepository, PaymentMeanRepository paymentMeanRepository) {
+    public PaymentMeanConverter(TransactionRepository transactionRepository,
+                                PaymentMeanRepository paymentMeanRepository) {
         this.transactionRepository = transactionRepository;
         this.paymentMeanRepository = paymentMeanRepository;
     }

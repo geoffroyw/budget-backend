@@ -1,10 +1,9 @@
 package io.yac.transaction.api.endpoint;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.transaction.api.converter.TransactionConverter;
+import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.transaction.api.TransactionResource;
-import io.yac.auth.facade.AuthenticationFacade;
+import io.yac.transaction.api.converter.TransactionConverter;
 import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +20,20 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/api/transactions")
 public class TransactionController {
 
-    @Autowired
-    TransactionConverter transactionConverter;
+    private final TransactionRepository transactionRepository;
+
+    private final AuthenticationFacade authenticationFacade;
+
+    private final TransactionConverter transactionConverter;
 
     @Autowired
-    TransactionRepository transactionRepository;
-
-    @Autowired
-    AuthenticationFacade authenticationFacade;
-
-    public TransactionController() {
-    }
-
-    @VisibleForTesting
-    TransactionController(TransactionRepository transactionRepository,
-                          AuthenticationFacade authenticationFacade,
-                          TransactionConverter transactionConverter) {
-
+    public TransactionController(TransactionRepository transactionRepository, AuthenticationFacade authenticationFacade,
+                                 TransactionConverter transactionConverter) {
         this.transactionRepository = transactionRepository;
         this.authenticationFacade = authenticationFacade;
         this.transactionConverter = transactionConverter;
     }
+
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<TransactionResource> index() {
@@ -77,7 +69,8 @@ public class TransactionController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody TransactionResource updated(@PathVariable("id") Long id, @RequestBody TransactionResource toBeUpdated)
+    public @ResponseBody TransactionResource updated(@PathVariable("id") Long id,
+                                                     @RequestBody TransactionResource toBeUpdated)
             throws ResourceNotFoundException {
         if (transactionRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
             throw new ResourceNotFoundException("No transaction found.");

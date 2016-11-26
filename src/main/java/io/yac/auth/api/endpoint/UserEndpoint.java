@@ -21,11 +21,14 @@ public class UserEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserEndpoint.class);
 
-    @Autowired
-    UserRepository userRepository;
+    private final AccountInitializer accountInitializer;
+    private final UserRepository userRepository;
 
     @Autowired
-    AccountInitializer accountInitializer;
+    public UserEndpoint(UserRepository userRepository, AccountInitializer accountInitializer) {
+        this.userRepository = userRepository;
+        this.accountInitializer = accountInitializer;
+    }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public UserResource create(@RequestBody UserResource resource) {

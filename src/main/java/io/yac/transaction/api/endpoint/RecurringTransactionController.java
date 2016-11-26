@@ -24,14 +24,19 @@ public class RecurringTransactionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecurringTransactionController.class);
 
-    @Autowired
-    RecurringTransactionConverter recurringTransactionConverter;
+    private final RecurringTransactionConverter recurringTransactionConverter;
 
-    @Autowired
-    RecurringTransactionRepository recurringTransactionRepository;
+    private final RecurringTransactionRepository recurringTransactionRepository;
 
-    @Autowired
-    AuthenticationFacade authenticationFacade;
+    private final AuthenticationFacade authenticationFacade;
+
+    @Autowired public RecurringTransactionController(RecurringTransactionConverter recurringTransactionConverter,
+                                                     RecurringTransactionRepository recurringTransactionRepository,
+                                                     AuthenticationFacade authenticationFacade) {
+        this.recurringTransactionConverter = recurringTransactionConverter;
+        this.recurringTransactionRepository = recurringTransactionRepository;
+        this.authenticationFacade = authenticationFacade;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<RecurringTransactionResource> index() {

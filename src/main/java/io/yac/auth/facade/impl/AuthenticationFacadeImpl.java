@@ -2,8 +2,6 @@ package io.yac.auth.facade.impl;
 
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
-import io.yac.auth.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,9 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuthenticationFacadeImpl implements AuthenticationFacade {
-
-    @Autowired
-    UserRepository userRepository;
 
     private Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();

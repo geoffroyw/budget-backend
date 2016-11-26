@@ -1,8 +1,7 @@
 package io.yac.transaction.scheduler.processor;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.domain.RecurringTransaction;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.RecurringTransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,16 +17,13 @@ public class RecurringTransactionProcessor implements ItemProcessor<RecurringTra
 
     private static final Logger LOG = LoggerFactory.getLogger(RecurringTransactionProcessor.class);
 
+    private final RecurringTransactionRepository recurringTransactionRepository;
+
     @Autowired
-    RecurringTransactionRepository
-            recurringTransactionRepository;
-
-    public RecurringTransactionProcessor() {
-    }
-
-    @VisibleForTesting RecurringTransactionProcessor(RecurringTransactionRepository recurringTransactionRepository) {
+    public RecurringTransactionProcessor(RecurringTransactionRepository recurringTransactionRepository) {
         this.recurringTransactionRepository = recurringTransactionRepository;
     }
+
 
     @Override
     public Transaction process(RecurringTransaction item) throws Exception {

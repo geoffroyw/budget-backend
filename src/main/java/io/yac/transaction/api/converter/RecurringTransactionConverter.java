@@ -1,6 +1,5 @@
 package io.yac.transaction.api.converter;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
@@ -23,26 +22,18 @@ import java.util.List;
 @Service
 public class RecurringTransactionConverter implements ResourceEntityConverter<RecurringTransactionResource, RecurringTransaction> {
 
-    @Autowired
-    RecurringTransactionRepository recurringTransactionRepository;
+    private final RecurringTransactionRepository recurringTransactionRepository;
 
-    @Autowired
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    @Autowired
-    PaymentMeanRepository paymentMeanRepository;
+    private final PaymentMeanRepository paymentMeanRepository;
 
-    @Autowired
-    BankAccountRepository bankAccountRepository;
+    private final BankAccountRepository bankAccountRepository;
 
-
-    public RecurringTransactionConverter() {
-    }
-
-    @VisibleForTesting RecurringTransactionConverter(RecurringTransactionRepository recurringTransactionRepository,
-                                                     CategoryRepository categoryRepository,
-                                                     PaymentMeanRepository paymentMeanRepository,
-                                                     BankAccountRepository bankAccountRepository) {
+    @Autowired public RecurringTransactionConverter(RecurringTransactionRepository recurringTransactionRepository,
+                                                    CategoryRepository categoryRepository,
+                                                    PaymentMeanRepository paymentMeanRepository,
+                                                    BankAccountRepository bankAccountRepository) {
         this.recurringTransactionRepository = recurringTransactionRepository;
         this.categoryRepository = categoryRepository;
         this.paymentMeanRepository = paymentMeanRepository;
@@ -54,7 +45,9 @@ public class RecurringTransactionConverter implements ResourceEntityConverter<Re
         return RecurringTransactionResource.builder().amountCents(entity.getAmountCents())
                 .currency(entity.getCurrency().getExternalName()).description(entity.getDescription())
                 .lastRunOn(entity.getLastRunOn()).recurringType(entity.getTemporalExpressionType().getExternalName())
-                .category(entity.getCategories() == null || entity.getCategories().isEmpty() ? null : entity.getCategories().get(0).getId())
+                .category(entity.getCategories() == null || entity.getCategories().isEmpty() ? null
+                                                                                             : entity.getCategories()
+                                  .get(0).getId())
                 .bankAccount(entity.getBankAccount().getId())
                 .paymentMean(entity.getPaymentMean().getId())
                 .id(entity.getId()).isActive(entity.isActive()).build();

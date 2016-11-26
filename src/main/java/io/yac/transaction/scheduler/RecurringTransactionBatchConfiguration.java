@@ -1,7 +1,7 @@
 package io.yac.transaction.scheduler;
 
-import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.domain.RecurringTransaction;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.RecurringTransactionRepository;
 import io.yac.transaction.scheduler.processor.RecurringTransactionProcessor;
 import io.yac.transaction.scheduler.writer.RecurringTransactionWriter;
@@ -46,7 +46,7 @@ public class RecurringTransactionBatchConfiguration {
 
     @Bean
     public ItemProcessor<RecurringTransaction, Transaction> processor() {
-        return new RecurringTransactionProcessor();
+        return new RecurringTransactionProcessor(recurringTransactionRepository);
     }
 
     @Bean

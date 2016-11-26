@@ -1,11 +1,11 @@
 package io.yac.categories.api.endpoint;
 
-import io.yac.categories.api.converter.CategoryConverter;
-import io.yac.common.api.exceptions.ResourceNotFoundException;
-import io.yac.categories.api.CategoryResource;
 import io.yac.auth.facade.AuthenticationFacade;
+import io.yac.categories.api.CategoryResource;
+import io.yac.categories.api.converter.CategoryConverter;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +19,19 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/categories")
 public class CategoryController {
 
-    @Autowired
-    CategoryConverter categoryConverter;
+    private final CategoryConverter categoryConverter;
+
+    private final CategoryRepository categoryRepository;
+
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    CategoryRepository categoryRepository;
-
-    @Autowired
-    AuthenticationFacade authenticationFacade;
+    public CategoryController(CategoryConverter categoryConverter, CategoryRepository categoryRepository,
+                              AuthenticationFacade authenticationFacade) {
+        this.categoryConverter = categoryConverter;
+        this.categoryRepository = categoryRepository;
+        this.authenticationFacade = authenticationFacade;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<CategoryResource> index() {

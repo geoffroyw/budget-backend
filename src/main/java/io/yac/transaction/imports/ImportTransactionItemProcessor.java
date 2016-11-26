@@ -1,6 +1,5 @@
 package io.yac.transaction.imports;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.bankaccount.repository.BankAccountRepository;
@@ -27,31 +26,25 @@ public class ImportTransactionItemProcessor implements ItemProcessor<CsvTransact
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    @Autowired
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+
+    private final PaymentMeanRepository paymentMeanRepository;
+
+    private final AuthenticationFacade authenticationFacade;
+
+    private final BankAccountRepository bankAccountRepository;
 
     @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    @Autowired
-    AuthenticationFacade authenticationFacade;
-
-    @Autowired
-    BankAccountRepository bankAccountRepository;
-
-    public ImportTransactionItemProcessor() {
-    }
-
-
-    @VisibleForTesting ImportTransactionItemProcessor(CategoryRepository categoryRepository,
-                                                      PaymentMeanRepository paymentMeanRepository,
-                                                      AuthenticationFacade authenticationFacade,
-                                                      BankAccountRepository bankAccountRepository) {
+    public ImportTransactionItemProcessor(CategoryRepository categoryRepository,
+                                          PaymentMeanRepository paymentMeanRepository,
+                                          AuthenticationFacade authenticationFacade,
+                                          BankAccountRepository bankAccountRepository) {
         this.categoryRepository = categoryRepository;
         this.paymentMeanRepository = paymentMeanRepository;
         this.authenticationFacade = authenticationFacade;
         this.bankAccountRepository = bankAccountRepository;
     }
+
 
     @Override
     public Transaction process(CsvTransaction item) throws Exception {

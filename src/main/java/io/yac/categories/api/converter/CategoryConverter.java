@@ -1,11 +1,10 @@
 package io.yac.categories.api.converter;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.common.api.converter.ResourceEntityConverter;
 import io.yac.categories.api.CategoryResource;
 import io.yac.categories.domain.Category;
-import io.yac.transaction.domain.Transaction;
 import io.yac.categories.repository.CategoryRepository;
+import io.yac.common.api.converter.ResourceEntityConverter;
+import io.yac.transaction.domain.Transaction;
 import io.yac.transaction.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryConverter implements ResourceEntityConverter<CategoryResource, Category> {
 
-    @Autowired
-    TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
+
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
-
-    public CategoryConverter() {
-    }
-
-    @VisibleForTesting
-    CategoryConverter(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
+    public CategoryConverter(TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.transactionRepository = transactionRepository;
         this.categoryRepository = categoryRepository;
     }

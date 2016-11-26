@@ -1,6 +1,5 @@
 package io.yac.transaction.api.converter;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.yac.bankaccount.repository.BankAccountRepository;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
@@ -32,36 +31,27 @@ public class TransactionConverter implements ResourceEntityConverter<Transaction
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionConverter.class);
 
-    @Autowired
-    BankAccountRepository bankAccountRepository;
+    private final BankAccountRepository bankAccountRepository;
+
+    private final PaymentMeanRepository paymentMeanRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    private final TransactionRepository transactionRepository;
+
+    private final RateConversionService rateConversionService;
 
     @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
-
-    @Autowired
-    TransactionRepository transactionRepository;
-
-    @Autowired
-    RateConversionService rateConversionService;
-
-    public TransactionConverter() {
-    }
-
-    @VisibleForTesting TransactionConverter(BankAccountRepository bankAccountRepository,
-                                            PaymentMeanRepository paymentMeanRepository,
-                                            CategoryRepository categoryRepository,
-                                            TransactionRepository transactionRepository,
-                                            RateConversionService rateConversionService) {
+    public TransactionConverter(BankAccountRepository bankAccountRepository,
+                                PaymentMeanRepository paymentMeanRepository,
+                                CategoryRepository categoryRepository, TransactionRepository transactionRepository,
+                                RateConversionService rateConversionService) {
         this.bankAccountRepository = bankAccountRepository;
         this.paymentMeanRepository = paymentMeanRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
         this.rateConversionService = rateConversionService;
     }
-
 
     @Override
     public TransactionResource convertToResource(Transaction entity) {
