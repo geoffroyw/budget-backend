@@ -11,6 +11,7 @@ import io.yac.transaction.domain.Transaction;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -136,5 +137,18 @@ public class BankAccount extends TimestampableEntity {
         }
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BankAccount that = (BankAccount) o;
+        return Objects.equals(id, that.id);
+    }
 
+    @Override public int hashCode() {
+        return Objects.hash(id);
+    }
 }
