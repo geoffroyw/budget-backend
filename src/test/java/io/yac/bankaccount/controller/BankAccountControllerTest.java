@@ -1,4 +1,4 @@
-package io.yac.bankaccount.api.endpoint;
+package io.yac.bankaccount.controller;
 
 import io.yac.Application;
 import io.yac.api.factory.BankAccountFactory;

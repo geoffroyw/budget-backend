@@ -1,4 +1,4 @@
-package io.yac.bankaccount.api.endpoint;
+package io.yac.bankaccount.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;

@@ -1,4 +1,4 @@
-package io.yac.bankaccount.api.endpoint;
+package io.yac.bankaccount.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.yac.Application;
