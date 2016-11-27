@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.auth.user.model.User;
 import io.yac.bankaccount.domain.TransactionCollectionSerializer;
-import io.yac.categories.api.View;
+import io.yac.common.api.View;
 import io.yac.common.domain.TimestampableEntity;
 import io.yac.transaction.domain.Transaction;
 
@@ -21,13 +21,13 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Category extends TimestampableEntity {
 
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     private Long id;
 
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     private String name;
 
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     @JsonSerialize(using = TransactionCollectionSerializer.class)
     private List<Transaction> transactions = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package io.yac.paymentmean.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.yac.auth.user.model.User;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.domain.TimestampableEntity;
@@ -13,7 +14,9 @@ import java.util.List;
  * Created by geoffroy on 07/02/2016.
  */
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentMean extends TimestampableEntity {
+
 
     private Long id;
 

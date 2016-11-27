@@ -2,7 +2,7 @@ package io.yac.categories.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.categories.api.View;
+import io.yac.common.api.View;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
@@ -30,13 +30,13 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody List<Category> index() {
         return categoryRepository.findByOwner(authenticationFacade.getCurrentUser());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody Category get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         Category category = categoryRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -50,7 +50,7 @@ public class CategoryController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody Category create(@RequestBody Category category) {
         category.setOwner(authenticationFacade.getCurrentUser());
         categoryRepository.save(category);

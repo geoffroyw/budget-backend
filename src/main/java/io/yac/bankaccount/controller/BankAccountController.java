@@ -3,8 +3,8 @@ package io.yac.bankaccount.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.bankaccount.domain.BankAccount;
-import io.yac.bankaccount.domain.View;
 import io.yac.bankaccount.repository.BankAccountRepository;
+import io.yac.common.api.View;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +31,13 @@ public class BankAccountController {
 
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody List<BankAccount> index() {
         return bankAccountRepository.findByOwner(authenticationFacade.getCurrentUser());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody BankAccount get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         BankAccount bankAccount =
                 bankAccountRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
@@ -52,7 +52,7 @@ public class BankAccountController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody BankAccount create(@RequestBody BankAccount bankAccount) {
         bankAccount.setOwner(authenticationFacade.getCurrentUser());
         bankAccountRepository.save(bankAccount);
@@ -61,7 +61,7 @@ public class BankAccountController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    @JsonView(View.Summary.class)
+    @JsonView(View.Default.class)
     public @ResponseBody BankAccount update(@PathVariable("id") Long id,
                                             @RequestBody BankAccount update)
             throws ResourceNotFoundException {
