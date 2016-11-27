@@ -1,8 +1,8 @@
-package io.yac.categories.api.endpoint;
+package io.yac.categories.api.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.categories.api.CategoryResource;
-import io.yac.categories.api.converter.CategoryConverter;
+import io.yac.categories.api.View;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by geoffroy on 08/04/2016.
@@ -19,47 +18,43 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/categories")
 public class CategoryController {
 
-    private final CategoryConverter categoryConverter;
-
     private final CategoryRepository categoryRepository;
 
     private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    public CategoryController(CategoryConverter categoryConverter, CategoryRepository categoryRepository,
+    public CategoryController(CategoryRepository categoryRepository,
                               AuthenticationFacade authenticationFacade) {
-        this.categoryConverter = categoryConverter;
         this.categoryRepository = categoryRepository;
         this.authenticationFacade = authenticationFacade;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<CategoryResource> index() {
-
-        return categoryRepository.findByOwner(authenticationFacade.getCurrentUser()).stream()
-                .map(category -> categoryConverter.convertToResource(category)).collect(
-                        Collectors.toList());
+    @JsonView(View.Summary.class)
+    public @ResponseBody List<Category> index() {
+        return categoryRepository.findByOwner(authenticationFacade.getCurrentUser());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody CategoryResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    @JsonView(View.Summary.class)
+    public @ResponseBody Category get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         Category category = categoryRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
         if (category == null) {
             throw new ResourceNotFoundException("No category found");
         }
 
-        return categoryConverter.convertToResource(category);
+        return category;
     }
 
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody CategoryResource create(@RequestBody CategoryResource toBeCreated) {
-        Category category = categoryConverter.convertToEntity(toBeCreated, null);
+    @JsonView(View.Summary.class)
+    public @ResponseBody Category create(@RequestBody Category category) {
         category.setOwner(authenticationFacade.getCurrentUser());
         categoryRepository.save(category);
-        return categoryConverter.convertToResource(category);
+        return category;
     }
 
 
