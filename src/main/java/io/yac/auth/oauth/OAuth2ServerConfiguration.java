@@ -42,6 +42,7 @@ public class OAuth2ServerConfiguration {
 
         @Override
         public void configure(HttpSecurity security) throws Exception {
+            security.authorizeRequests().antMatchers("/utils/**").permitAll(); //TODO this should require some permissions
             security.authorizeRequests().antMatchers("/users").permitAll();
             security.authorizeRequests().antMatchers("/api/**").authenticated();
             security.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");

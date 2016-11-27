@@ -27,12 +27,14 @@ public class FetchRateTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(FetchRateTask.class);
 
+    private final ECBRateServiceFacade ecbRateService;
+    private final CurrencyRateRepository rateRepository;
 
     @Autowired
-    ECBRateServiceFacade ecbRateService;
-
-    @Autowired
-    CurrencyRateRepository rateRepository;
+    public FetchRateTask(ECBRateServiceFacade ecbRateService, CurrencyRateRepository rateRepository) {
+        this.ecbRateService = ecbRateService;
+        this.rateRepository = rateRepository;
+    }
 
     @Scheduled(cron = "30 14 * * * *") //Every day at 14:30
     @ManagedOperation(description = "Trigger the fetch ECB rate task.")
