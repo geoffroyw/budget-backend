@@ -1,18 +1,15 @@
-package io.yac.paymentmean.api.endpoint;
+package io.yac.paymentmean.api.controller;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.yac.paymentmean.api.converter.PaymentMeanConverter;
-import io.yac.common.api.exceptions.ResourceNotFoundException;
-import io.yac.paymentmean.api.PaymentMeanResource;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
+import io.yac.common.api.View;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by geoffroy on 08/04/2016.
@@ -21,40 +18,26 @@ import java.util.stream.StreamSupport;
 @RequestMapping(value = "/api/paymentMeans")
 public class PaymentMeanController {
 
-    @Autowired
-    PaymentMeanConverter paymentMeanConverter;
+    private final PaymentMeanRepository paymentMeanRepository;
+
+    private final AuthenticationFacade authenticationFacade;
 
     @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    @Autowired
-    AuthenticationFacade authenticationFacade;
-
-
-    public PaymentMeanController() {
-    }
-
-    @VisibleForTesting
-    PaymentMeanController(PaymentMeanRepository paymentMeanRepository,
-                          AuthenticationFacade authenticationFacade,
-                          PaymentMeanConverter paymentMeanConverter) {
-
+    public PaymentMeanController(PaymentMeanRepository paymentMeanRepository,
+                                 AuthenticationFacade authenticationFacade) {
         this.paymentMeanRepository = paymentMeanRepository;
         this.authenticationFacade = authenticationFacade;
-        this.paymentMeanConverter = paymentMeanConverter;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody List<PaymentMeanResource> index() {
-
-        return StreamSupport
-                .stream(paymentMeanRepository.findByOwner(authenticationFacade.getCurrentUser()).spliterator(), false)
-                .map(bankAccount -> paymentMeanConverter.convertToResource(bankAccount)).collect(
-                        Collectors.toList());
+    @JsonView(View.Default.class)
+    public @ResponseBody List<PaymentMean> index() {
+        return paymentMeanRepository.findByOwner(authenticationFacade.getCurrentUser());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody PaymentMeanResource get(@PathVariable("id") Long id) throws ResourceNotFoundException {
+    @JsonView(View.Default.class)
+    public @ResponseBody PaymentMean get(@PathVariable("id") Long id) throws ResourceNotFoundException {
         PaymentMean paymentMean =
                 paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
 
@@ -62,31 +45,35 @@ public class PaymentMeanController {
             throw new ResourceNotFoundException("No payment mean found");
         }
 
-        return paymentMeanConverter.convertToResource(paymentMean);
+        return paymentMean;
     }
 
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody PaymentMeanResource create(@RequestBody PaymentMeanResource toBeCreated) {
-        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeCreated, null);
+    @JsonView(View.Default.class)
+    public @ResponseBody PaymentMean create(@RequestBody PaymentMean paymentMean) {
         paymentMean.setOwner(authenticationFacade.getCurrentUser());
         paymentMeanRepository.save(paymentMean);
-        return paymentMeanConverter.convertToResource(paymentMean);
+        return paymentMean;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json",
                     consumes = "application/json")
-    public @ResponseBody PaymentMeanResource updated(@PathVariable("id") Long id, @RequestBody PaymentMeanResource toBeUpdated)
+    @JsonView(View.Default.class)
+    public @ResponseBody PaymentMean updated(@PathVariable("id") Long id,
+                                             @RequestBody PaymentMean toBeUpdated)
             throws ResourceNotFoundException {
-        if (paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id) == null) {
+        PaymentMean paymentMean =
+                paymentMeanRepository.findOneByOwnerAndId(authenticationFacade.getCurrentUser(), id);
+        if (paymentMean == null) {
             throw new ResourceNotFoundException("No payment mean found.");
         }
 
-        PaymentMean paymentMean = paymentMeanConverter.convertToEntity(toBeUpdated, id);
-        paymentMean.setOwner(authenticationFacade.getCurrentUser());
+        paymentMean.setName(toBeUpdated.getName());
+        paymentMean.setCurrency(toBeUpdated.getCurrency());
         paymentMeanRepository.save(paymentMean);
-        return paymentMeanConverter.convertToResource(paymentMean);
+        return paymentMean;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

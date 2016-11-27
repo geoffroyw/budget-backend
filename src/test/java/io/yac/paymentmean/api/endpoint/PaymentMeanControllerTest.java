@@ -1,16 +1,14 @@
 package io.yac.paymentmean.api.endpoint;
 
 import io.yac.Application;
-import io.yac.paymentmean.api.converter.PaymentMeanConverter;
-import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.api.factory.UserFactory;
-import io.yac.paymentmean.api.PaymentMeanResource;
 import io.yac.auth.facade.AuthenticationFacade;
 import io.yac.auth.user.CustomUserDetailsService;
 import io.yac.auth.user.model.User;
-import io.yac.paymentmean.api.endpoint.PaymentMeanController;
-import io.yac.paymentmean.domain.PaymentMean;
+import io.yac.common.api.exceptions.ResourceNotFoundException;
 import io.yac.common.domain.SupportedCurrency;
+import io.yac.paymentmean.api.controller.PaymentMeanController;
+import io.yac.paymentmean.domain.PaymentMean;
 import io.yac.paymentmean.repository.PaymentMeanRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,13 +31,10 @@ import static org.mockito.Mockito.when;
 public class PaymentMeanControllerTest {
 
     @Autowired
-    PaymentMeanConverter paymentMeanConverter;
+    private PaymentMeanRepository paymentMeanRepository;
 
     @Autowired
-    PaymentMeanRepository paymentMeanRepository;
-
-    @Autowired
-    UserFactory userFactory;
+    private UserFactory userFactory;
 
 
     @Test
@@ -53,8 +48,8 @@ public class PaymentMeanControllerTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         assertThat(paymentMeanController.get(paymentMean.getId()).getId(), is(paymentMean.getId()));
 
@@ -69,8 +64,8 @@ public class PaymentMeanControllerTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         paymentMeanController.get(unexistingId);
 
@@ -90,8 +85,8 @@ public class PaymentMeanControllerTest {
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user2));
 
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         paymentMeanController.get(paymentMean_of_user1.getId());
 
@@ -104,12 +99,12 @@ public class PaymentMeanControllerTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
 
-        PaymentMeanResource resource =
-                PaymentMeanResource.builder().currency(SupportedCurrency.AUD.getExternalName()).name("any").build();
+        PaymentMean resource =
+                PaymentMean.builder().currency(SupportedCurrency.AUD).name("any").build();
 
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         Long savedPaymentMeanId = paymentMeanController.create(resource).getId();
         assertThat(paymentMeanRepository.findOne(savedPaymentMeanId).getOwner().getId(), is(user.getId()));
@@ -129,8 +124,8 @@ public class PaymentMeanControllerTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         Long entityId = paymentMean.getId();
         paymentMeanController.delete(entityId);
@@ -147,8 +142,8 @@ public class PaymentMeanControllerTest {
         AuthenticationFacade dummy_authentication_facade = mock(AuthenticationFacade.class);
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user));
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         paymentMeanController.delete(unexistingId);
 
@@ -168,8 +163,8 @@ public class PaymentMeanControllerTest {
         when(dummy_authentication_facade.getCurrentUser()).thenReturn(new CustomUserDetailsService.CurrentUser(user2));
 
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         Long entityId = paymentMean_of_user_1.getId();
         paymentMeanController.delete(entityId);
@@ -195,13 +190,13 @@ public class PaymentMeanControllerTest {
                 .thenReturn(new CustomUserDetailsService.CurrentUser(currentUser));
 
         PaymentMeanController paymentMeanController =
-                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade,
-                        paymentMeanConverter);
+                new PaymentMeanController(paymentMeanRepository, dummy_authentication_facade
+                );
 
         assertThat(paymentMeanController.index(),
                 is(allOf(
-                        hasItem(paymentMeanConverter.convertToResource(paymentMean_of_current_user)),
-                        not(hasItem(paymentMeanConverter.convertToResource(paymentMean_of_user_1))))));
+                        hasItem(paymentMean_of_current_user),
+                        not(hasItem(paymentMean_of_user_1)))));
     }
 
 

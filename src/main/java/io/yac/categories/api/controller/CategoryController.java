@@ -2,9 +2,9 @@ package io.yac.categories.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.yac.auth.facade.AuthenticationFacade;
-import io.yac.common.api.View;
 import io.yac.categories.domain.Category;
 import io.yac.categories.repository.CategoryRepository;
+import io.yac.common.api.View;
 import io.yac.common.api.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

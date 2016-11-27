@@ -1,7 +1,11 @@
 package io.yac.paymentmean.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.yac.auth.user.model.User;
+import io.yac.bankaccount.domain.TransactionCollectionSerializer;
+import io.yac.common.api.View;
 import io.yac.common.domain.SupportedCurrency;
 import io.yac.common.domain.TimestampableEntity;
 import io.yac.transaction.domain.Transaction;
@@ -9,6 +13,7 @@ import io.yac.transaction.domain.Transaction;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by geoffroy on 07/02/2016.
@@ -17,13 +22,17 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentMean extends TimestampableEntity {
 
-
+    @JsonView(View.Default.class)
     private Long id;
 
+    @JsonView(View.Default.class)
     private String name;
 
+    @JsonView(View.Default.class)
     private SupportedCurrency currency;
 
+    @JsonView(View.Default.class)
+    @JsonSerialize(using = TransactionCollectionSerializer.class)
     private List<Transaction> transactions = new ArrayList<>();
 
     private User owner;
@@ -90,6 +99,23 @@ public class PaymentMean extends TimestampableEntity {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PaymentMean that = (PaymentMean) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public static class Builder {
